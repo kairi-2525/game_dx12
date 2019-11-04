@@ -1,0 +1,5 @@
+﻿KDL.lib(pch.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(pch.obj)' で、または 'C:\Users\nicon\Desktop\2019後期一回目\game_dx12\x64\Debug\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
+KDL.lib(Mouse.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(Mouse.obj)' で、または 'C:\Users\nicon\Desktop\2019後期一回目\game_dx12\x64\Debug\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
+KDL.lib(Keyboard.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(Keyboard.obj)' で、または 'C:\Users\nicon\Desktop\2019後期一回目\game_dx12\x64\Debug\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
+KDL.lib(WAVFileReader.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(WAVFileReader.obj)' で、または 'C:\Users\nicon\Desktop\2019後期一回目\game_dx12\x64\Debug\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
+  game_dx12.vcxproj -> C:\Users\nicon\Desktop\2019後期一回目\game_dx12\x64\Debug\game_dx12.exe
