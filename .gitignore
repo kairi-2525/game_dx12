@@ -342,7 +342,7 @@ healthchecksdb
 .cod
 .cso
 
-/game_dx12/lib/Debug/*
-!/game_dx12/lib/Debug/KDL.zip
-/game_dx12/lib/Release/*
-!/game_dx12/lib/Release/KDL.zip
+/game_dx12/game_dx12/lib/Debug/*
+!/game_dx12/game_dx12/lib/Debug/KDL.zip
+/game_dx12/game_dx12/lib/Release/*
+!/game_dx12/game_dx12/lib/Release/KDL.zip
