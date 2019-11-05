@@ -6,20 +6,6 @@
 // SceneBase
 //-----------
 
-//次のシーンをセットします。
-void SceneBase::SetNextScene(SceneBase* p_scene)
-{
-	assert(!m_next_scene && "[SceneBase]シーン切り替えに失敗しました。");
-	m_next_scene.reset(p_scene);
-}
-
-//次のシーンをセットし、即座に切り替えます。
-void SceneBase::ChangeScene(SceneBase* p_scene)
-{
-	SetNextScene(p_scene);
-	p_scene->loaded();
-}
-
 void SceneBase::LoadAnotherThread(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	{

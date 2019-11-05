@@ -67,7 +67,8 @@ namespace KDL
 			};
 		protected:
 			static inline const DirectX::XMFLOAT4X4 CORDINATE_CONVERSION = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1 };
-
+		private:
+			bool first_command = true;
 		protected:
 			size_t m_file_size;
 			size_t m_load_size;
@@ -97,6 +98,7 @@ namespace KDL
 			virtual const std::vector<D3D12_INPUT_ELEMENT_DESC>& GetInputElementDesc() = 0;
 			virtual HRESULT CompileShaders() = 0;
 			HRESULT AddConstantBuffer(ComPtr<ID3D12Device>& device, const UINT add_size, const UINT buffer_size, const UINT frame_buffer_num);
+			bool IsFirstCommand() { if (first_command) { first_command = false; return true; } return false; }
 		public:
 			~Mesh_Base() = default;
 			Mesh_Base(App* app, const std::filesystem::path& path, UINT buffer_stock_size = 100u)

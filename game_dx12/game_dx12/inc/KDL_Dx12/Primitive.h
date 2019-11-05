@@ -73,9 +73,12 @@ namespace KDL
 			std::mutex m_count_mutex;
 
 			UINT m_buffer_stock_size;
+		private:
+			bool first_command = true;
 		protected:
 			Geometric_Base() = default;
 			virtual ~Geometric_Base() = default;
+			bool IsFirstCommand() { if (first_command) { first_command = false; return true; } return false; }
 			static const std::vector<D3D12_INPUT_ELEMENT_DESC>& GetInputElementDesc() { return INPUT_ELEMENT_DESC; };
 		};
 

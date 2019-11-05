@@ -2,7 +2,7 @@
 
 void SceneMain::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX");
+	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 1);
 }
 
 void SceneMain::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -27,9 +27,9 @@ void SceneMain::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
 	{
 		if (input->IsHitKey(KDL::KEY_INPUTS::LeftControl))
-			ChangeScene(new SceneTitle);		//メインスレッドでシーン切り替え
+			ChangeScene<SceneTitle>();		//メインスレッドでシーン切り替え
 		else
-			SetNextScene(new SceneTitle);	//別スレッドでシーン切り替え
+			SetNextScene<SceneTitle>();	//別スレッドでシーン切り替え
 	}
 
 	const float elpased_time = p_window->GetElapsedTime();
@@ -44,21 +44,23 @@ void SceneMain::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
 	p_app->ClearBackBuffer(clear_color);
 
-	const float scale = 0.01f;
+	const float scale = 0.05f;
 	const KDL::FLOAT3 position = { 0.f, 0.f, 0.f };
-	DirectX::XMMATRIX W;
+	for (UINT i = 0; i < 1; i++)
 	{
-		DirectX::XMMATRIX S, R, T;
-		S = DirectX::XMMatrixScaling(scale, scale, scale);
-		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle, 0.f);
-		T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
-		W = S * R * T;
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(scale, scale, scale);
+			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle, 0.f);
+			T = DirectX::XMMatrixTranslation(position.x, position.y + i, position.z + i * 2);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		camera->CreateUpdateWorldViewProjection(&wvp, W);
+		mesh->AddCommand(p_app->GetCommandList(0), *p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
 	}
-	DirectX::XMFLOAT4X4 wvp, w;
-	DirectX::XMStoreFloat4x4(&w, W);
-	camera->CreateUpdateWorldViewProjection(&wvp, W);
-
-	mesh->AddCommand(p_app->GetCommandList(0), *p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
 }
 
 void SceneMain::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

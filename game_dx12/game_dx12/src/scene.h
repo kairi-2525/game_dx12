@@ -38,8 +38,21 @@ public:
 		std::lock_guard<std::mutex> lock(m_load_start_mutex);
 		return m_load_start;
 	}
-	void SetNextScene(SceneBase* p_scene);
-	void ChangeScene(SceneBase* p_scene);
+	//次のシーンをセットします。
+	template <class T>
+	void SetNextScene()
+	{
+		if (m_next_scene) return;
+		m_next_scene = std::make_unique<T>();
+	}
+	//次のシーンをセットし、即座に切り替えます。
+	template <class T>
+	void ChangeScene()
+	{
+		if (m_next_scene) return;
+		SetNextScene<T>();
+		m_next_scene->loaded();
+	}
 	void GetNextScene(std::unique_ptr<SceneBase>* unique_p_scene)
 	{
 		if (unique_p_scene)

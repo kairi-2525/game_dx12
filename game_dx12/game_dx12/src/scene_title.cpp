@@ -28,9 +28,9 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
 	{
 		if (input->IsHitKey(KDL::KEY_INPUTS::LeftControl))
-			ChangeScene(new SceneMain);		//メインスレッドでシーン切り替え
+			ChangeScene<SceneMain>();		//メインスレッドでシーン切り替え
 		else
-			SetNextScene(new SceneMain);	//別スレッドでシーン切り替え
+			SetNextScene<SceneMain>();	//別スレッドでシーン切り替え
 	}
 
 	const float elpased_time = p_window->GetElapsedTime();
@@ -45,7 +45,7 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
 	p_app->ClearBackBuffer(clear_color);
 
-	const float scale = 0.01f;
+	const float scale = 4.f;
 	const KDL::FLOAT3 position = { 0.f, 0.f, 0.f };
 	DirectX::XMMATRIX W;
 	{
