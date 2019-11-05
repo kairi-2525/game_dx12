@@ -99,5 +99,35 @@ namespace KDL
 				const DirectX::XMFLOAT4& light_direction,
 				const DirectX::XMFLOAT4& material_color);
 		};
+
+		class Geometric_Board_S : public Geometric_Base
+		{
+		private:
+			struct ShaderParameterTexBase : public ShaderParameterBase
+			{
+				FLOAT2 tex_scale;
+				FLOAT2 tex_pos;
+			};
+			struct ShaderParametersTex : public ShaderParameterTexBase
+			{
+				float plov[(((sizeof(ShaderParameterTexBase) + 255) & ~255) - sizeof(ShaderParameterTexBase)) / sizeof(float)];
+			};
+		private:
+		HRESULT Init(App* app, const std::filesystem::path& path, UINT buffer_stock_size);
+		public:
+			Geometric_Board_S(App* app, const std::filesystem::path& path = App::DUMMY_TEXTURE_NAME, UINT buffer_stock_size = 100u)
+			{
+				Init(app, path, buffer_stock_size);
+			}
+			HRESULT AddCommand(
+				ID3D12GraphicsCommandList* command_list,
+				App& app,
+				const DirectX::XMFLOAT4X4& wvp,
+				const DirectX::XMFLOAT4X4& world,
+				const DirectX::XMFLOAT4& light_direction,
+				const DirectX::XMFLOAT4& material_color,
+				const FLOAT2& tex_pos,
+				const FLOAT2& tex_scale);
+		};
 	}
 }

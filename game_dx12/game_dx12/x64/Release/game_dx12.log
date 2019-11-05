@@ -1,0 +1,76 @@
+﻿  main.cpp
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,49): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,51): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,47): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,49): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,43): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,45): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,30): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,32): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,33): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,35): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,48): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,50): message : 変換で修飾子が失われます。
+  scene.cpp
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,49): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,51): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,47): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,49): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,43): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,45): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,30): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,32): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,33): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,35): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,48): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,50): message : 変換で修飾子が失われます。
+  scene_main.cpp
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,49): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,51): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,47): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,49): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,43): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,45): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,30): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,32): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,33): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,35): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,48): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,50): message : 変換で修飾子が失われます。
+  scene_title.cpp
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,49): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(144,51): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,47): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(146,49): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,43): error C2662: 'void KDL::TOOL::Camera::CheckDebugView(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(148,45): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(29,9): message : 'KDL::TOOL::Camera::CheckDebugView' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,30): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(150,32): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,33): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(152,35): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,48): error C2662: 'void KDL::TOOL::Camera::CheckDebugProjection(void)': 'const KDL::TOOL::Camera' から 'KDL::TOOL::Camera &' へ 'this' ポインターを変換できません。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(154,50): message : 変換で修飾子が失われます。
+D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Tool\Camera.h(30,9): message : 'KDL::TOOL::Camera::CheckDebugProjection' の宣言を確認してください
