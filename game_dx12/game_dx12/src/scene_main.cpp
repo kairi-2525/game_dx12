@@ -7,7 +7,7 @@ void SceneMain::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 void SceneMain::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	camera = 
+	camera =
 		std::make_unique<KDL::TOOL::Camera>(
 			KDL::TOOL::Camera(
 				{ 0.f, 0.f, -30.f },		//eye
