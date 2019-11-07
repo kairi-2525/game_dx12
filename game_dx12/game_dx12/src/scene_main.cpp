@@ -2,7 +2,7 @@
 
 void SceneMain::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 1);
+	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 1000000);
 }
 
 void SceneMain::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

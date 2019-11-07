@@ -93,7 +93,7 @@ namespace KDL
 			CD3DX12_RECT m_scissor_rect;
 		public:
 			static HRESULT CreateBuffer(ComPtr<ID3D12Device>& device, ComPtr<ID3D12Resource1>& buffer, UINT64 buffer_size, const void* initial_data);
-			static HRESULT CompileShaderFromFile(const LPCWSTR shader_name, const char* shader_resouce, size_t resouce_size, const std::wstring& profile, ComPtr<ID3DBlob>& shader_blob, ComPtr<ID3DBlob>& error_blob);
+			static HRESULT CompileShaderFromFile(const LPCWSTR shader_name, const std::string& shader_resouce, const std::wstring& profile, ComPtr<ID3DBlob>& shader_blob, ComPtr<ID3DBlob>& error_blob, const std::wstring& entry_point_name = L"main");
 		private:
 			bool CheckTearingSupport();
 			void WaitPreviousFrame();

@@ -3,6 +3,7 @@
 #include "App.h"
 #include <mutex>
 #include <filesystem>
+#include "Pipeline_State_Manager.h"
 
 namespace KDL
 {
@@ -54,7 +55,7 @@ namespace KDL
 
 			ComPtr<ID3D12RootSignature> m_root_signature;
 			ComPtr<ID3DBlob> m_vs_blob, m_ps_blob;
-			ComPtr<ID3D12PipelineState> m_pipeline;
+			Pipeline_State_Manager m_ps_mgr;
 
 			std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> m_srv;
 			D3D12_GPU_DESCRIPTOR_HANDLE m_sampler;
@@ -97,7 +98,11 @@ namespace KDL
 				const DirectX::XMFLOAT4X4& wvp,
 				const DirectX::XMFLOAT4X4& world,
 				const DirectX::XMFLOAT4& light_direction,
-				const DirectX::XMFLOAT4& material_color);
+				const DirectX::XMFLOAT4& material_color,
+				int blend_mode = static_cast<int>(BLEND_STATE::ALPHA),
+				bool wire_frame = false,
+				bool z_test = true
+			);
 		};
 
 		class Geometric_Board_S : public Geometric_Base
@@ -127,7 +132,11 @@ namespace KDL
 				const DirectX::XMFLOAT4& light_direction,
 				const DirectX::XMFLOAT4& material_color,
 				const FLOAT2& tex_pos,
-				const FLOAT2& tex_scale);
+				const FLOAT2& tex_scale,
+				int blend_mode = static_cast<int>(BLEND_STATE::ALPHA),
+				bool wire_frame = false,
+				bool z_test = true
+			);
 		};
 	}
 }

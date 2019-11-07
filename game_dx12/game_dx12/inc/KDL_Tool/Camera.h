@@ -26,8 +26,8 @@ namespace KDL
 			void SetDebugViewFlg(bool flg) { m_initialized_view_parameters = flg; }
 			void SetDebugProjectionFlg(bool flg) { m_initialized_projection_parameters = flg; }
 #else
-			void CheckDebugView() {}
-			void CheckDebugProjection() {}
+			void CheckDebugView() const {}
+			void CheckDebugProjection() const {}
 			void SetDebugViewFlg(bool flg) {}
 			void SetDebugProjectionFlg(bool flg) {}
 #endif
