@@ -59,7 +59,7 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	DirectX::XMStoreFloat4x4(&w, W);
 	camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-	board->AddCommand(p_app->GetCommandList(0), *p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
+	board->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
 }
 
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

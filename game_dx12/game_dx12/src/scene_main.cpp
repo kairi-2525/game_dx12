@@ -2,7 +2,7 @@
 
 void SceneMain::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 1000000);
+	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 10000);
 }
 
 void SceneMain::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -59,7 +59,7 @@ void SceneMain::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		DirectX::XMFLOAT4X4 wvp, w;
 		DirectX::XMStoreFloat4x4(&w, W);
 		camera->CreateUpdateWorldViewProjection(&wvp, W);
-		mesh->AddCommand(p_app->GetCommandList(0), *p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
+		mesh->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
 	}
 }
 
