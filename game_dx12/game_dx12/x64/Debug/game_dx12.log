@@ -1,2 +1,6 @@
-﻿  scene_main.cpp
+﻿  main.cpp
+  scene.cpp
+  scene_main.cpp
+  scene_title.cpp
+  コードを生成中...
   game_dx12.vcxproj -> D:\Program\個人\git\KDL2\KDL\x64\Debug\game_dx12.exe

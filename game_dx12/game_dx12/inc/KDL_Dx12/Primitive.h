@@ -94,7 +94,7 @@ namespace KDL
 			}
 			HRESULT AddCommand(
 				ID3D12GraphicsCommandList* command_list,
-				App& app,
+				App* app,
 				const DirectX::XMFLOAT4X4& wvp,
 				const DirectX::XMFLOAT4X4& world,
 				const DirectX::XMFLOAT4& light_direction,
@@ -126,14 +126,14 @@ namespace KDL
 			}
 			HRESULT AddCommand(
 				ID3D12GraphicsCommandList* command_list,
-				App& app,
+				App* app,
 				const DirectX::XMFLOAT4X4& wvp,
 				const DirectX::XMFLOAT4X4& world,
 				const DirectX::XMFLOAT4& light_direction,
 				const DirectX::XMFLOAT4& material_color,
 				const FLOAT2& tex_pos,
 				const FLOAT2& tex_scale,
-				int blend_mode = static_cast<int>(BLEND_STATE::ALPHA),
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
 				bool z_test = true
 			);

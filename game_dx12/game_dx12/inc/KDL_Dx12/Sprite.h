@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <filesystem>
+#include "Pipeline_State_Manager.h"
 
 namespace KDL
 {
@@ -49,7 +50,7 @@ namespace KDL
 
 			ComPtr<ID3DBlob> m_vs_blob, m_ps_blob;
 			ComPtr<ID3D12RootSignature> m_root_signature;
-			ComPtr<ID3D12PipelineState> m_pipeline;
+			Pipeline_State_Manager m_ps_mgr;
 
 			static inline const UINT BUFFER_SAVE_SIZE = 100u;
 			std::vector<UINT> m_render_num_log;
@@ -79,9 +80,12 @@ namespace KDL
 		public:
 			Sprite_Box(App* app, UINT stock_size = 100u);
 			virtual ~Sprite_Box() = default;
-			virtual HRESULT AddCommand(ID3D12GraphicsCommandList* command_list, const App& app,
+			virtual HRESULT AddCommand(ID3D12GraphicsCommandList* command_list, App* app,
 				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center, const FLOAT2& scale, float radian_angle,
-				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom);
+				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
+				bool wire_frame = false,
+				bool z_test = true);
 		};
 
 		class Sprite_Image : public Sprite_Box
@@ -124,16 +128,22 @@ namespace KDL
 		public:
 			~Sprite_Image();
 			Sprite_Image(App* app, const std::filesystem::path& image_path, UINT stock_size = 100u);
-			HRESULT AddCommand(ID3D12GraphicsCommandList* command_list, const App& app,
+			HRESULT AddCommand(ID3D12GraphicsCommandList* command_list, App* app,
 				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center, const FLOAT2& scale, float radian_angle,
-				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom) override {
+				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
+				bool wire_frame = false,
+				bool z_test = true) override {
 				return AddCommand(command_list, app, pos, size, center, { 0, 0 }, GetSize(), scale, radian_angle,
-					left_top, right_top, left_bottom, right_bottom);
+					left_top, right_top, left_bottom, right_bottom, blend_mode, wire_frame, z_test);
 			}
-			HRESULT AddCommand(ID3D12GraphicsCommandList* command_list, const App& app,
+			HRESULT AddCommand(ID3D12GraphicsCommandList* command_list, App* app,
 				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center,
 				const FLOAT2& tex_pos, const FLOAT2& tex_size, const FLOAT2& scale, float radian_angle,
-				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom);
+				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
+				bool wire_frame = false,
+				bool z_test = true);
 			template <class T = FLOAT>
 			Number2<T> GetSize() { return { static_cast<T>(m_tex_desc.Width), static_cast<T>(m_tex_desc.Height) }; }
 		};

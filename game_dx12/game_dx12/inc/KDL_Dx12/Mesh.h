@@ -3,6 +3,7 @@
 #include "App.h"
 #include <mutex>
 #include <filesystem>
+#include "Pipeline_State_Manager.h"
 
 namespace KDL
 {
@@ -78,7 +79,7 @@ namespace KDL
 			std::vector<Mesh> m_meshes;
 			ComPtr<ID3D12RootSignature> m_root_signature;
 			ComPtr<ID3DBlob> m_vs_blob, m_ps_blob;
-			ComPtr<ID3D12PipelineState> m_pipeline;
+			Pipeline_State_Manager m_ps_mgr;
 			
 			D3D12_GPU_DESCRIPTOR_HANDLE m_sampler;
 			std::vector<ComPtr<ID3D12DescriptorHeap>> m_heaps_srv_cbv;
@@ -126,11 +127,14 @@ namespace KDL
 			{ Init(app, path, buffer_stock_size); }
 			HRESULT AddCommand(
 				ID3D12GraphicsCommandList* command_list,
-				App& app,
+				App* app,
 				const DirectX::XMFLOAT4X4& wvp,
 				const DirectX::XMFLOAT4X4& world,
 				const DirectX::XMFLOAT4& light_direction,
-				const DirectX::XMFLOAT4& material_color
+				const DirectX::XMFLOAT4& material_color,
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
+				bool wire_frame = false,
+				bool z_test = true
 			);
 		};
 	}

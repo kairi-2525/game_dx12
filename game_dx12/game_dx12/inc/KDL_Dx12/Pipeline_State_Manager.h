@@ -7,9 +7,11 @@ namespace KDL
 {
 	namespace DX12
 	{
+		extern const std::unordered_map<std::string, int> BLEND_LISTS;
+
 		enum class BLEND_STATE : int
 		{
-			DEFAULT,	//最後に設定されていた値を使う
+			LAST,	//最後に設定されていた値を使う
 			NONE,
 			ALPHA,
 			ADD,
@@ -59,6 +61,7 @@ namespace KDL
 		private:
 			std::unordered_map < Pipeline_Desc_State, ComPtr<ID3D12PipelineState>, Pipeline_Desc_State::Hash> m_pipelines;
 			Pipeline_Desc_State m_desc_state;
+			ID3D12PipelineState* m_last_use_state;
 			bool m_desc_changed;
 			bool m_inited = false;
 		public:
