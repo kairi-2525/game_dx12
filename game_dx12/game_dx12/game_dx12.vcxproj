@@ -131,14 +131,46 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AI_Manager.cpp" />
+    <ClCompile Include="src\AttackAI.cpp" />
+    <ClCompile Include="src\Enemy.cpp" />
+    <ClCompile Include="src\FileOperate.cpp" />
+    <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MultipleObject.cpp" />
+    <ClCompile Include="src\ObjectManager.cpp" />
+    <ClCompile Include="src\PatrolAI.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\scene_main.cpp" />
     <ClCompile Include="src\scene_title.cpp" />
+    <ClCompile Include="src\SingleObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AI_Manager.h" />
+    <ClInclude Include="src\AttackAI.h" />
+    <ClInclude Include="src\ColorDef.h" />
+    <ClInclude Include="src\Enemy.h" />
+    <ClInclude Include="src\FileStreamHelpter.h" />
+    <ClInclude Include="src\GameScene.h" />
+    <ClInclude Include="src\ImGuiSeting.h" />
+    <ClInclude Include="src\ImVecHelper.h" />
+    <ClInclude Include="src\LoadAllFileName.h" />
     <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\Math.h" />
+    <ClInclude Include="src\MessageBox.h" />
+    <ClInclude Include="src\MultipleObject.h" />
+    <ClInclude Include="src\NodeData.h" />
+    <ClInclude Include="src\Obj3d.h" />
+    <ClInclude Include="src\ObjectManager.h" />
+    <ClInclude Include="src\PatrolAI.h" />
+    <ClInclude Include="src\Random.h" />
+    <ClInclude Include="src\RootBase.h" />
     <ClInclude Include="src\scene.h" />
+    <ClInclude Include="src\SingleObject.h" />
+    <ClInclude Include="src\Time.h" />
+    <ClInclude Include="src\Vector2.h" />
+    <ClInclude Include="src\Vector3.h" />
+    <ClInclude Include="src\XMFLOAT_Hlper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

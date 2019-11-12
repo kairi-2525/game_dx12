@@ -23,6 +23,9 @@ void SceneMain::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 
 void SceneMain::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
+	p_app->ClearBackBuffer(clear_color);
+
 	const auto* input = p_window->GetInput();
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
 	{
@@ -41,9 +44,6 @@ void SceneMain::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 void SceneMain::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
-	p_app->ClearBackBuffer(clear_color);
-
 	const float scale = 0.01f;
 	const KDL::FLOAT3 position = { 0.f, 0.f, 0.f };
 	DirectX::XMMATRIX W;
