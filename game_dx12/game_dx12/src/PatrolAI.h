@@ -43,7 +43,7 @@ public:
 	static constexpr size_t IndexNumber{ 0u };
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 public:
 	static inline float move_speed{ 1.f };
@@ -89,7 +89,7 @@ public:
 	static constexpr size_t IndexNumber{ 1u };
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 public:
 	static inline float stop_time{ 2.f };
@@ -133,7 +133,7 @@ public:
 	static constexpr size_t IndexNumber{ 2u };
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 public:
 	static inline float stop_time{ 1.f };
@@ -182,15 +182,16 @@ public:
 	}
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 private:
 	void InitModeData();
-#if false
-	template<class _Ty, size_t _Idx, typename Type = std::remove_reference<_Ty>::type,
-		class... _ArgTypes>
+
+	template<class _Ty, size_t _Idx, class... _ArgTypes>
 	void BuildAINode(std::vector<std::pair<bool, uint64_t>>& init_data, const _ArgTypes&... args)
 	{
+		using Type = typename std::remove_reference<_Ty>::type;
+
 		static_assert(std::is_base_of<Type, RootBase>(), "Not Base Class");
 
 		const auto& data{ init_data.at(_Idx) };
@@ -199,7 +200,6 @@ private:
 
 		back.emplace<_Idx>(std::make_optional<Type>(data.first, data.second, args...));
 	}
-#endif
 
 public:
 

@@ -109,20 +109,6 @@ public:
 	bool GetIsDead() const noexcept { return is_dead; }
 	void InitHP() noexcept { pl_stand = pl_stand_first = false; }
 
-public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 2u && "不正なハンドル数");
-
-		auto itr{ handle.begin() };
-
-		model_handle = *itr;
-
-		itr++;
-
-		broken_model_handle = *itr;
-	}
-
 private:
 	uint16_t hp;
 	bool pl_stand;
@@ -130,8 +116,12 @@ private:
 	bool is_dead;
 
 	static inline VF3 pl_pos;
-	static inline int model_handle{ -1 };
-	static inline int broken_model_handle{ -1 };
+
+public:
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_boad;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_broken_boad;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_boad;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_broken_boad;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -193,15 +183,8 @@ public:
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
-
-private:
-	static inline int model_handle{ -1 };
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> snow_model;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> sand_model;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -270,18 +253,13 @@ public:
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
 	bool GetBackWorld() const noexcept { return is_back_world; }
 
 private:
 	bool is_back_world;
 
-	static inline int model_handle{ -1 };
+public:
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -350,18 +328,13 @@ public:
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
 	bool GetBackWorld() const noexcept { return is_back_world; }
 
 private:
 	bool is_back_world;
 
-	static inline int model_handle{ -1 };
+public:
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -431,17 +404,10 @@ public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
-public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
-
 private:
 	bool is_back_world;
 	bool is_open;
 
-	static inline int model_handle{ -1 };
+public:
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 };

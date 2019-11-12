@@ -61,14 +61,6 @@ private:
 	bool isMoveObjectCheck();
 	void Move(KDL::Window* p_window, KDL::DX12::App* p_app);
 
-public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
-
 private:
 	const Deque<Plane>& planes;
 	const Deque<WarpHole>& warphole;
@@ -77,7 +69,8 @@ private:
 	const Deque<Door>& doors;
 	const Deque<Key>& keys;
 
-	static inline int model_handle{ -1 };
+public:
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -119,16 +112,7 @@ public:
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
-
-private:
-	static inline int model_handle{ -1 };
-
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -170,16 +154,9 @@ public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
-public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 1u && "不正なハンドル数");
-
-		model_handle = *(handle.begin());
-	}
-
 private:
 	bool is_back_world;
 
-	static inline int model_handle{ -1 };
+public:
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 };

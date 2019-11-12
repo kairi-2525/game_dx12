@@ -53,7 +53,7 @@ PatrolAI::PatrolAI(const bool executable, const uint64_t priority_number, size_t
 	}
 }
 
-void PatrolAI::Update(VF3& enemy_pos, Node* node)
+void PatrolAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
 	using std::visit;
 
@@ -124,7 +124,7 @@ void PatrolAI::Update(VF3& enemy_pos, Node* node)
 		visit([&](auto& mode)
 			{
 				// 更新
-				mode->Update(enemy_pos, node);
+				mode->Update(enemy_pos, elapsed_time, node);
 
 				// そのモードの更新が終了を確認する
 				change_mode = mode->GetModeEnd();
@@ -188,7 +188,7 @@ void PatrolAI::InitModeData()
 
 //-----------------------------------------------------------------------------------------------------------
 
-void MoveAI::Update(VF3& enemy_pos, Node* node)
+void MoveAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
 #if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
@@ -280,7 +280,7 @@ void MoveAI::Update(VF3& enemy_pos, Node* node)
 		else
 		{
 			const auto speed_vec{ ToNormalizeXMVECTOR(halfway_path - enemy_pos) };
-			const VF3 speed{ ToXMFLOAT3(speed_vec) * move_speed * GMLIB->GetElapsedTime() };
+			const VF3 speed{ ToXMFLOAT3(speed_vec) * move_speed * elapsed_time };
 
 			enemy_pos += speed;
 		}
@@ -289,7 +289,7 @@ void MoveAI::Update(VF3& enemy_pos, Node* node)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void StopAI::Update(VF3& enemy_pos, Node* node)
+void StopAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
 #if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
@@ -301,7 +301,7 @@ void StopAI::Update(VF3& enemy_pos, Node* node)
 	ImGui::End();
 #endif
 
-	if (timer += GMLIB->GetElapsedTime(); timer > stop_time)
+	if (timer += elapsed_time; timer > stop_time)
 	{
 		is_mode_end = true;
 
@@ -312,7 +312,7 @@ void StopAI::Update(VF3& enemy_pos, Node* node)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void FindAI::Update(VF3& enemy_pos, Node* node)
+void FindAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
 #if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
@@ -324,7 +324,7 @@ void FindAI::Update(VF3& enemy_pos, Node* node)
 	ImGui::End();
 #endif
 
-	if (timer += GMLIB->GetElapsedTime(); timer > stop_time)
+	if (timer += elapsed_time; timer > stop_time)
 	{
 		is_mode_end = true;
 

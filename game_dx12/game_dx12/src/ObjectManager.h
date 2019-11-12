@@ -164,21 +164,22 @@ public:
 	}
 
 	// オブジェクトの追加
-	template<class _Ty, typename Type = std::remove_reference<_Ty>::type, class... Func>
+	template<class _Ty, class... Func>
 	_Ty& AddObjects(Func&... func)
 	{
 		using std::is_same;
+		using Tyep = typename std::remove_reference<_Ty>::type;
 
-		static_assert(std::is_base_of<Obj3D, Type>(), "Not Base Class");
+		static_assert(std::is_base_of<Obj3D, Tyep>(), "Not Base Class");
 
 		constexpr bool IsSingle
-		{ (is_same<Type, Player>()) || (is_same<Type, Start>()) || (is_same<Type, Goal>()) };
+		{ (is_same<Tyep, Player>()) || (is_same<Tyep, Start>()) || (is_same<Tyep, Goal>()) };
 
 		if constexpr (IsSingle)
 		{
-			auto& object{ std::get<SharedPtr<Type>>(single_objects.at(Type::IndexNumber)) };
+			auto& object{ std::get<SharedPtr<Tyep>>(single_objects.at(Tyep::IndexNumber)) };
 
-			if constexpr (is_same<Type, Player>())
+			if constexpr (is_same<Tyep, Player>())
 			{
 				if (!object) object = std::make_shared<Player>(
 					GetObjects<Plane>(), GetObjects<WarpHole>(),
@@ -187,14 +188,14 @@ public:
 			}
 			else
 			{
-				if (!object) object = std::make_shared<Type>(func...);
+				if (!object) object = std::make_shared<Tyep>(func...);
 			}
 
 			return *object;
 		}
 		else
 		{
-			auto& objects{ std::get<Deque<Type>>(multiple_objects.at(Type::IndexNumber)) };
+			auto& objects{ std::get<Deque<Tyep>>(multiple_objects.at(Tyep::IndexNumber)) };
 
 			return objects.emplace_back(func...);
 		}
@@ -202,7 +203,7 @@ public:
 
 	// variantオブジェクト構築（ラムダ式でしたかったけど、ジェネリックラムダにテンプレートパラメーターが使えるのがc++20以降という...）
 	template<class _Ty>
-	auto& BuildVariant(const std::initializer_list<int>& model_handle)
+	auto& BuildVariant()
 	{
 		using std::is_same;
 
@@ -210,11 +211,6 @@ public:
 
 		constexpr bool IsSingle
 		{ (is_same<_Ty, Player>()) || (is_same<_Ty, Start>()) || (is_same<_Ty, Goal>()) };
-
-		assert(model_handle.size() > 0 && "不正なイニシャライザーリスト");
-
-		// モデルハンドルを設定
-		_Ty::SetModelHandle(model_handle);
 
 		// variantオブジェクトを構築
 		if constexpr (IsSingle)
@@ -311,7 +307,7 @@ private:
 
 public:
 	ObjectManager();
-	~ObjectManager() noexcept;
+	~ObjectManager() noexcept = default;
 	ObjectManager(const ObjectManager&) = delete;
 	ObjectManager(ObjectManager&&) noexcept = delete;
 	auto& operator=(const ObjectManager&) = delete;
@@ -402,10 +398,6 @@ private:
 	void MoveObject(KDL::Window* p_window, KDL::DX12::App* p_app);
 
 private:
-	int pl_handle, start_handle, goal_handle;  // SingleObjets系ハンドル
-	int enm_handle, waypoint_handle, arrow_handle, glass_handle, glass_broken_handle, wall_handle,
-		warp_handle, door_handle, key_handle;
-
 	Object objects;
 	Node node;
 

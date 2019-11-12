@@ -290,22 +290,6 @@ public:
 	}
 
 public:
-	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
-	{
-		assert(handle.size() == 3u && "•s³‚Èƒnƒ“ƒhƒ‹”");
-
-		auto itr{ handle.begin() };
-
-		model_handle = *(itr);
-
-		itr++;
-
-		WayPoint::SetModelHandle(*itr);
-
-		itr++;
-
-		Arrow::SetModelHandle(*itr);
-	}
 	void SetIsSelect(const bool selected) noexcept { is_select = selected; }
 	auto& GetWayPoint() noexcept { return way_points; }
 	static void SetNodeData(Node& set_planes) noexcept { node = &set_planes; }
@@ -320,8 +304,8 @@ private:
 	std::optional<AI_Manager> ai;
 
 	static inline Node* node;
-	static inline int model_handle{ -1 };
 
 public:
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
 	static inline std::shared_ptr<Player>* player{ nullptr };
 };

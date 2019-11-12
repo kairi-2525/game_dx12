@@ -9,11 +9,9 @@
 #include "ColorDef.h"
 #include "scene.h"
 #include "KDL_Dx12/Primitive.h"
+#include "KDL_Dx12/Sprite.h"
 
 #if true
-
-//class SceneBase;
-//class SceneManager;
 
 class SceneGame final
 	: public SceneBase
@@ -273,10 +271,9 @@ private:
 	float camera_dis;
 	std::optional<ObjectManager> object_manager;
 
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
+	//std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
 	std::unique_ptr<KDL::DX12::Geometric_Board_S> bg_board;
 
-	static inline std::unique_ptr<KDL::TOOL::Camera> camera;
 
 	Path open_file_path;
 	FileDataFlg file_flg;
@@ -289,46 +286,47 @@ public:
 	static inline bool is_save;
 	static inline bool back_world_mode{ false };
 	static inline std::atomic<size_t> load_count{ 0 };
+	static inline std::unique_ptr<KDL::TOOL::Camera> camera;
 };
 
-//class SceneLoad
-//	: public SceneBase
-//{
-//public:
-//	std::unique_ptr<KDL::DX12::Sprite_Box> box;
-//	KDL::FLOAT2 size;
-//
-//	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
-//	{
-//		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 1u);
-//		size = 0.f;
-//	}
-//	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
-//	{
-//		SceneGame::load_count = 0u;
-//		SetNextScene<SceneGame>();	//別スレッドでシーン切り替え
-//	}
-//	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
-//	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
-//	{
-//		using VF2 = DirectX::XMFLOAT2;
-//
-//		auto vp{ p_app->GetViewport() };
-//		VF2 s_size{ vp.Width, vp.Height };
-//
-//		static const KDL::DX12::COLOR4F color{ GRAY, 1.f };
-//
-//		constexpr float BoxSizeY{ 50.f };
-//		constexpr float ObjectAndBGCountMax{ 11.f };
-//
-//		const float box_size_x
-//		{ s_size.x * (static_cast<float>(SceneGame::load_count) / ObjectAndBGCountMax) };
-//
-//		size = VF2{ box_size_x, BoxSizeY };
-//
-//		box->AddCommand(p_app->GetCommandList(), p_app, { 0.f, 0.f }, size, { 0.f, 0.f }, { 1.f, 1.f },
-//			0.f, color, color, color, color);
-//	}
-//	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
-//};
+class SceneLoad
+	: public SceneBase
+{
+public:
+	std::unique_ptr<KDL::DX12::Sprite_Box> box;
+	KDL::FLOAT2 size;
+
+	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+	{
+		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 1u);
+		size = 0.f;
+	}
+	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+	{
+		SceneGame::load_count = 0u;
+		SetNextScene<SceneGame>();	//別スレッドでシーン切り替え
+	}
+	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
+	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+	{
+		using VF2 = DirectX::XMFLOAT2;
+
+		auto vp{ p_app->GetViewport() };
+		VF2 s_size{ vp.Width, vp.Height };
+
+		static const KDL::DX12::COLOR4F color{ GRAY, 1.f };
+
+		constexpr float BoxSizeY{ 50.f };
+		constexpr float ObjectAndBGCountMax{ 11.f };
+
+		const float box_size_x
+		{ s_size.x * (static_cast<float>(SceneGame::load_count) / ObjectAndBGCountMax) };
+
+		size = VF2{ box_size_x, BoxSizeY };
+
+		box->AddCommand(p_app->GetCommandList(), p_app, { 0.f, 0.f }, size, { 0.f, 0.f }, { 1.f, 1.f },
+			0.f, color, color, color, color);
+	}
+	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
+};
 #endif

@@ -63,7 +63,7 @@ public:
 	void SetExecutable(const bool executable) noexcept { this->executable = executable; }
 
 public:
-	virtual void Update(VF3& enemy_pos, Node* node = nullptr) = 0;
+	virtual void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) = 0;
 
 protected:
 	uint64_t priority_number; // —Dæ‡ˆÊ

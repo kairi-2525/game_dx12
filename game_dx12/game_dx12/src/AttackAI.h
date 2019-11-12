@@ -34,7 +34,7 @@ public:
 	static constexpr size_t IndexNumber{ 0u };
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 public:
 	static inline float move_speed{ 1.f };
@@ -76,7 +76,7 @@ public:
 	static constexpr size_t IndexNumber{ 1u };
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 private:
 
@@ -120,7 +120,7 @@ public:
 	}
 
 public:
-	void Update(VF3& enemy_pos, Node* node = nullptr) override;
+	void Update(VF3& enemy_pos, const float elapsed_time, Node* node = nullptr) override;
 
 private:
 	Array<AI_Control, 2u> attack_modes;

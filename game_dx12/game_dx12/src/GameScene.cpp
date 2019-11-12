@@ -557,12 +557,13 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	// https://social.msdn.microsoft.com/Forums/ja-JP/4ea73ec0-e90d-4759-8517-260f03621362/createinstance123910x800401f0123981245612521125401236430330299831237712?forum=vcgeneralja
 	//if (FAILED(CoInitializeEx(nullptr, COINIT_MULTITHREADED))) assert(!"COMライブラリは、このスレッドで既に初期化されている");
 
+#if false
 	if (!grit_board)
 		grit_board =
 			std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\GritLine.png", 1);
 
 	load_count++;
-
+#endif
 	if (!bg_board)
 		bg_board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Sky.jpg", 1);
 

@@ -6,43 +6,9 @@
 #include "Time.h"
 
 ObjectManager::ObjectManager()
-	: pl_handle(-1), start_handle(-1), goal_handle(-1),
-	enm_handle(-1), glass_handle(-1), glass_broken_handle(-1), wall_handle(-1), warp_handle(-1),
-	door_handle(-1), key_handle(-1),
-	select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f)
+	: select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f)
 {
 	now_move_object = edit_mode_first = false;
-}
-
-ObjectManager::~ObjectManager() noexcept
-{
-	std::vector<int*> erase_handle{
-		// SingleObjets
-		&pl_handle,
-		&start_handle,
-		&goal_handle,
-
-		// multiple_objects
-		&enm_handle,
-		&glass_handle,
-		&glass_broken_handle,
-		&wall_handle,
-		&warp_handle,
-		&door_handle,
-		&key_handle,
-		&waypoint_handle,
-		&arrow_handle
-	};
-
-	assert(GetObjectKindsNum() == erase_handle.size() && "削除するハンドルを設定し忘れている");
-
-	// 削除する
-	for (auto handle : erase_handle)
-	{
-		// 実害はないのでこうしている
-		GMLIB->DeleteModel(*handle);
-		GMLIB->DeleteBoardImageHandle(*handle);
-	}
 }
 
 // 更新
@@ -793,63 +759,79 @@ void ObjectManager::MoveObject(KDL::Window* p_window, KDL::DX12::App* p_app)
 // 読み込み
 void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	auto fbx_paths{ GetAllFileName("Data\\Model\\Game") };
-
-	// ファイル走査で読み込むので（アルファベット順）
-	const std::vector<int*> load_handle{
-		&arrow_handle,
-		&door_handle,
-		&enm_handle,
-		&goal_handle,
-		&key_handle,
-		&pl_handle,
-		&start_handle,
-		&wall_handle,
-		&warp_handle,
-		&waypoint_handle,
-	};
-
-	fbx_paths.erase(std::remove_if(fbx_paths.begin(), fbx_paths.end(),
-		[](const auto& path) { return path.extension().string() != ".fbx"; }), fbx_paths.end());
-
-	assert(fbx_paths.size() == load_handle.size() && "読み込み数or設定数が不正");
-
-	// FBX読み込み
-	for (size_t i = 0, length = fbx_paths.size(); i < length; i++)
+	// モデル読み込み
 	{
-		if (!GMLIB->LoadModel(fbx_paths[i], *load_handle[i]))
-			assert(!"読み込み失敗");
+		auto fbx_paths{ GetAllFileName("data\\models\\Game") };
 
-		(*load_count)++;
+		// ファイル走査で読み込むので（アルファベット順）
+		const std::vector<std::unique_ptr<KDL::DX12::Mesh_FBX>*> load_handle{
+			&Door::model,
+			&Enemy::model,
+			&Goal::model,
+			&Key::model,
+			&Player::model,
+			&Wall::sand_model,
+			&Wall::snow_model,
+			&Start::model,
+			&WarpHole::model,
+		};
+
+		// FBX以外のファイル名を削除
+		fbx_paths.erase(std::remove_if(fbx_paths.begin(), fbx_paths.end(),
+			[](const auto& path) { return path.extension().string() != ".fbx"; }), fbx_paths.end());
+
+		assert(fbx_paths.size() == load_handle.size() && "読み込み数or設定数が不正");
+
+		// FBX読み込み
+		for (size_t i = 0, length = fbx_paths.size(); i < length; i++)
+		{
+			*load_handle[i] = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, fbx_paths[i]);
+
+			(*load_count)++;
+		}
 	}
 
 	// テクスチャ読み込み
 	{
-		if (!GMLIB->LoadBoadImage(L"Data\\Texture\\Glass.png", glass_handle))
-			assert(!"読み込み失敗");
+		auto png_paths{ GetAllFileName("data\\images\\Game") };
 
-		(*load_count)++;
+		// ファイル走査で読み込むので（アルファベット順）
+		const std::vector<std::unique_ptr<KDL::DX12::Geometric_Board>*> load_handle{
+			&Plane::sand_boad,
+			&Plane::sand_broken_boad,
+			&Plane::snow_boad,
+			&Plane::snow_broken_boad,
+		};
 
-		if (!GMLIB->LoadBoadImage(L"Data\\Texture\\GlassBroken.png", glass_broken_handle))
-			assert(!"読み込み失敗");
+		// FBX以外のファイル名を削除
+		png_paths.erase(std::remove_if(png_paths.begin(), png_paths.end(),
+			[](const auto& path) { return path.extension().string() != ".png"; }), png_paths.end());
 
-		(*load_count)++;
+		assert(png_paths.size() == load_handle.size() && "読み込み数or設定数が不正");
+
+		// FBX読み込み
+		for (size_t i = 0, length = png_paths.size(); i < length; i++)
+		{
+			*load_handle[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i]);
+
+			(*load_count)++;
+		}
 	}
 
 	// variantオブジェクト構築
 	{
 		// SingleObjets構築
-		objects.BuildVariant<Player>({ pl_handle });
-		objects.BuildVariant<Start>({ start_handle });
-		objects.BuildVariant<Goal>({ goal_handle });
+		objects.BuildVariant<Player>();
+		objects.BuildVariant<Start>();
+		objects.BuildVariant<Goal>();
 
 		// multiple_objects構築
-		objects.BuildVariant<Enemy>({ enm_handle, waypoint_handle, arrow_handle });
-		objects.BuildVariant<Plane>({ glass_handle, glass_broken_handle });
-		objects.BuildVariant<Wall>({ wall_handle });
-		objects.BuildVariant<WarpHole>({ warp_handle });
-		objects.BuildVariant<Door>({ door_handle });
-		objects.BuildVariant<Key>({ key_handle });
+		objects.BuildVariant<Enemy>();
+		objects.BuildVariant<Plane>();
+		objects.BuildVariant<Wall>();
+		objects.BuildVariant<WarpHole>();
+		objects.BuildVariant<Door>();
+		objects.BuildVariant<Key>();
 	}
 
 	Enemy::SetNodeData(node);

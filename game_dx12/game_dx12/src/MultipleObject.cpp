@@ -106,15 +106,38 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	else
 #endif
 	{
-#if !_DEBUG
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(scale.x, scale.y, 1.f);
+			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
 		if (!is_dead)
-			GMLIB->DrawBoardImage(hp == HpMax ? model_handle : broken_model_handle, pos,
-				{ scale.x, scale.y }, angle, GS::LightDir);
-#else
-		if (!is_dead)
-			GMLIB->DrawBoardImage(hp == HpMax ? model_handle : broken_model_handle, pos,
-				{ scale.x, scale.y }, angle, GS::LightDir, color);
-#endif
+		{
+			auto Draw{ [&](auto& obj)
+			{ obj->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }); } };
+
+			if (hp == HpMax)
+			{
+				if (GS::back_world_mode)
+					Draw(sand_boad);
+				else
+					Draw(snow_boad);
+			}
+			else
+			{
+				if (GS::back_world_mode)
+					Draw(sand_broken_boad);
+				else
+					Draw(snow_broken_boad);
+			}
+		}
 	}
 }
 
@@ -142,7 +165,27 @@ void Wall::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir);
+	using GS = SceneGame;
+
+	DirectX::XMMATRIX W;
+	{
+		DirectX::XMMATRIX S, R, T;
+		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		W = S * R * T;
+	}
+	DirectX::XMFLOAT4X4 wvp, w;
+	DirectX::XMStoreFloat4x4(&w, W);
+	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+	auto Draw{ [&](auto& obj)
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }); } };
+
+	if (GS::back_world_mode)
+		Draw(sand_model);
+	else
+		Draw(snow_model);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -176,9 +219,26 @@ void WarpHole::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const VF4 color{ WHITE, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
+	using GS = SceneGame;
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
+	const VF4 color{ WHITE, (GS::back_world_mode == is_back_world ? 1.f : 0.5f) };
+
+	DirectX::XMMATRIX W;
+	{
+		DirectX::XMMATRIX S, R, T;
+		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		W = S * R * T;
+	}
+	DirectX::XMFLOAT4X4 wvp, w;
+	DirectX::XMStoreFloat4x4(&w, W);
+	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+	auto Draw{ [&](auto& obj)
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+
+	Draw(model);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -212,14 +272,29 @@ void Key::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 void Key::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	VF4 color;
+	using GS = SceneGame;
 
 	if (SceneGame::back_world_mode == is_back_world)
-		color = { YELLOW, 1.f };
+		color.w = 1.f;
 	else
-		color = { GREEN, 0.5f };
+		color.w = 0.5f;
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
+	DirectX::XMMATRIX W;
+	{
+		DirectX::XMMATRIX S, R, T;
+		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		W = S * R * T;
+	}
+	DirectX::XMFLOAT4X4 wvp, w;
+	DirectX::XMStoreFloat4x4(&w, W);
+	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+	auto Draw{ [&](auto& obj)
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+
+	Draw(model);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -253,7 +328,25 @@ void Door::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 void Door::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	using GS = SceneGame;
+
 	const VF4 color{ OLIVE, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
+	DirectX::XMMATRIX W;
+	{
+		DirectX::XMMATRIX S, R, T;
+		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		W = S * R * T;
+	}
+	DirectX::XMFLOAT4X4 wvp, w;
+	DirectX::XMStoreFloat4x4(&w, W);
+
+	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+	auto Draw{ [&](auto& obj)
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+
+	Draw(model);
 }

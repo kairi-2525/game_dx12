@@ -33,7 +33,7 @@ AttackAI::AttackAI(const bool executable, const uint64_t priority_number)
 	}
 }
 
-void AttackAI::Update(VF3& enemy_pos, Node* node)
+void AttackAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
 	using std::visit;
 
@@ -57,7 +57,7 @@ void AttackAI::Update(VF3& enemy_pos, Node* node)
 		visit([&](auto& mode)
 			{
 				// 更新し
-				mode->Update(enemy_pos, node);
+				mode->Update(enemy_pos, elapsed_time, node);
 
 				// そのモードの更新が終了を確認する
 				change_mode.at(mode_count) = mode->GetModeEnd();
@@ -68,9 +68,9 @@ void AttackAI::Update(VF3& enemy_pos, Node* node)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void ChaseAI::Update(VF3& enemy_pos, Node* node)
+void ChaseAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
-#if USE_IMGUI
+#if false
 	auto s_size{ GMLIB->GetScreenSize() };
 
 	ImguiTool::BeginShowTempWindow({ 0.f, s_size.y / 2.f }, "MoveAI");
@@ -156,6 +156,6 @@ void ChaseAI::Update(VF3& enemy_pos, Node* node)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void GoBackAI::Update(VF3& enemy_pos, Node* node)
+void GoBackAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 {
 }

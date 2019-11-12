@@ -140,13 +140,26 @@ void Enemy::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 #else
 	if (!ai) ai.emplace(&way_points);
 
-	ai->Update(*this, node);
+	ai->Update(*this, p_window->GetElapsedTime(), node);
 #endif
 }
 
 void Enemy::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
+	using GS = SceneGame;
+
+	DirectX::XMMATRIX W;
+	{
+		DirectX::XMMATRIX S, R, T;
+		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		W = S * R * T;
+	}
+	DirectX::XMFLOAT4X4 wvp, w;
+	DirectX::XMStoreFloat4x4(&w, W);
+	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+	model->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f });
 
 #if false
 	if (is_select)

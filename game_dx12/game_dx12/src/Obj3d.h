@@ -1,9 +1,13 @@
 #pragma once
 
+#include <memory>
+
 #include "XMFLOAT_Hlper.h"
 #include "FileStreamHelpter.h"
 #include "KDL.h"
 #include "KDL_Dx12/App.h"
+#include "KDL_Dx12/Mesh.h"
+#include "KDL_Dx12/Primitive.h"
 
 #define IMGUI_RED 1.f, 0.3f, 0.3f, 1.f
 

@@ -32,7 +32,7 @@ AI_Manager::AI_Manager(std::deque<WayPoint>* way_points)
 	}
 }
 
-void AI_Manager::Update(Enemy& enemy, Node* node)
+void AI_Manager::Update(Enemy& enemy, float elapsed_time, Node* node)
 {
 	using std::visit;
 
@@ -58,7 +58,7 @@ void AI_Manager::Update(Enemy& enemy, Node* node)
 		visit([&](auto& mode)
 			{
 				// 更新し
-				mode->Update(enemy.pos, node);
+				mode->Update(enemy.pos, elapsed_time, node);
 
 				// そのモードの更新が終了を確認する
 				change_mode = mode->GetModeEnd();

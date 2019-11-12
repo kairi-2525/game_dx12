@@ -49,7 +49,7 @@ public:
 	}
 
 public:
-	void Update(Enemy& enemy, Node* node);
+	void Update(Enemy& enemy, float elapsed_time, Node* node);
 private:
 	void InitModeData();
 
