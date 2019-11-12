@@ -330,9 +330,9 @@ public:
 	auto& GetObjectData() noexcept { return objects; }
 
 public:
-	void Update();
-	void Draw() const;
-	void Load(std::atomic<size_t>* load_count);
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app);
+	void Load(std::atomic<size_t>* load_count, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void InitSelectObject()
 	{
 		select_enm = nullptr;
@@ -345,13 +345,13 @@ public:
 
 private:
 	// 編集モード更新
-	void EditModeUpdate();
+	void EditModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app);
 
 	// 敵編集モード更新
-	void EnmEditModeUpdate();
+	void EnmEditModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app);
 
 	// 通常モード更新
-	void NormalModeUpdate();
+	void NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app);
 
 	// 設置先の座標に指定したオブジェクトがあるかを確認する（ラムダ式でしたかったけど、ジェネリックラムダにテンプレートパラメーターが使えるのがc++20以降という...）
 	template<class _Ty>
@@ -399,7 +399,7 @@ private:
 	}
 
 	// オブジェクトの移動
-	void MoveObject();
+	void MoveObject(KDL::Window* p_window, KDL::DX12::App* p_app);
 
 private:
 	int pl_handle, start_handle, goal_handle;  // SingleObjets系ハンドル

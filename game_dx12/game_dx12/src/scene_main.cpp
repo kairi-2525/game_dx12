@@ -1,13 +1,14 @@
 #include "scene.h"
+#include "TitleScene.h"
 
 void SceneMain::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 10000);
+	//mesh = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/BLue Falcon/Blue Falcon.FBX", 10000);
 }
 
 void SceneMain::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	camera = 
+	camera =
 		std::make_unique<KDL::TOOL::Camera>(
 			KDL::TOOL::Camera(
 				{ 0.f, 0.f, -30.f },		//eye

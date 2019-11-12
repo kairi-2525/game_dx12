@@ -1,12 +1,19 @@
+#pragma once
+
 #include <string>
 #include <optional>
-#include <thread>
-#include <mutex>
 #include <atomic>
 #include <filesystem>
 
 #include "ObjectManager.h"
+#include "ColorDef.h"
 #include "scene.h"
+#include "KDL_Dx12/Primitive.h"
+
+#if true
+
+//class SceneBase;
+//class SceneManager;
 
 class SceneGame final
 	: public SceneBase
@@ -19,7 +26,7 @@ private:
 
 public:
 	SceneGame()
-		: camera_angle(Math::ToRadian(-80.f), 0.f, 0.f), load_count(0u), load_end(false), camera_dis(50.f)
+		: camera_angle(Math::ToRadian(-80.f), 0.f, 0.f), camera_dis(50.f)
 	{}
 	~SceneGame() noexcept = default;
 	SceneGame(const SceneGame&) = delete;
@@ -81,11 +88,64 @@ public:
 	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 
+	// ローカル座標から画面座標を求める（ローカル座標・ビュー行列）
+	[[nodiscard]] static VF2 TransformLocalToScreen(const VF2& screen_size, const VF3& local_pos)
+	{
+		using DirectX::XMVector4Transform;
+		using DirectX::XMLoadFloat4;
+		using DirectX::XMLoadFloat4x4;
+		using DirectX::XMStoreFloat4;
+		using DirectX::XMStoreFloat4x4;
+		using Matrix = DirectX::XMMATRIX;
+
+		constexpr DirectX::XMFLOAT4 xmfloat4{ 1,1,1,1 };
+		static const auto xmmatrix4{ XMLoadFloat4(&xmfloat4) };
+
+		Matrix world;
+
+		// ワールド行列生成
+		world = DirectX::XMMatrixTranslation(local_pos.x, local_pos.y, local_pos.z);
+
+		// ワールド行列＊ビュー行列＊透視投影行列
+		auto result{ world * camera->GetView() * camera->GetProjection() };
+
+		//. XMFLOAT4に戻す
+		DirectX::XMFLOAT4 load_data;
+		XMStoreFloat4(&load_data, XMVector4Transform(xmmatrix4, result));
+
+		// Z値がマイナスならカメラ後方
+		if (load_data.z > 0.f)
+		{
+			// 正規化（W成分で割る）
+			result /= load_data.w;
+
+			// ビューポート行列生成（簡易版）（本当は微妙に違うが現環境だと計算に問題ない）
+			// 詳細はビューポート行列で調べて
+			DirectX::XMFLOAT4X4 view_port_matrix
+			{
+				screen_size.x / 2, 0, 0, 0,
+				0, -screen_size.y / 2, 0, 0,
+				0, 0, 1, 0,
+				screen_size.x / 2, screen_size.y / 2, 0, 1
+			};
+
+			//. （ワールド行列＊ビュー行列＊透視投影行列）＊ビューポート行列の結果をXMFLOAT4に戻す
+			DirectX::XMFLOAT4 load_vp_data;
+			XMStoreFloat4(&load_vp_data, XMVector4Transform(
+				xmmatrix4, result * XMLoadFloat4x4(&view_port_matrix)));
+
+			// 戻した結果のXY値が画面のXY値になっている（足元基準なので微調整）
+			return VF2{ load_vp_data.x, load_vp_data.y };
+		}
+		return (VF2{ -1.f, -1.f });
+	}
+
 private:
 	void NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);  // 通常モード更新
 	void EditModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);    // 編集モード更新
 	void ModeChange(bool* save_f1, SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);  // モード変更処理
 	VF3 MouseToLocalPos(const VF2& mouse_pos, KDL::DX12::App* p_app);  // マウス座標からローカル座標への変換
+
 
 	// スクリーン座標をワールド座標に変換
 	[[nodiscard]] DirectX::XMFLOAT3 TransformScreenToWorld(
@@ -213,13 +273,10 @@ private:
 	float camera_dis;
 	std::optional<ObjectManager> object_manager;
 
-	//std::unique_ptr<KDL::DX12::Geometric_Board> grit_board;
-	//std::unique_ptr<KDL::DX12::Geometric_Board> grit_handle;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> bg_board;
 
-	std::mutex load_mutex;
-	std::atomic<bool> load_end;
-	std::atomic<size_t> load_count;
-	std::unique_ptr<KDL::TOOL::Camera> camera;
+	static inline std::unique_ptr<KDL::TOOL::Camera> camera;
 
 	Path open_file_path;
 	FileDataFlg file_flg;
@@ -231,18 +288,47 @@ private:
 public:
 	static inline bool is_save;
 	static inline bool back_world_mode{ false };
+	static inline std::atomic<size_t> load_count{ 0 };
 };
 
-class SceneLoad
-	: public SceneBase
-{
-	std::unique_ptr<KDL::DX12::Geometric_Board> board;
-	std::unique_ptr<KDL::TOOL::Camera> camera;
-	float angle;
-public:
-	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-};
+//class SceneLoad
+//	: public SceneBase
+//{
+//public:
+//	std::unique_ptr<KDL::DX12::Sprite_Box> box;
+//	KDL::FLOAT2 size;
+//
+//	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+//	{
+//		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 1u);
+//		size = 0.f;
+//	}
+//	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+//	{
+//		SceneGame::load_count = 0u;
+//		SetNextScene<SceneGame>();	//別スレッドでシーン切り替え
+//	}
+//	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
+//	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+//	{
+//		using VF2 = DirectX::XMFLOAT2;
+//
+//		auto vp{ p_app->GetViewport() };
+//		VF2 s_size{ vp.Width, vp.Height };
+//
+//		static const KDL::DX12::COLOR4F color{ GRAY, 1.f };
+//
+//		constexpr float BoxSizeY{ 50.f };
+//		constexpr float ObjectAndBGCountMax{ 11.f };
+//
+//		const float box_size_x
+//		{ s_size.x * (static_cast<float>(SceneGame::load_count) / ObjectAndBGCountMax) };
+//
+//		size = VF2{ box_size_x, BoxSizeY };
+//
+//		box->AddCommand(p_app->GetCommandList(), p_app, { 0.f, 0.f }, size, { 0.f, 0.f }, { 1.f, 1.f },
+//			0.f, color, color, color, color);
+//	}
+//	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
+//};
+#endif

@@ -1,6 +1,6 @@
 #include "MultipleObject.h"
 #include "Enemy.h"
-#include "GameLib.h"
+#include "KDL.h"
 #include "GameScene.h"
 #include "Math.h"
 #include "SingleObject.h"
@@ -15,14 +15,14 @@ Arrow::Arrow(const VF3& pos)
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Arrow::Update()
+void Arrow::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Arrow::Draw() const
+void Arrow::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, { YELLOW, 0.5f });
+	//GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, { YELLOW, 0.5f });
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -36,14 +36,14 @@ WayPoint::WayPoint(const VF3& pos)
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void WayPoint::Update()
+void WayPoint::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void WayPoint::Draw() const
+void WayPoint::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, { GREEN, 0.5f });
+	//GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, { GREEN, 0.5f });
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -59,9 +59,9 @@ Enemy::Enemy()
 	ai.emplace(&way_points);
 }
 
-void Enemy::Update()
+void Enemy::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
 #if _DEBUG && false
 	using Keys = KeyData::Keys;
@@ -94,13 +94,14 @@ void Enemy::Update()
 	speed.Clear();
 #endif
 
+#if false
 	// 敵編集モードのみ
 	if (GS::GetEnmEditMode())
 	{
 		is_select ? color = { PINK, 1.f } : color = { PINK, 0.5f };
 
 		for (auto& wp : way_points)
-			wp.Update();
+			wp.Update(p_window, p_app);
 
 		//for (auto& arrow : arrows)
 		//	arrow.Update();
@@ -136,26 +137,31 @@ void Enemy::Update()
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#else
+	if (!ai) ai.emplace(&way_points);
+
+	ai->Update(*this, node);
+#endif
 }
 
-void Enemy::Draw() const
+void Enemy::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, color);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
 
+#if false
 	if (is_select)
 	{
 		if (!way_points.empty())
 		{
 			for (size_t i = 0, length = way_points.size() - 1u; i < length; i++)
 			{
-				way_points[i].Draw();
+				way_points[i].Draw(p_window, p_app);
 			}
 		}
 
 		//for (auto& ar : arrows) ar.Draw();
 	}
 
-#if false
 	if (path_result)
 	{
 		// スタート地点からゴールまで

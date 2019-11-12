@@ -1,13 +1,13 @@
-#include	"ImGui/ImGuiSeting.h"
-#include	"GLWindow.h"
+#include	"ImGuiSeting.h"
+#include	"KDL.h"
 #include	"LoadAllFileName.h"
-#include	"GLWindow.h"
 #include	"ObjectManager.h"
 #include	"GameScene.h"
 
 // ファイル系の更新
-void GameScene::FileOperateUpdate()
+void SceneGame::FileOperateUpdate()
 {
+#if false
 	constexpr float PrintTimeMax{ 1.f };
 
 	const VF2 screen{ GMLIB->GetScreenSize() / 2.f };
@@ -32,13 +32,15 @@ void GameScene::FileOperateUpdate()
 
 	// コピー
 	//else if (file_flg.is_copy)		CopyFileF(screen, PrintTimeMax);
+#endif
 }
 
 // 保存-------------------------------------------------------------------------------------------------------
-void GameScene::SaveFile(const VF2& screen, const float PrintTimeMax)
+void SceneGame::SaveFile(const VF2& screen, const float PrintTimeMax)
 {
 	static ImVec2 size{ 100.f, 30.f };
-#if USE_IMGUI
+#ifdef KDL_USE_IMGUI
+#if false
 	ImguiTool::BeginShowTempWindow({ screen.x - size.x / 2.f, screen.y - size.y / 2.f }, "Save",
 		true, 1.f);
 
@@ -277,7 +279,7 @@ void GameScene::SaveFile(const VF2& screen, const float PrintTimeMax)
 	}
 
 	ImGui::End();
-
+#endif
 #endif
 }
 
@@ -454,9 +456,10 @@ void GameScene::SaveAsFile(const VF2& screen, const float PrintTimeMax)
 
 // 開く-------------------------------------------------------------------------------------------------------
 #if true
-void GameScene::OpenFile(const VF2& screen, const float PrintTimeMax)
+void SceneGame::OpenFile(const VF2& screen, const float PrintTimeMax)
 {
-#if USE_IMGUI
+#ifdef KDL_USE_IMGUI
+#if false
 	static ImVec2 size{ 100.f, 30.f };
 
 	ImguiTool::BeginShowTempWindow({ screen.x - size.x / 2.f, screen.y - size.y / 2.f }, "Save",
@@ -846,6 +849,7 @@ void GameScene::OpenFile(const VF2& screen, const float PrintTimeMax)
 	}
 
 	ImGui::End();
+#endif
 #endif
 }
 #endif

@@ -46,8 +46,8 @@ public:
 	}
 
 public:
-	void Update() override;
-	void Draw() const override;
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
 	static void SetModelHandle(const int handle) noexcept
@@ -120,8 +120,8 @@ public:
 	}
 
 public:
-	void Update() override;
-	void Draw() const override;
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
 	static void SetModelHandle(const int handle) noexcept
@@ -246,8 +246,8 @@ public:
 	}
 
 public:
-	void Update() override;
-	void Draw() const override;
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	// ウェイポイントの追加
 	auto& AddWayPoint(const VF3& masu)
 	{

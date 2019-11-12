@@ -1,2 +1,93 @@
-﻿  scene_main.cpp
-  game_dx12.vcxproj -> D:\Program\個人\git\KDL2\KDL\x64\Debug\game_dx12.exe
+﻿  Enemy.cpp
+  FileOperate.cpp
+  MultipleObject.cpp
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\Enemy.cpp(149,2): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\MultipleObject.cpp(115,4): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\MultipleObject.cpp(145,2): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\MultipleObject.cpp(181,2): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\MultipleObject.cpp(222,2): error C2065: 'GMLIB': 定義されていない識別子です。
+  ObjectManager.cpp
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\MultipleObject.cpp(258,2): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\ObjectManager.cpp(43,3): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\ObjectManager.cpp(44,3): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\ObjectManager.cpp(820,8): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\ObjectManager.cpp(828,8): error C2065: 'GMLIB': 定義されていない識別子です。
+  PatrolAI.cpp
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\ObjectManager.cpp(833,8): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\PatrolAI.cpp(283,58): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\PatrolAI.cpp(304,15): error C2065: 'GMLIB': 定義されていない識別子です。
+  SingleObject.cpp
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\PatrolAI.cpp(327,15): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SingleObject.cpp(86,2): error C2065: 'GMLIB': 定義されていない識別子です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SingleObject.cpp(146,2): error C2065: 'GMLIB': 定義されていない識別子です。
+  コードを生成中...
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SingleObject.cpp(182,2): error C2065: 'GMLIB': 定義されていない識別子です。
+
+プロジェクト パフォーマンスの概要:
+    18047 ミリ秒  C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\game_dx12.vcxproj   1 回呼び出し
+              18047 ミリ秒  Build                                      1 回呼び出し
+
+ターゲット パフォーマンスの概要:
+        0 ミリ秒  BuildGenerateSourcesTraverse               1 回呼び出し
+        0 ミリ秒  ResolveReferences                          1 回呼び出し
+        0 ミリ秒  SelectClCompile                            1 回呼び出し
+        0 ミリ秒  BeforeBuildGenerateSources                 1 回呼び出し
+        0 ミリ秒  _SelectedFiles                             1 回呼び出し
+        0 ミリ秒  SelectCustomBuild                          1 回呼び出し
+        0 ミリ秒  ComputeCustomBuildOutput                   1 回呼び出し
+        0 ミリ秒  ComputeCLInputPDBName                      1 回呼び出し
+        0 ミリ秒  AfterResolveReferences                     1 回呼び出し
+        0 ミリ秒  BeforeClCompile                            1 回呼び出し
+        0 ミリ秒  MakeDirsForMidl                            1 回呼び出し
+        0 ミリ秒  ComputeMIDLGeneratedCompileInputs          1 回呼び出し
+        0 ミリ秒  AfterMidl                                  1 回呼び出し
+        0 ミリ秒  _Midl                                      1 回呼び出し
+        0 ミリ秒  AfterBuildGenerateSources                  1 回呼び出し
+        0 ミリ秒  AfterBuildGenerateSourcesEvent             1 回呼び出し
+        0 ミリ秒  _BuildGenerateSourcesAction                1 回呼び出し
+        0 ミリ秒  _Xsd                                       1 回呼び出し
+        0 ミリ秒  BuildGenerateSources                       1 回呼び出し
+        0 ミリ秒  ResolveAssemblyReferences                  1 回呼び出し
+        0 ミリ秒  ResolveSDKReferences                       1 回呼び出し
+        0 ミリ秒  SetTelemetryEnvironmentVariables           1 回呼び出し
+        0 ミリ秒  _PrepareForBuild                           1 回呼び出し
+        0 ミリ秒  _PrepareForReferenceResolution             1 回呼び出し
+        0 ミリ秒  BeforeResolveReferences                    1 回呼び出し
+        0 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
+        0 ミリ秒  _SplitProjectReferencesByFileExistence     1 回呼び出し
+        0 ミリ秒  PrepareProjectReferences                   1 回呼び出し
+        0 ミリ秒  ExpandSDKReferences                        1 回呼び出し
+        0 ミリ秒  GetFrameworkPaths                          1 回呼び出し
+        0 ミリ秒  SetBuildDefaultEnvironmentVariables        1 回呼び出し
+        0 ミリ秒  GetResolvedWinMD                           1 回呼び出し
+        0 ミリ秒  BuildCompileTraverse                       1 回呼び出し
+        1 ミリ秒  _CheckWindowsSDKInstalled                  1 回呼び出し
+        1 ミリ秒  ComputeReferenceCLInput                    1 回呼び出し
+        1 ミリ秒  FixupCLCompileOptions                      1 回呼び出し
+        1 ミリ秒  ResolveProjectReferences                   1 回呼び出し
+        1 ミリ秒  _GetProjectReferenceTargetFrameworkProperties   1 回呼び出し
+        1 ミリ秒  MakeDirsForCl                              1 回呼び出し
+        1 ミリ秒  WarnCompileDuplicatedFilename              1 回呼び出し
+        1 ミリ秒  GetReferenceAssemblyPaths                  1 回呼び出し
+        1 ミリ秒  SetCABuildNativeEnvironmentVariables       1 回呼び出し
+        2 ミリ秒  _CheckForInvalidConfigurationAndPlatform   1 回呼び出し
+        2 ミリ秒  EnsureNuGetPackageBuildImports             1 回呼び出し
+        2 ミリ秒  CopyFileToFolders                          1 回呼び出し
+        3 ミリ秒  PreBuildEvent                              1 回呼び出し
+        4 ミリ秒  CustomBuild                                1 回呼び出し
+        6 ミリ秒  PrepareForBuild                            1 回呼び出し
+       17 ミリ秒  InitializeBuildStatus                      1 回呼び出し
+    17998 ミリ秒  ClCompile                                  1 回呼び出し
+
+タスク パフォーマンスの概要:
+        0 ミリ秒  Message                                    2 回呼び出し
+        0 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
+        0 ミリ秒  MSBuild                                    1 回呼び出し
+        0 ミリ秒  CheckVCToolsetVersion                      1 回呼び出し
+        1 ミリ秒  SetEnv                                     8 回呼び出し
+        3 ミリ秒  MakeDir                                    5 回呼び出し
+        4 ミリ秒  WriteLinesToFile                           1 回呼び出し
+        4 ミリ秒  ReadLinesFromFile                          1 回呼び出し
+        6 ミリ秒  GetOutOfDateItems                          3 回呼び出し
+        8 ミリ秒  Touch                                      1 回呼び出し
+    17995 ミリ秒  CL                                         1 回呼び出し

@@ -1,8 +1,7 @@
-#include "SceneManager.h"
 #include "GameScene.h"
+//#include "scene.h"
 #include "Math.h"
 #include "KDL.h"
-#include "ColorDef.h"
 #include "ImVecHelper.h"
 
 //todo KDL_USE_IMGUI USE_IMGUIの代わり
@@ -14,9 +13,15 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	const KDL::COLOR4F clear_color = { AQUA, 1.f };
 	p_app->ClearBackBuffer(clear_color);
 
+	// 初期化
 	object_manager.emplace();
-
+	open_file_path.clear();
 	file_flg = false;
+	masu_pos = Fill3(0.f);
+	edit_mode = false;
+	enm_edit_mode = false;
+	is_save = false;
+	back_world_mode = false;
 
 	// 一時ファイルが存在しているなら、削除
 	if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
@@ -42,9 +47,7 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	namespace fs = std::filesystem;
 
 	object_manager = std::nullopt;
-
-	//GMLIB->DeleteBoardImageHandle(grit_handle);
-	//GMLIB->DeleteBoardImageHandle(sky_handle);
+	camera = nullptr;
 
 	// 一時ファイルが存在しているなら、削除
 	if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
@@ -53,195 +56,216 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 
 void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	// 読み込み中は処理しない
-	if (load_thread.joinable() && !load_end)	return;
-
-	// 読み込み終了
-	if (load_thread.joinable() && load_end)
+	// モード変更処理
+#if false
 	{
-		load_thread.join();
+		static bool save_f1{ false };
+
+		// モード変更
+		ModeChange(&save_f1, p_scene_mgr, p_window, p_app);
+
+		// 確認画面中は更新しない
+		if (save_f1)	return;
 	}
-	// 読み込み完了後
-	else if (!load_thread.joinable() && load_end)
-	{
-		// モード変更処理
-		{
-			static bool save_f1{ false };
-
-			// モード変更
-			ModeChange(&save_f1, p_scene_mgr, p_window, p_app);
-
-			// 確認画面中は更新しない
-			if (save_f1)	return;
-		}
+#endif
 
 #ifdef KDL_USE_IMGUI
-		// メインメニュー
-		if (edit_mode)
+#if false
+	// メインメニュー
+	if (edit_mode)
+	{
+		ImGui::BeginMainMenuBar();
+
+		if (ImGui::BeginMenu(u8"ファイル"))
 		{
-			ImGui::BeginMainMenuBar();
+			if (ImGui::MenuItem(u8"保存", "CTRL+S"))				file_flg.is_save = true;
+			//if (ImGui::MenuItem(u8"別名保存", "CTRL+SHIFT+S"))			file_flg.is_save_as = true;
+			if (ImGui::MenuItem(u8"開く", "CTRL+O"))				file_flg.is_open = true;
+			//if (ImGui::MenuItem(u8"削除"	, "CTRL+SHIFT+ALT+DELETE"))	file_flg.is_delete  = true;
+			//if (ImGui::MenuItem(u8"閉じる"	, "CTRL+ALT+C"))			file_flg.is_close   = true;
+			//if (ImGui::MenuItem(u8"名前変更", "CTRL+R"))				file_flg.is_rename  = true;
+			//if (ImGui::MenuItem(u8"コピー"	, "CTRL+SHIFT+C"))			file_flg.is_copy    = true;
 
-			if (ImGui::BeginMenu(u8"ファイル"))
-			{
-				if (ImGui::MenuItem(u8"保存", "CTRL+S"))				file_flg.is_save = true;
-				//if (ImGui::MenuItem(u8"別名保存", "CTRL+SHIFT+S"))			file_flg.is_save_as = true;
-				if (ImGui::MenuItem(u8"開く", "CTRL+O"))				file_flg.is_open = true;
-				//if (ImGui::MenuItem(u8"削除"	, "CTRL+SHIFT+ALT+DELETE"))	file_flg.is_delete  = true;
-				//if (ImGui::MenuItem(u8"閉じる"	, "CTRL+ALT+C"))			file_flg.is_close   = true;
-				//if (ImGui::MenuItem(u8"名前変更", "CTRL+R"))				file_flg.is_rename  = true;
-				//if (ImGui::MenuItem(u8"コピー"	, "CTRL+SHIFT+C"))			file_flg.is_copy    = true;
-
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu(u8"編集"))
-			{
-				//ImGui::MenuItem(u8"コピー", "CTRL+C", nullptr, false);
-				//ImGui::MenuItem(u8"カット", "CTRL+X", nullptr, false);
-				//ImGui::MenuItem(u8"ペースト", "CTRL+V", nullptr, false);
-				//ImGui::MenuItem("ReDo", "CTRL+Z", nullptr, false);
-				//ImGui::MenuItem("UnDo", "CTRL+Y", nullptr, false);
-
-				//ImGui::Separator();
-
-				ImGui::MenuItem(u8"設置", u8"左クリック", nullptr, false);
-				ImGui::MenuItem(u8"移動", u8"ホイールクリック(hold)", nullptr, false);
-				ImGui::MenuItem(u8"削除", u8"右クリック", nullptr, false);
-
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu(u8"カメラ"))
-			{
-				ImGui::MenuItem(u8"右", "D", nullptr, false);
-				ImGui::MenuItem(u8"左", "S", nullptr, false);
-				ImGui::MenuItem(u8"上", "W", nullptr, false);
-				ImGui::MenuItem(u8"下", "S", nullptr, false);
-				ImGui::MenuItem(u8"拡大", "PGUP", nullptr, false);
-				ImGui::MenuItem(u8"縮小", "PGDN", nullptr, false);
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMainMenuBar();
+			ImGui::EndMenu();
 		}
 
-		ImguiTool::BeginShowTempWindow({ 0.f, 50.f }, LabelName.data());
-
-		// 世界線表示
-		if (!enm_edit_mode)  /// 敵編集モード以外表示
+		if (ImGui::BeginMenu(u8"編集"))
 		{
+			//ImGui::MenuItem(u8"コピー", "CTRL+C", nullptr, false);
+			//ImGui::MenuItem(u8"カット", "CTRL+X", nullptr, false);
+			//ImGui::MenuItem(u8"ペースト", "CTRL+V", nullptr, false);
+			//ImGui::MenuItem("ReDo", "CTRL+Z", nullptr, false);
+			//ImGui::MenuItem("UnDo", "CTRL+Y", nullptr, false);
+
+			//ImGui::Separator();
+
+			ImGui::MenuItem(u8"設置", u8"左クリック", nullptr, false);
+			ImGui::MenuItem(u8"移動", u8"ホイールクリック(hold)", nullptr, false);
+			ImGui::MenuItem(u8"削除", u8"右クリック", nullptr, false);
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu(u8"カメラ"))
+		{
+			ImGui::MenuItem(u8"右", "D", nullptr, false);
+			ImGui::MenuItem(u8"左", "S", nullptr, false);
+			ImGui::MenuItem(u8"上", "W", nullptr, false);
+			ImGui::MenuItem(u8"下", "S", nullptr, false);
+			ImGui::MenuItem(u8"拡大", "PGUP", nullptr, false);
+			ImGui::MenuItem(u8"縮小", "PGDN", nullptr, false);
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+
+	ImguiTool::BeginShowTempWindow({ 0.f, 50.f }, LabelName.data());
+
+	// 世界線表示
+	if (!enm_edit_mode)  /// 敵編集モード以外表示
+	{
+		const auto vp{ p_app->GetViewport() };
+		const VF2 s_size{ vp.Width, vp.Height };
+
+		ImguiTool::BeginShowTempWindow({ s_size.x - 120.f, 50.f }, u8"世界線");
+
+		ImGui::TextColored({ IMGUI_RED }, back_world_mode ? u8"裏世界" : u8"表世界");
+
+		// 編集モード時だけ自由に変更できるように
+		if (edit_mode && ImGui::Button(u8"切り替え"))	back_world_mode ^= true;
+
+		ImGui::End();
+	}
+
+	// モード表示
+	{
+		static const ImVec4 Color{ IMGUI_RED };
+
+		// 位置調整
+		{
+			constexpr VF2 w_size{ 150.f, 60.f };
 			const auto vp{ p_app->GetViewport() };
 			const VF2 s_size{ vp.Width, vp.Height };
 
-			ImguiTool::BeginShowTempWindow({ s_size.x - 120.f, 50.f }, u8"世界線");
-
-			ImGui::TextColored({ IMGUI_RED }, back_world_mode ? u8"裏世界" : u8"表世界");
-
-			// 編集モード時だけ自由に変更できるように
-			if (edit_mode && ImGui::Button(u8"切り替え"))	back_world_mode ^= true;
-
-			ImGui::End();
+			ImguiTool::BeginShowTempWindow(s_size - w_size, u8"モード表示");
 		}
 
-		// モード表示
-		{
-			static const ImVec4 Color{ IMGUI_RED };
+		// TextColored表示（色固定）
+		auto Text{ [&](const char* text, auto... contents)
+		{ ImGui::TextColored(Color, text, contents...); } };
 
-			// 位置調整
-			{
-				constexpr VF2 w_size{ 150.f, 60.f };
-				const auto vp{ p_app->GetViewport() };
-				const VF2 s_size{ vp.Width, vp.Height };
+		// 各モードを表示
+		if (!edit_mode) Text(u8"実行モード");
 
-				ImguiTool::BeginShowTempWindow(s_size - w_size, u8"モード表示");
-			}
+		else if (edit_mode && !enm_edit_mode) Text(u8"編集モード");
 
-			// TextColored表示（色固定）
-			auto Text{ [&](const char* text, auto... contents)
-			{ ImGui::TextColored(Color, text, contents...); } };
+		else Text(u8"敵編集モード");
 
-			// 各モードを表示
-			if (!edit_mode) Text(u8"実行モード");
-
-			else if (edit_mode && !enm_edit_mode) Text(u8"編集モード");
-
-			else Text(u8"敵編集モード");
-
-			ImGui::End();
-		}
-#endif
-		object_manager->Update();
-		if (edit_mode) file_flg.Update(p_scene_mgr, p_window, p_app);
-
-		FileOperateUpdate();
-
-		edit_mode ? EditModeUpdate(p_scene_mgr, p_window, p_app) : NormalModeUpdate(p_scene_mgr, p_window, p_app);
-
-#if USE_IMGUI
 		ImGui::End();
-#endif
 	}
+#endif
+#endif
+
+	object_manager->Update(p_window, p_app);
+
+#if false
+
+	if (edit_mode) file_flg.Update(p_scene_mgr, p_window, p_app);
+
+	FileOperateUpdate();
+
+	edit_mode ? EditModeUpdate(p_scene_mgr, p_window, p_app) : NormalModeUpdate(p_scene_mgr, p_window, p_app);
+#else
+
+	NormalModeUpdate(p_scene_mgr, p_window, p_app);
+
+#endif
+#ifdef KDL_USE_IMGUI
+#if false
+	ImGui::End();
+#endif
+#endif
 }
 
 // 描画
 void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	// 読み込み完了後
-	if (!load_thread.joinable() && load_end)
+	object_manager->Draw(p_window, p_app);
+
+	// 背景
 	{
-		object_manager->Draw();
+		constexpr VF3 Pos{ 0.5f, -0.5f, 0.5f };
+		constexpr VF2 Scale{ 1000.f, 1000.f };
+		constexpr VF3 Angle{ 3.14f / 2.f, 0.f, 0.f };
+		constexpr VF4 Color{ WHITE, 1.f };
+		constexpr VF2 TexPos{ 0.f, 0.f };
+		//constexpr auto Mode{ Geometric_Primitive::SamplerState::Mirror };
 
-		// 背景
+		DirectX::XMMATRIX W;
 		{
-			constexpr VF3 Pos{ 0.5f, -0.5f, 0.5f };
-			constexpr VF2 Scale{ 1000.f, 1000.f };
-			constexpr VF3 Angle{ 3.14f / 2.f, 0.f, 0.f };
-			constexpr VF4 Color{ WHITE, 1.f };
-			constexpr VF2 TexPos{ 0.f, 0.f };
-			//constexpr auto Mode{ Geometric_Primitive::SamplerState::Mirror };
-
-			//GMLIB->DrawBoardImage(sky_handle, Pos, Scale, Angle, GameScene::LightDir, Color, true, TexPos, Scale / 50.f, Mode);
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, 1.f);
+			R = DirectX::XMMatrixRotationRollPitchYaw(3.14f / 2.f, 0.f, 0.f);
+			T = DirectX::XMMatrixTranslation(Pos.x, Pos.y, Pos.z);
+			W = S * R * T;
 		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-		// 選択グリット
-		if (edit_mode)
-		{
-			constexpr VF2 Scale{ 1.f, 1.f };
-			constexpr VF3 Angle{ 3.14f / 2.f, 0.f, 0.f };
-			constexpr VF4 Color{ RED, 1.f };
-
-			VF3 pos{ masu_pos };
-			pos.y = 0.6f;
-
-			//GMLIB->DrawBoardImage(grit_handle, pos, Scale, Angle, GameScene::LightDir, Color);
-		}
-
-		// グリット線
-		{
-			constexpr VF3 Pos{ 0.5f, 0.25f, 0.5f };
-			constexpr VF2 Scale{ 1000.f, 1000.f };
-			constexpr VF3 Angle{ 3.14f / 2.f, 0.f, 0.f };
-			constexpr VF4 Color{ GRAY, 1.f };
-			constexpr VF2 TexPos{ 0.f, 0.f };
-
-			//GMLIB->DrawBoardImage(grit_handle, Pos, Scale, Angle, GameScene::LightDir, Color, true, TexPos, Scale);
-		}
+		bg_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f }, Scale / 50.f);
 	}
-	// 読み込み中
-	else if (load_thread.joinable() && !load_end)
+
+	// 選択グリット
+#if false
+	if (edit_mode)
 	{
-		//constexpr float BoxSizeY{ 50.f };
-		//constexpr VF4 BoxColor{ BLACK, 1.f };
-		//constexpr VF4 BoxFrameColor{ WHITE, 1.f };
-		//static const float ObjectAndBGCountMax{ object_manager->GetObjectKindsNum() + 2.f };
+		constexpr float Scale{ 1.f };
+		constexpr VF4 Color{ RED, 1.f };
 
-		//const auto& screen_size{ GMLIB->GetScreenSize() };
-		//const float box_size_x{ screen_size.x * (static_cast<float>(load_count) / ObjectAndBGCountMax) };
+		VF3 pos{ masu_pos };
+		pos.y = 0.6f;
 
-		//GMLIB->DrawBox(0.f, screen_size.y - BoxSizeY, box_size_x, screen_size.y, true, BoxColor);
-		//GMLIB->DrawBox(0.f, screen_size.y - BoxSizeY, screen_size.x, screen_size.y, false, BoxFrameColor);
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(Scale, Scale, Scale);
+			R = DirectX::XMMatrixRotationRollPitchYaw(3.14f / 2.f, 0.f, 0.f);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+		grit_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { RED, 1.f }, { 0.f, 0.f }, { 0.f, 0.f });
 	}
+
+	// グリット線
+	{
+		constexpr VF3 Pos{ 0.5f, 0.25f, 0.5f };
+		constexpr VF2 Scale{ 1000.f, 1000.f };
+		constexpr VF3 Angle{ 3.14f / 2.f, 0.f, 0.f };
+		constexpr VF4 Color{ GRAY, 1.f };
+		constexpr VF2 TexPos{ 0.f, 0.f };
+
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, 1.f);
+			R = DirectX::XMMatrixRotationRollPitchYaw(3.14f / 2.f, 0.f, 0.f);
+			T = DirectX::XMMatrixTranslation(Pos.x, Pos.y, Pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+		grit_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f }, Scale);
+	}
+#endif
 }
 
 // 通常モード更新
@@ -251,6 +275,7 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	using SM = SceneManager;
 
 #ifdef KDL_USE_IMGUI
+#if false
 	ImGui::SliderAngle(u8"カメラ位置X", &camera_angle.x, -89.f, -1.f);
 	ImGui::SliderAngle(u8"カメラ位置Y", &camera_angle.y, 0.f, 360.f);
 	ImGui::SliderFloat(u8"カメラ距離", &camera_dis, 10.f, 150.f, "%.0f");
@@ -260,18 +285,18 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	ImGui::Text(u8"Enter で リスタートじゃぁ～");
 	ImGui::Text(u8"F1 で 編集モードじゃぁ～");
 #endif
+#endif
 
 	// リトライ機能
-	const auto* input = p_window->GetInput();
-
-	if (input->IsTrgKey(Keys::Enter))
+	if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Enter))
 	{
-		SetNextScene(new SceneTitle);	//別スレッドでシーン切り替え
+		Initialize(p_scene_mgr, p_window, p_app);
 
 		return;
 	}
 
 	// カメラの更新
+#if false
 	if (const auto& player{ object_manager->GetObjectData<Player>() }; player)
 	{
 		camera->SetPosition(CreateRotationPos(camera_angle, camera_dis, player->pos));
@@ -285,6 +310,12 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 		camera->SetPosition(CreateRotationPos(camera_angle, camera_dis, player->pos));
 		camera->SetTarget(BasePos);
 	}
+#else
+	const auto& player{ object_manager->GetObjectData<Player>() };
+
+	camera->SetPosition(CreateRotationPos(camera_angle, camera_dis, player->pos));
+	camera->SetTarget(player->pos);
+#endif
 }
 
 // 編集モード更新
@@ -330,10 +361,10 @@ void SceneGame::EditModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window,
 		else if (KeyInput(Keys::Right, Keys::D))
 			camera_target.x -= Movement;
 
-		if (KeyInput( Keys::Up, Keys::W ))
+		if (KeyInput(Keys::Up, Keys::W))
 			camera_target.z -= Movement;
 
-		else if (KeyInput( Keys::Down, Keys::S ))
+		else if (KeyInput(Keys::Down, Keys::S))
 			camera_target.z += Movement;
 
 		if (input->IsTrgKey(Keys::PageUp))
@@ -352,6 +383,7 @@ void SceneGame::EditModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window,
 	}
 
 #ifdef KDL_USE_IMGUI
+#if false
 	ImGui::Text(u8"カメラ座標：%.01f, %.01f", camera_pos.x, camera_pos.z);
 	ImGui::SliderFloat(u8"カメラ距離", &camera_dis, 10.f, 150.f, "%.0f");
 	ImGui::SliderFloat(u8"カメラ速度", &cam_speed, 5.f, 50.f, "%.0f");
@@ -380,11 +412,13 @@ void SceneGame::EditModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window,
 	ImGui::Text(u8"開かれているファイル：%s", open_file_path.stem().u8string().data());
 	ImGui::Text(u8"保存されてい%s", is_save ? u8"る" : u8"ない");
 #endif
+#endif
 }
 
 // モード変更処理
 void SceneGame::ModeChange(bool* save_f1, SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+#if false
 	using Keys = KDL::KEY_INPUTS;
 
 	const auto* input = p_window->GetInput();
@@ -408,7 +442,7 @@ void SceneGame::ModeChange(bool* save_f1, SceneManager* p_scene_mgr, KDL::Window
 				// プレイヤーとスタート地点が存在するときだけ確認画面が出現
 				if (player && start)
 				{
-#ifdef KDL_USE_IMGUI
+#ifdef KDL_USE_IMGUI && false
 					// 位置調整
 					{
 						static VF2 size{ 100.f, 100.f };
@@ -495,6 +529,7 @@ void SceneGame::ModeChange(bool* save_f1, SceneManager* p_scene_mgr, KDL::Window
 		object_manager->InitSelectObject();
 		enm_edit_mode ^= true;
 	}
+#endif
 }
 
 // マウス座標からローカル座標への変換
@@ -522,21 +557,18 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	// https://social.msdn.microsoft.com/Forums/ja-JP/4ea73ec0-e90d-4759-8517-260f03621362/createinstance123910x800401f0123981245612521125401236430330299831237712?forum=vcgeneralja
 	//if (FAILED(CoInitializeEx(nullptr, COINIT_MULTITHREADED))) assert(!"COMライブラリは、このスレッドで既に初期化されている");
 
-	//std::unique_lock<std::mutex> lock{ load_mutex };
-
-	//if (!GMLIB->LoadBoadImage(L"Data\\Texture\\GritLine.png", grit_handle))
-	//	assert(!"読み込み失敗");
-
-	load_count++;
-
-	//if (!GMLIB->LoadBoadImage(L"Data\\Texture\\MS251_soratokumo_TP_V.jpg", sky_handle))
-	//	assert(!"読み込み失敗");
+	if (!grit_board)
+		grit_board =
+			std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\GritLine.png", 1);
 
 	load_count++;
 
-	object_manager->Load(&load_count);
+	if (!bg_board)
+		bg_board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Sky.jpg", 1);
 
-	load_end = true;
+	load_count++;
+
+	object_manager->Load(&load_count, p_window, p_app);
 
 	// プロセス終了時にこの関数を呼び出す
 	//CoUninitialize();
@@ -551,8 +583,8 @@ void SceneGame::FileDataFlg::Update(SceneManager* p_scene_mgr, KDL::Window* p_wi
 	auto KeyInput{ [&](Keys key1, Keys key2)
 	{ return (input->IsHitKey(key1) || input->IsHitKey(key2)); } };
 
-	const bool press_ctrl{ KeyInput(Keys::LeftControl, Keys::RightControl ) };
-	const bool press_shift{ KeyInput(Keys::LeftShift, Keys::RightShift ) };
+	const bool press_ctrl{ KeyInput(Keys::LeftControl, Keys::RightControl) };
+	const bool press_shift{ KeyInput(Keys::LeftShift, Keys::RightShift) };
 	//const bool press_alt{ KeyInput(Keys::LeftAlt, Keys::RightAlt ) };
 	//const bool down_c{ input->IsTrgKey(Keys::C) };
 	const bool down_s{ input->IsTrgKey(Keys::S) };
@@ -674,7 +706,7 @@ bool SceneGame::Input(const Path& input_path, const bool temp_file)
 					return false;
 
 				// ファイルが開かれている
-				if(!open_file_path.empty())
+				if (!open_file_path.empty())
 				{
 					// 一時ファイルの内容をステージにコピー
 					fs::copy_file(TempFileDir, input_path, fs::copy_options::overwrite_existing);

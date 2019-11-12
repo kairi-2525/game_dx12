@@ -1,6 +1,7 @@
 #include "ObjectManager.h"
 #include "GameScene.h"
-#include "GameLib.h"
+#include "KDL.h"
+#include "ImVecHelper.h"
 #include "LoadAllFileName.h"
 #include "Time.h"
 
@@ -10,8 +11,6 @@ ObjectManager::ObjectManager()
 	door_handle(-1), key_handle(-1),
 	select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f)
 {
-	GMLIB->camera_target = { 0.f, 0.f, 0.f };
-
 	now_move_object = edit_mode_first = false;
 }
 
@@ -47,23 +46,24 @@ ObjectManager::~ObjectManager() noexcept
 }
 
 // 更新
-void ObjectManager::Update()
+void ObjectManager::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
 	// 各オブジェクト更新
 	{
 		// 単一オブジェクト
-		objects.SingleObjVisit([](auto& object) { if (object) object->Update(); });
+		objects.SingleObjVisit([&](auto& object) { if (object) object->Update(p_window, p_app); });
 
 		// 複数オブジェクト
-		objects.MultiObjVisit([](auto& objects) { for (auto& obj : objects) obj.Update(); });
+		objects.MultiObjVisit([&](auto& objects) { for (auto& obj : objects) obj.Update(p_window, p_app); });
 	}
 
 	masu_pos = GS::GetMasuPos();
 
+#if false
 	// モードによって更新を分ける
-	GS::GetEditMode() ? EditModeUpdate() : NormalModeUpdate();
+	GS::GetEditMode() ? EditModeUpdate(p_window, p_app) : NormalModeUpdate(p_window, p_app);
 
 	// オブジェクト削除
 	{
@@ -76,26 +76,31 @@ void ObjectManager::Update()
 		// 単一オブジェクト
 		objects.SingleObjVisit([](auto& object) { if (object && !(*object)) object = nullptr; });
 	}
+#else
+	NormalModeUpdate(p_window, p_app);
+#endif
 }
 
 // 描画
-void ObjectManager::Draw() const
+void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	// 単一オブジェクト
-	objects.SingleObjVisit([](auto& object) { if (object) object->Draw(); });
+	objects.SingleObjVisit([&](auto& object) { if (object) object->Draw(p_window, p_app); });
 
 	// 複数オブジェクト
-	objects.MultiObjVisit([](auto& objects) { for (auto& obj : objects) obj.Draw(); });
+	objects.MultiObjVisit([&](auto& objects) { for (auto& obj : objects) obj.Draw(p_window, p_app); });
 }
 
 // 編集モード更新
-void ObjectManager::EditModeUpdate()
+void ObjectManager::EditModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using Keys = KeyData::Keys;
-	using Buttons = MouseData::Buttons;
-	using GS = GameScene;
+	using Keys = KDL::KEY_INPUTS;
+	using Buttons = KDL::MOUSE_INPUTS;
+	using GS = SceneGame;
 
-#if USE_IMGUI
+#ifdef KDL_USE_IMGUI
+#if false
+	auto input{ p_window->GetInput() };
 
 	// 編集モード
 	if (!GS::GetEnmEditMode())
@@ -138,9 +143,9 @@ void ObjectManager::EditModeUpdate()
 				GS::is_save = false;
 
 				// 右クリックで追加
-				if (!ImGui::GetIO().WantCaptureMouse && GMLIB->IsMousePress(Buttons::leftButton))
+				if (!ImGui::GetIO().WantCaptureMouse && input->IsHitMouse(Buttons::leftButton))
 				{
-					const VF3& masu_pos{ GameScene::GetMasuPos() };
+					const VF3& masu_pos{ GS::GetMasuPos() };
 
 					// 選択した種類によって生成する
 					switch (select_item)
@@ -263,19 +268,19 @@ void ObjectManager::EditModeUpdate()
 		// 削除
 		// Imgui上のウィンドウに重なっておらず、右クリックを押した時
 		if (!now_move_object && !ImGui::GetIO().WantCaptureMouse &&  // 移動中は削除できない
-			GMLIB->IsMousePress(Buttons::rightButton))
+			input->IsTrgMouse(Buttons::rightButton))
 		{
 			auto DeleteObjectS{ [&](auto& object)
-				{ if (object && object->pos == GameScene::GetMasuPos()) object->EndExist(); } };
+				{ if (object && object->pos == GS::GetMasuPos()) object->EndExist(); } };
 			auto DeleteObjectM{ [&](auto& data)
-			{ for (auto& dt : data) { if (dt.pos == GameScene::GetMasuPos()) dt.EndExist(); }; } };
+			{ for (auto& dt : data) { if (dt.pos == GS::GetMasuPos()) dt.EndExist(); }; } };
 
 			static bool deleted{ false };
 			static VF3 save_pos{ GS::GetMasuPos() };
 			const VF3 masu_pos{ GS::GetMasuPos() };
 
 			// 地面とまとめて消えるのを防ぐため（クリックして初回か違うマスに移動した時）
-			if (GMLIB->isMouseDown(Buttons::rightButton) || save_pos != masu_pos)
+			if (input->IsTrgMouse(Buttons::rightButton) || save_pos != masu_pos)
 			{
 				auto& keys{ objects.GetChangeObjects<Key>() };
 				auto& player{ objects.GetChangeObjects<Player>() };
@@ -286,7 +291,7 @@ void ObjectManager::EditModeUpdate()
 				deleted = false;
 
 				// 自機
-				if (player && player->pos == GameScene::GetMasuPos())
+				if (player && player->pos == GS::GetMasuPos())
 				{
 					player->EndExist();
 					deleted = true;
@@ -295,7 +300,7 @@ void ObjectManager::EditModeUpdate()
 				// 鍵
 				for (auto& dt : keys)
 				{
-					if (!deleted && dt.pos == GameScene::GetMasuPos())
+					if (!deleted && dt.pos == GS::GetMasuPos())
 					{
 						dt.EndExist();
 						deleted = true;
@@ -305,7 +310,7 @@ void ObjectManager::EditModeUpdate()
 				// 敵
 				for (auto& dt : enemys)
 				{
-					if (!deleted && dt.pos == GameScene::GetMasuPos())
+					if (!deleted && dt.pos == GS::GetMasuPos())
 					{
 						dt.EndExist(); deleted = true;
 					}
@@ -330,20 +335,24 @@ void ObjectManager::EditModeUpdate()
 		}
 
 		// 移動
-		if (!ImGui::GetIO().WantCaptureMouse) MoveObject();
+		if (!ImGui::GetIO().WantCaptureMouse) MoveObject(p_window, p_app);
 	}
 	// 敵編集モード時は追加・削除・移動は出来ない
 	else
-		EnmEditModeUpdate();
+		EnmEditModeUpdate(p_window, p_app);
+#endif
 #endif
 }
 
 // 敵編集モード更新
-void ObjectManager::EnmEditModeUpdate()
+void ObjectManager::EnmEditModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using Keys = KeyData::Keys;
-	using Buttons = MouseData::Buttons;
-	using GS = GameScene;
+#if false
+	using Keys = KDL::KEY_INPUTS;
+	using Buttons = KDL::MOUSE_INPUTS;
+	using GS = SceneGame;
+
+	auto input{ p_window->GetInput() };
 
 	edit_mode_first = true;
 
@@ -356,7 +365,7 @@ void ObjectManager::EnmEditModeUpdate()
 		if (enemys.empty())	return;
 
 		// 左クリック
-		if (GMLIB->isMouseDown(Buttons::leftButton))
+		if (input->IsTrgMouse(Buttons::leftButton))
 		{
 			select_waypoint = nullptr;
 
@@ -384,10 +393,10 @@ void ObjectManager::EnmEditModeUpdate()
 		static VF3 save_wp_pos;
 
 		// Enterキー
-		if (GMLIB->IsKeyPress(Keys::Enter))
+		if (input->IsHitKey(Keys::Enter))
 		{
 			// 押してから初回
-			if (GMLIB->isKeyDown(Keys::Enter))
+			if (input->IsTrgKey(Keys::Enter))
 			{
 				auto& waypoint{ select_enm->GetWayPoint() };
 
@@ -425,7 +434,7 @@ void ObjectManager::EnmEditModeUpdate()
 			}
 		}
 		// ウェイポイントを選択して、Enterキー話した瞬間
-		else if (select_waypoint && GMLIB->isKeyUp(Keys::Enter))
+		else if (select_waypoint && !input->IsHitKey(Keys::Enter))
 		{
 			// 床だけに重なっていて、敵と自機と鍵に重なっていない
 			if (AnyOfNotExceptPlaneObjSamePos())
@@ -442,7 +451,7 @@ void ObjectManager::EnmEditModeUpdate()
 			}
 		}
 		// 削除
-		else if (GMLIB->isKeyDown(Keys::Back))
+		else if (input->IsTrgKey(Keys::Back))
 		{
 			// 敵を選択していないなら削除（内部的にウェイポイント敵自身に設定している為）
 			if (masu_pos != select_enm->pos)
@@ -450,8 +459,9 @@ void ObjectManager::EnmEditModeUpdate()
 		}
 	}
 
-#if USE_IMGUI
-	const auto& s_size{ GMLIB->GetScreenSize() };
+#ifdef KDL_USE_IMGUI
+	const auto vp{ p_app->GetViewport() };
+	const VF2 s_size{ vp.Width, vp.Height };
 
 	ImguiTool::BeginShowTempWindow({ 0.f, s_size.y / 2.f }, u8"敵編集モード");
 
@@ -488,8 +498,9 @@ void ObjectManager::EnmEditModeUpdate()
 				constexpr float AdjPosY{ -15.f };
 
 				const auto& wp{ waypoints[i] };
+				auto vp{ p_app->GetViewport() };
 
-				VF2 pos{ GMLIB->TransformLocalToScreen(wp.pos, GMLIB->CreateViewMatrix()) };
+				VF2 pos{ GS::TransformLocalToScreen({ vp.Width, vp.Height }, wp.pos) };
 
 				pos.y += AdjPosY;
 
@@ -506,18 +517,19 @@ void ObjectManager::EnmEditModeUpdate()
 
 	ImGui::End();
 #endif
+#endif
 }
 
 // 通常モード更新
-void ObjectManager::NormalModeUpdate()
+void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
 	// 裏世界モード設定
 	{
 		static bool first{ true };
 
-		bool& back_world_mode{ GameScene::back_world_mode };
+		bool& back_world_mode{ GS::back_world_mode };
 		const auto& warphole{ objects.GetObjects<WarpHole>() };
 		const auto& player{ objects.GetObjects<Player>() };
 
@@ -550,17 +562,19 @@ void ObjectManager::NormalModeUpdate()
 }
 
 // オブジェクトの移動
-void ObjectManager::MoveObject()
+void ObjectManager::MoveObject(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using Buttons = MouseData::Buttons;
-	using GS = GameScene;
+#if false
+	using Buttons = KDL::MOUSE_INPUTS;
+	using GS = SceneGame;
 
 	static VF3 save_pos;
 
 	const auto& masu_pos{ GS::GetMasuPos() };
+	auto input{ p_window->GetInput() };
 
 	// 左クリック押した時（掴む）
-	if (GMLIB->isMouseDown(Buttons::middleButton))
+	if (input->IsTrgMouse(Buttons::middleButton))
 	{
 		bool is_finded{ false };
 
@@ -773,10 +787,11 @@ void ObjectManager::MoveObject()
 			}
 		}
 	}
+#endif
 }
 
 // 読み込み
-void ObjectManager::Load(std::atomic<size_t>* load_count)
+void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	auto fbx_paths{ GetAllFileName("Data\\Model\\Game") };
 

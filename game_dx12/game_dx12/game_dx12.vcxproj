@@ -168,6 +168,7 @@
     <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\SingleObject.h" />
     <ClInclude Include="src\Time.h" />
+    <ClInclude Include="src\TitleScene.h" />
     <ClInclude Include="src\Vector2.h" />
     <ClInclude Include="src\Vector3.h" />
     <ClInclude Include="src\XMFLOAT_Hlper.h" />

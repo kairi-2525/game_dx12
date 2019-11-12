@@ -140,6 +140,9 @@
     <ClInclude Include="src\GameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\TitleScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

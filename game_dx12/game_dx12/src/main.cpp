@@ -1,5 +1,6 @@
 #include "main.h"
 #include "scene.h"
+#include "TitleScene.h"
 
 KDL::Window* p_main_window = nullptr;
 KDL::DX12::App* p_app = nullptr;

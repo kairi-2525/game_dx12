@@ -2,6 +2,8 @@
 
 #include "XMFLOAT_Hlper.h"
 #include "FileStreamHelpter.h"
+#include "KDL.h"
+#include "KDL_Dx12/App.h"
 
 #define IMGUI_RED 1.f, 0.3f, 0.3f, 1.f
 
@@ -72,8 +74,8 @@ public:
 	operator bool() const noexcept { return exist; }
 
 public:
-	virtual void Update() = 0;
-	virtual void Draw() const = 0;
+	virtual void Update(KDL::Window* p_window, KDL::DX12::App* p_app) = 0;
+	virtual void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) = 0;
 
 	void EndExist() noexcept { exist = false; }
 

@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "ImGui/ImGuiSeting.h"
-#include "GameLib.h"
+#include "ImGuiSeting.h"
+#include "KDL.h"
 #include "PatrolAI.h"
 #include "ObjectManager.h"
 #include "Enemy.h"
@@ -57,6 +57,7 @@ void PatrolAI::Update(VF3& enemy_pos, Node* node)
 {
 	using std::visit;
 
+#if _DEBUG && false
 	if (GMLIB->isKeyDown(KeyData::Keys::P))
 	{
 		// このモードを終了
@@ -65,6 +66,7 @@ void PatrolAI::Update(VF3& enemy_pos, Node* node)
 		// 優先度を下げる
 		priority_number -= RootBase::SubStructNumber;
 	}
+#endif
 
 	// モード変更処理
 	if (change_mode)
@@ -188,7 +190,7 @@ void PatrolAI::InitModeData()
 
 void MoveAI::Update(VF3& enemy_pos, Node* node)
 {
-#if USE_IMGUI
+#if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
 
 	ImguiTool::BeginShowTempWindow({ 0.f, s_size.y / 2.f }, "MoveAI");
@@ -289,7 +291,7 @@ void MoveAI::Update(VF3& enemy_pos, Node* node)
 
 void StopAI::Update(VF3& enemy_pos, Node* node)
 {
-#if USE_IMGUI
+#if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
 
 	ImguiTool::BeginShowTempWindow({ 0.f, s_size.y / 2.f }, "StopAI");
@@ -312,7 +314,7 @@ void StopAI::Update(VF3& enemy_pos, Node* node)
 
 void FindAI::Update(VF3& enemy_pos, Node* node)
 {
-#if USE_IMGUI
+#if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
 
 	ImguiTool::BeginShowTempWindow({ 0.f, s_size.y / 2.f }, "StopAI");

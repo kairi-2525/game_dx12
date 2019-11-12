@@ -1,5 +1,4 @@
-#include "scene.h"
-
+#include "TitleScene.h"
 
 void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
@@ -8,7 +7,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	camera = 
+	camera =
 		std::make_unique<KDL::TOOL::Camera>(
 			KDL::TOOL::Camera(
 				{ 0.f, 10.f, -10.f },		//eye
@@ -27,10 +26,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 	const auto* input = p_window->GetInput();
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
 	{
-		if (input->IsHitKey(KDL::KEY_INPUTS::LeftControl))
-			ChangeScene<SceneMain>();		//メインスレッドでシーン切り替え
-		else
-			SetNextScene<SceneMain>();	//別スレッドでシーン切り替え
+		//SetNextScene<SceneLoad>();	//別スレッドでシーン切り替え
 	}
 
 	const float elpased_time = p_window->GetElapsedTime();

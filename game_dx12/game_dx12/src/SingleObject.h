@@ -54,12 +54,12 @@ public:
 	}
 
 public:
-	void Update() override;
-	void Draw() const override;
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 private:
 	bool isMoveObjectCheck();
-	void Move();
+	void Move(KDL::Window* p_window, KDL::DX12::App* p_app);
 
 public:
 	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
@@ -115,8 +115,8 @@ public:
 	}
 
 public:
-	void Update() override;
-	void Draw() const override;
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
 	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept
@@ -167,8 +167,8 @@ public:
 	}
 
 public:
-	void Update() override;
-	void Draw() const override;
+	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
 public:
 	static void SetModelHandle(const std::initializer_list<int>& handle) noexcept

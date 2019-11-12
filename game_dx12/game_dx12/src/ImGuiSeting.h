@@ -4,7 +4,7 @@
 
 #if USE_IMGUI
 
-#include"imgui.h"
+#include "ImGUI/imgui.h"
 // DirectX
 #include <stdio.h>
 #include <d3d11.h>
@@ -54,7 +54,7 @@ private:
 
 public:
 
-#if true
+#if false
 	[[nodiscard]] static inline bool InitImgui(void* hwnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const std::string& font_name = nullptr)
 	{
 		bool rv{ true };
@@ -129,7 +129,7 @@ public:
 	// 表示したい場所の下に宣言する（補助説明→マウスを「(？)」に持ってくると内容が表示される）
 	static inline void ShowHelp(const char* help_coments)
 	{
-		assert(is_init && "初期化されていない");
+		//assert(is_init && "初期化されていない");
 
 		ImGui::SameLine(); ShowHelpMarker(help_coments);
 	}
@@ -138,7 +138,7 @@ public:
 	static inline size_t SelectVectorString(const char* const name,
 		const std::vector<std::filesystem::path>& items, std::filesystem::path& select_item)
 	{
-		assert(is_init && "初期化されていない");
+		//assert(is_init && "初期化されていない");
 
 		if (!items.empty() && ImGui::BeginCombo(name, select_item.u8string().data()))
 		{
@@ -175,7 +175,7 @@ public:
 	// 空白と区切り
 	static inline void Spacing(const size_t space_size, const bool is_separator = false)
 	{
-		assert(is_init && "初期化されていない");
+		//assert(is_init && "初期化されていない");
 
 		for (size_t i = 0; i < space_size; i++)
 		{
@@ -189,7 +189,7 @@ public:
 		const ImGuiWindowFlags flags = ImGuiBackendFlags_None, const float alpha = 1.f,
 		const ImGuiCond_ cond_flag = ImGuiCond_Once)
 	{
-		assert(is_init && "初期化されていない");
+		//assert(is_init && "初期化されていない");
 
 		ImGui::SetNextWindowBgAlpha(alpha); // Transparent background
 		ImGui::SetNextWindowSize({ size.x, size.y }, cond_flag);
@@ -201,7 +201,7 @@ public:
 	static inline void BeginShowTempWindow(const VF2& pos, const char* name,
 		const bool is_input = true, const float alpha = 0.7f, const ImGuiCond_ cond = ImGuiCond_Always)
 	{
-		assert(is_init && "初期化されていない");
+		//assert(is_init && "初期化されていない");
 
 		if (is_input)
 		{

@@ -5,6 +5,9 @@
 #include <memory>
 #include <mutex>
 
+#include "KDL_Dx12/App.h"
+#include "KDL_Dx12/Mesh.h"
+
 class SceneManager;
 
 class SceneBase
@@ -89,19 +92,6 @@ public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Exit() { m_exit = false; }
 	bool IsExit() { return m_exit; }
-};
-
-class SceneTitle : public SceneBase
-{
-	std::unique_ptr<KDL::DX12::Geometric_Board> board;
-	std::unique_ptr<KDL::TOOL::Camera> camera;
-	float angle;
-public:
-	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
-	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 };
 
 class SceneMain : public SceneBase

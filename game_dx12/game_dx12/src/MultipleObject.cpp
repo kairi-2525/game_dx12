@@ -1,5 +1,5 @@
 #include "MultipleObject.h"
-#include "GameLib.h"
+#include "KDL.h"
 #include "GameScene.h"
 
 //------------------------------------------------------------------------------------------------------
@@ -22,10 +22,11 @@ Plane::Plane(const uint32_t hp)
 	pl_pos = Fill3((std::numeric_limits<float>::max)());
 }
 
-void Plane::Update()
+void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	if (!GS::GetEditMode())
 	{
 		// まだ生きている
@@ -52,8 +53,34 @@ void Plane::Update()
 			if (hp == 0u && pl_pos != pos)	is_dead = true;
 		}
 	}
+#else
+	// まだ生きている
+	if (hp != 0)
+	{
+		if (pl_pos == pos)
+			pl_stand = true;
+		else
+		{
+			pl_stand = false;
+			pl_stand_first = false;
+		}
+
+		// プレーヤーがいる上に初回だけ処理する
+		if (pl_stand && !pl_stand_first)
+		{
+			hp--;
+			pl_stand_first = true;
+		}
+	}
+	// 死んでいるが消えるのを防止する為、プレーヤーが離れてから消す
+	else
+	{
+		if (hp == 0u && pl_pos != pos)	is_dead = true;
+	}
+#endif
 
 	// 編集モードのみ
+#if false
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()))
 	{
 		// 色調整
@@ -62,12 +89,14 @@ void Plane::Update()
 		// 移動中なら
 		if (is_move_select) pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void Plane::Draw() const
+void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	// 編集モード時のみ
 	if (GS::GetEditMode())
 	{
@@ -75,6 +104,7 @@ void Plane::Draw() const
 			{ scale.x, scale.y }, angle, GS::LightDir, color);
 	}
 	else
+#endif
 	{
 #if !_DEBUG
 		if (!is_dead)
@@ -97,20 +127,22 @@ Wall::Wall()
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Wall::Update()
+void Wall::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void Wall::Draw() const
+void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -129,22 +161,24 @@ WarpHole::WarpHole()
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void WarpHole::Update()
+void WarpHole::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void WarpHole::Draw() const
+void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const VF4 color{ WHITE, (GameScene::back_world_mode == is_back_world ? 1.f : 0.5f) };
+	const VF4 color{ WHITE, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, color);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -163,27 +197,29 @@ Key::Key()
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Key::Update()
+void Key::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void Key::Draw() const
+void Key::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	VF4 color;
 
-	if (GameScene::back_world_mode == is_back_world)
+	if (SceneGame::back_world_mode == is_back_world)
 		color = { YELLOW, 1.f };
 	else
 		color = { GREEN, 0.5f };
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, color);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -202,20 +238,22 @@ Door::Door()
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Door::Update()
+void Door::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void Door::Draw() const
+void Door::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const VF4 color{ OLIVE, (GameScene::back_world_mode == is_back_world ? 1.f : 0.5f) };
+	const VF4 color{ OLIVE, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, color);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
 }

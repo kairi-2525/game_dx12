@@ -1,6 +1,7 @@
 #include "SingleObject.h"
-#include "GameLib.h"
+#include "KDL.h"
 #include "GameScene.h"
+#include "ImVecHelper.h"
 
 //------------------------------------------------------------------------------------------------------
 // 自機
@@ -13,12 +14,13 @@ Player::Player(const Deque<Plane>& planes, const Deque<WarpHole>& warphole, cons
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Player::Update()
+void Player::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+	using GS = SceneGame;
 
+#if false
 	// 操作
-	if (!GS::GetEditMode())	Move();
+	if (!GS::GetEditMode())	Move(p_window, p_app);
 
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
@@ -26,8 +28,8 @@ void Player::Update()
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
 
-#if USE_IMGUI
-	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, GameScene::LabelName.data());
+#ifdef KDL_USE_IMGUI
+	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, SceneGame::LabelName.data());
 
 	ImGui::Text(u8"自機座標 : %.01f, %.01f", pos.x, pos.z);
 
@@ -35,34 +37,41 @@ void Player::Update()
 
 	ImGui::End();
 #endif
+#else
+	Move(p_window, p_app);
+#endif
 }
 
-void Player::Move()
+void Player::Move(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using Keys = KeyData::Keys;
+	using Keys = KDL::KEY_INPUTS;
 
 	constexpr float Movement{ 1.f };
 
 	bool is_move{ false };
-
+	auto input{ p_window->GetInput() };
 	speed.Clear();
 
-	if (GMLIB->isKeyDown({ Keys::Left, Keys::A }))
+	auto KeyInput{ [&](Keys key1, Keys key2) {
+		return input->IsTrgKey(key1) || input->IsTrgKey(key2);
+	} };
+
+	if (KeyInput( Keys::Left, Keys::A ))
 	{
 		speed.x += Movement;
 		is_move = true;
 	}
-	else if (GMLIB->isKeyDown({ Keys::Right, Keys::D }))
+	else if (KeyInput( Keys::Right, Keys::D ))
 	{
 		speed.x -= Movement;
 		is_move = true;
 	}
-	else if (GMLIB->isKeyDown({ Keys::Up, Keys::W }))
+	else if (KeyInput( Keys::Up, Keys::W ))
 	{
 		speed.z -= Movement;
 		is_move = true;
 	}
-	else if (GMLIB->isKeyDown({ Keys::Down, Keys::S }))
+	else if (KeyInput( Keys::Down, Keys::S ))
 	{
 		speed.z += Movement;
 		is_move = true;
@@ -72,9 +81,9 @@ void Player::Move()
 	if (is_move && isMoveObjectCheck())		pos += speed;
 }
 
-void Player::Draw() const
+void Player::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, { AQUA, 1.f });
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, { AQUA, 1.f });
 }
 
 bool Player::isMoveObjectCheck()
@@ -119,20 +128,22 @@ Start::Start()
 	color = { BLUE, 1.f };
 }
 
-void Start::Update()
+void Start::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+#if false
+	using GS = SceneGame;
 
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void Start::Draw() const
+void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, color);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -151,20 +162,22 @@ Goal::Goal()
 	scale = { 0.005f, 0.005f, 0.005f };
 }
 
-void Goal::Update()
+void Goal::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	using GS = GameScene;
+#if false
+	using GS = SceneGame;
 
 	// 編集モードのみ
 	if ((GS::GetEditMode() && !GS::GetEnmEditMode()) && is_move_select)
 	{
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
+#endif
 }
 
-void Goal::Draw() const
+void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const VF4 color{ RED, (GameScene::back_world_mode == is_back_world ? 1.f : 0.5f) };
+	const VF4 color{ RED, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
 
-	GMLIB->DrawModel(model_handle, pos, scale, angle, GameScene::LightDir, color);
+	GMLIB->DrawModel(model_handle, pos, scale, angle, SceneGame::LightDir, color);
 }

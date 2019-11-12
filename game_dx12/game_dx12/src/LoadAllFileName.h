@@ -25,7 +25,7 @@ static std::vector<std::filesystem::path> GetAllFileName(
 
 	try
 	{
-		auto& dir_itr{ fs::directory_iterator(dir_name) };
+		const auto& dir_itr{ fs::directory_iterator(dir_name) };
 
 		for (const auto& di : dir_itr)
 		{
