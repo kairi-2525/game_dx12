@@ -187,19 +187,19 @@ public:
 private:
 	void InitModeData();
 
-	template<class _Ty, size_t _Idx, class... _ArgTypes>
-	void BuildAINode(std::vector<std::pair<bool, uint64_t>>& init_data, const _ArgTypes&... args)
+#if false
+	template<class _Ty, class... _ArgTypes>
+	void BuildAINode(const _ArgTypes&... args)
 	{
 		using Type = typename std::remove_reference<_Ty>::type;
 
-		static_assert(std::is_base_of<Type, RootBase>(), "Not Base Class");
-
-		const auto& data{ init_data.at(_Idx) };
+		static_assert(std::is_base_of<RootBase, Type>(), "Not Base Class");
 
 		auto& back{ patrol_modes.emplace_back() };
 
-		back.emplace<_Idx>(std::make_optional<Type>(data.first, data.second, args...));
+		back.emplace<Optional<Type>>(std::make_optional<Type>(args...));
 	}
+#endif
 
 public:
 

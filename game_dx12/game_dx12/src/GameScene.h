@@ -24,7 +24,7 @@ private:
 
 public:
 	SceneGame()
-		: camera_angle(Math::ToRadian(-80.f), 0.f, 0.f), camera_dis(50.f)
+		: camera_angle(Math::ToRadian(-80.f), 0.f, 0.f), camera_dis(50.f), mouse_pos(0.f, 0.f)
 	{}
 	~SceneGame() noexcept = default;
 	SceneGame(const SceneGame&) = delete;
@@ -317,7 +317,7 @@ public:
 		static const KDL::DX12::COLOR4F color{ GRAY, 1.f };
 
 		constexpr float BoxSizeY{ 50.f };
-		constexpr float ObjectAndBGCountMax{ 11.f };
+		constexpr float ObjectAndBGCountMax{ 15.f };
 
 		const float box_size_x
 		{ s_size.x * (static_cast<float>(SceneGame::load_count) / ObjectAndBGCountMax) };

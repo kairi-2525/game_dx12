@@ -52,6 +52,8 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	// 一時ファイルが存在しているなら、削除
 	if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
 		assert(!"一時ファイルの削除に失敗");
+
+	ObjectManager::UnInitialize();
 }
 
 void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

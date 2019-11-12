@@ -334,6 +334,7 @@ public:
 		select_enm = nullptr;
 		select_waypoint = nullptr;
 	}
+	static void UnInitialize();
 	// ‘‚«o‚µ
 	void Output(std::ofstream& ofs);
 	// “Ç‚İ‚İ

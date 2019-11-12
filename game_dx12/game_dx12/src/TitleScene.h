@@ -4,7 +4,6 @@
 
 class SceneTitle : public SceneBase
 {
-	std::unique_ptr<KDL::DX12::Geometric_Board> board;
 	std::unique_ptr<KDL::TOOL::Camera> camera;
 	float angle;
 public:

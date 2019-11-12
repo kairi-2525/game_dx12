@@ -764,7 +764,7 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		auto fbx_paths{ GetAllFileName("data\\models\\Game") };
 
 		// ファイル走査で読み込むので（アルファベット順）
-		const std::vector<std::unique_ptr<KDL::DX12::Mesh_FBX>*> load_handle{
+		const std::vector<decltype(&Door::model)> load_models{
 			&Door::model,
 			&Enemy::model,
 			&Goal::model,
@@ -780,12 +780,14 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		fbx_paths.erase(std::remove_if(fbx_paths.begin(), fbx_paths.end(),
 			[](const auto& path) { return path.extension().string() != ".fbx"; }), fbx_paths.end());
 
-		assert(fbx_paths.size() == load_handle.size() && "読み込み数or設定数が不正");
+		assert(fbx_paths.size() == load_models.size() && "読み込み数or設定数が不正");
 
 		// FBX読み込み
 		for (size_t i = 0, length = fbx_paths.size(); i < length; i++)
 		{
-			*load_handle[i] = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, fbx_paths[i]);
+			assert(!(*load_models[i]) && "既に読み込まれている");
+
+			*load_models[i] = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, fbx_paths[i]);
 
 			(*load_count)++;
 		}
@@ -796,7 +798,7 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		auto png_paths{ GetAllFileName("data\\images\\Game") };
 
 		// ファイル走査で読み込むので（アルファベット順）
-		const std::vector<std::unique_ptr<KDL::DX12::Geometric_Board>*> load_handle{
+		const std::vector<decltype(&Plane::sand_boad)> load_textures{
 			&Plane::sand_boad,
 			&Plane::sand_broken_boad,
 			&Plane::snow_boad,
@@ -807,12 +809,14 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		png_paths.erase(std::remove_if(png_paths.begin(), png_paths.end(),
 			[](const auto& path) { return path.extension().string() != ".png"; }), png_paths.end());
 
-		assert(png_paths.size() == load_handle.size() && "読み込み数or設定数が不正");
+		assert(png_paths.size() == load_textures.size() && "読み込み数or設定数が不正");
 
 		// FBX読み込み
 		for (size_t i = 0, length = png_paths.size(); i < length; i++)
 		{
-			*load_handle[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i]);
+			assert(!(*load_textures[i]) && "既に読み込まれている");
+
+			*load_textures[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i]);
 
 			(*load_count)++;
 		}
@@ -835,6 +839,34 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 	}
 
 	Enemy::SetNodeData(node);
+}
+
+void ObjectManager::UnInitialize()
+{
+	const std::vector<decltype(&Door::model)> release_models{
+		&Door::model,
+		&Enemy::model,
+		&Goal::model,
+		&Key::model,
+		&Player::model,
+		&Wall::sand_model,
+		&Wall::snow_model,
+		&Start::model,
+		&WarpHole::model,
+	};
+
+	const std::vector<decltype(&Plane::sand_boad)> release_textures{
+		&Plane::sand_boad,
+		&Plane::sand_broken_boad,
+		&Plane::snow_boad,
+		&Plane::snow_broken_boad,
+	};
+
+	auto Clear{ [](auto& load_data) { std::for_each(load_data.begin(), load_data.end(), [](auto& data)
+		{ *data = nullptr; }); } };
+
+	Clear(release_models);
+	Clear(release_textures);
 }
 
 // 書き出し---------------------------------------------------------------------------------------------------
@@ -1055,6 +1087,7 @@ void Node::PathSetting(Object& objects)
 	}
 }
 
+// パス検索--------------------------------------------------------------------------------------------
 NodeData* Node::PathFindingDijkstra(const VF3& base_pos, const VF3& target_pos, int64_t* processing_time)
 {
 #if false
@@ -1175,7 +1208,7 @@ NodeData* Node::PathFindingDijkstra(const VF3& base_pos, const VF3& target_pos, 
 
 	Timer time;
 
-	if(processing_time)
+	if (processing_time)
 		time.Start();
 
 	std::for_each(DATA_SET, [](auto& dt) { dt.Reset(); });
@@ -1343,7 +1376,8 @@ NodeData& Node::PathFindingAstar(const VF3& base_pos, const VF3& target_pos, int
 
 			// 基本座標からの距離が一番遠い床を探す
 			const auto get_max_element{ *std::max_element(near_dis.cbegin(), near_dis.cend(),
-				[&](auto& dis1, auto& dis2) { return dis1.first < dis2.first; }) };
+				[&](auto& dis1, auto& dis2) { return dis1.first < dis2.first; })
+	};
 
 			const auto& before_plane{ nodes->at(index_count_num) };
 

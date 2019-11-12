@@ -163,7 +163,7 @@ void PatrolAI::InitModeData()
 			back.emplace<0>(std::make_optional<MoveAI>(data.first, data.second, way_point_count,
 				way_points));
 
-			//BuildAINode<MoveAI, 0u>(init_data, way_point_count, way_points);
+			//BuildAINode<MoveAI>(data.first, data.second, way_point_count, way_points);
 		}
 
 		// í‚é~èÛë‘ç\íz

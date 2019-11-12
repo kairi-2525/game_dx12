@@ -37,7 +37,7 @@ void SceneMain::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	}
 
 	const float elpased_time = p_window->GetElapsedTime();
-	const float radian_180 = DirectX::XMConvertToRadians(180.f);
+	constexpr float radian_180 = DirectX::XMConvertToRadians(180.f);
 	angle += DirectX::XMConvertToRadians(90.f) * elpased_time;
 	while (angle > radian_180)
 		angle -= radian_180 * 2;
