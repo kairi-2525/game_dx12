@@ -13,27 +13,132 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{7ad36797-4d96-4467-9991-10d4bcf567fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{f132ed44-babf-484b-9dc6-88acd6cce59b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\追加データ">
+      <UniqueIdentifier>{1495e8a0-70ff-435a-a871-d9f64102b12b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene.cpp">
+    <ClCompile Include="src\Enemy.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileOperate.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MultipleObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SingleObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AI_Manager.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AttackAI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PatrolAI.cpp">
+      <Filter>AI</Filter>
     </ClCompile>
     <ClCompile Include="src\scene_title.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\scene_main.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\scene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\main.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MultipleObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NodeData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Obj3d.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RootBase.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SingleObject.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AI_Manager.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AttackAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PatrolAI.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorDef.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Math.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileStreamHelpter.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImVecHelper.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImGuiSeting.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LoadAllFileName.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MessageBox.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Random.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Time.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector2.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector3.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\XMFLOAT_Hlper.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

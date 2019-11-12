@@ -29,7 +29,7 @@ protected:
 	}
 public:
 	bool IsLoaded()
-	{ 
+	{
 		std::lock_guard<std::mutex> lock(m_loaded_mutex);
 		return m_loaded;
 	}
