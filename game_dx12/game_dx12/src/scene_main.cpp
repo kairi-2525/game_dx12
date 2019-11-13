@@ -45,8 +45,6 @@ void SceneMain::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 void SceneMain::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
-	p_app->ClearBackBuffer(clear_color);
 
 	const float scale = 0.05f;
 	const KDL::FLOAT3 position = { 0.f, 0.f, 0.f };
@@ -63,7 +61,7 @@ void SceneMain::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		DirectX::XMFLOAT4X4 wvp, w;
 		DirectX::XMStoreFloat4x4(&w, W);
 		camera->CreateUpdateWorldViewProjection(&wvp, W);
-		mesh->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
+		//mesh->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, { 0, 0, 1.f, 0.f }, { 1.f, 1.f, 1.f, 1.f });
 	}
 }
 

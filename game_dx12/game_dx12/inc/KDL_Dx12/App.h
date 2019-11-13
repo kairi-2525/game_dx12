@@ -2,6 +2,12 @@
 
 #include "../KDL.h"
 
+#ifdef _DEBUG
+#define KDL_DEBUG_DX12
+#else
+#define KDL_DEBUG_DX12
+#endif
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -61,7 +67,7 @@ namespace KDL
 			HWND m_hwnd;
 			bool m_tearing_support;
 			UINT m_allocator_counter = 0;
-#ifdef _DEBUG
+#ifdef KDL_DEBUG_DX12
 			ComPtr<ID3D12DebugDevice> m_debug_device;
 #endif
 			ResourceManager m_resource_manager;

@@ -30,6 +30,7 @@ namespace KDL
 
 		private:
 			std::vector<size_t> m_instance_sizes;
+			bool m_first_command = true;
 		protected:
 			size_t GetInstanceSize(UINT frame_num)
 			{
@@ -42,6 +43,7 @@ namespace KDL
 			virtual const std::vector<D3D12_INPUT_ELEMENT_DESC>& GetInputElementDesc() = 0;
 			Sprite() = default;
 			HRESULT Init(App* app, UINT vertex_count, UINT buffer_stock_size, UINT vertex_size = sizeof(Vertex));
+			bool IsFirstCommand() { if (m_first_command) { m_first_command = false; return true; } return false; }
 		protected:
 			std::vector<VertexData> m_vertex_data;
 			ComPtr<ID3D12Resource1> m_index_buffer;

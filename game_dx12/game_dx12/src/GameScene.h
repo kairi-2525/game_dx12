@@ -309,6 +309,9 @@ public:
 	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
 	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 	{
+		const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
+		p_app->ClearBackBuffer(clear_color);
+
 		using VF2 = DirectX::XMFLOAT2;
 
 		auto vp{ p_app->GetViewport() };

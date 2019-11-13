@@ -1,3 +1,4 @@
 .vs
+*.fbm
 /game_dx12/game_dx12/lib/Debug/KDL.lib
 /game_dx12/game_dx12/lib/Release/KDL.lib

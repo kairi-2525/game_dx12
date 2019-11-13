@@ -10,9 +10,6 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 {
 	namespace fs = std::filesystem;
 
-	const KDL::COLOR4F clear_color = { AQUA, 1.f };
-	p_app->ClearBackBuffer(clear_color);
-
 	// 初期化
 	object_manager.emplace();
 	open_file_path.clear();
@@ -22,6 +19,25 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	enm_edit_mode = false;
 	is_save = false;
 	back_world_mode = false;
+
+	// 構築
+	{
+		// variantオブジェクト構築
+		{
+			// SingleObjets構築
+			object_manager->GetObjectData().BuildVariant<Player>();
+			object_manager->GetObjectData().BuildVariant<Start>();
+			object_manager->GetObjectData().BuildVariant<Goal>();
+
+			// multiple_objects構築
+			object_manager->GetObjectData().BuildVariant<Enemy>();
+			object_manager->GetObjectData().BuildVariant<Plane>();
+			object_manager->GetObjectData().BuildVariant<Wall>();
+			object_manager->GetObjectData().BuildVariant<WarpHole>();
+			object_manager->GetObjectData().BuildVariant<Door>();
+			object_manager->GetObjectData().BuildVariant<Key>();
+		}
+	}
 
 	// 一時ファイルが存在しているなら、削除
 	if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
@@ -194,6 +210,9 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 // 描画
 void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	const KDL::COLOR4F clear_color = { AQUA, 1.f };
+	p_app->ClearBackBuffer(clear_color);
+
 	object_manager->Draw(p_window, p_app);
 
 	// 背景
@@ -288,6 +307,11 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	ImGui::Text(u8"F1 で 編集モードじゃぁ～");
 #endif
 #endif
+	if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Space))
+	{
+		SetNextScene<SceneLoad>();
+		return;
+	}
 
 	// リトライ機能
 	if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Enter))
@@ -313,10 +337,11 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 		camera->SetTarget(BasePos);
 	}
 #else
-	const auto& player{ object_manager->GetObjectData<Player>() };
-
-	camera->SetPosition(CreateRotationPos(camera_angle, camera_dis, player->pos));
-	camera->SetTarget(player->pos);
+	if (const auto& player{ object_manager->GetObjectData<Player>() }; player)
+	{
+		camera->SetPosition(CreateRotationPos(camera_angle, camera_dis, player->pos));
+		camera->SetTarget(player->pos);
+	}
 #endif
 }
 

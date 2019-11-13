@@ -9,6 +9,8 @@ ObjectManager::ObjectManager()
 	: select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f)
 {
 	now_move_object = edit_mode_first = false;
+
+	Enemy::SetNodeData(node);
 }
 
 // 更新
@@ -821,24 +823,6 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 			(*load_count)++;
 		}
 	}
-
-	// variantオブジェクト構築
-	{
-		// SingleObjets構築
-		objects.BuildVariant<Player>();
-		objects.BuildVariant<Start>();
-		objects.BuildVariant<Goal>();
-
-		// multiple_objects構築
-		objects.BuildVariant<Enemy>();
-		objects.BuildVariant<Plane>();
-		objects.BuildVariant<Wall>();
-		objects.BuildVariant<WarpHole>();
-		objects.BuildVariant<Door>();
-		objects.BuildVariant<Key>();
-	}
-
-	Enemy::SetNodeData(node);
 }
 
 void ObjectManager::UnInitialize()

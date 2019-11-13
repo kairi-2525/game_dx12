@@ -32,6 +32,8 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 
 void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
+	p_app->ClearBackBuffer(clear_color);
 }
 
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

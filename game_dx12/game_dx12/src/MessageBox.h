@@ -44,7 +44,7 @@ enum class BoxReturn : INT
 BoxReturn Message(const wchar_t* text, const wchar_t* frame_text = nullptr,
 	const UINT type = static_cast<UINT>(BoxType::Ok))
 {
-	int rv{ MessageBox(nullptr, text, frame_text, type) };
+	int rv{ MessageBoxW(nullptr, text, frame_text, type) };
 
 	if (rv == IDYES || rv == IDOK)
 		return BoxReturn::Yes_Ok;

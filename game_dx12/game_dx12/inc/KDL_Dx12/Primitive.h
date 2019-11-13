@@ -75,11 +75,11 @@ namespace KDL
 
 			UINT m_buffer_stock_size;
 		private:
-			bool first_command = true;
+			bool m_first_command = true;
 		protected:
 			Geometric_Base() = default;
 			virtual ~Geometric_Base() = default;
-			bool IsFirstCommand() { if (first_command) { first_command = false; return true; } return false; }
+			bool IsFirstCommand() { if (m_first_command) { m_first_command = false; return true; } return false; }
 			static const std::vector<D3D12_INPUT_ELEMENT_DESC>& GetInputElementDesc() { return INPUT_ELEMENT_DESC; };
 		};
 
