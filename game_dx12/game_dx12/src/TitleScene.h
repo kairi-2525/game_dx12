@@ -58,6 +58,17 @@ private:
 			}
 			return hr;
 		}
+		template<class _TM>
+		HRESULT Draw(KDL::DX12::App* p_app, KDL::TOOL::Camera* p_camera, const KDL::FLOAT3& light_dir, _TM* p_model)
+		{
+			HRESULT hr = S_OK;
+			for (auto& it : data)
+			{
+				hr = it.Model_Base::Draw<_TM>(p_app, p_camera, light_dir, p_model);
+				if (FAILED(hr)) return hr;
+			}
+			return hr;
+		}
 	};
 	struct Ground : public Model_Base
 	{
@@ -82,13 +93,13 @@ private:
 		{GROUND_TYPE::SandBroken, "SandBroken"},
 		{GROUND_TYPE::Snow, "Snow"},
 		{GROUND_TYPE::SnowBroken, "SnowBroken"},
-		{GROUND_TYPE::WarpHole, "WarpHole2"},
+		{GROUND_TYPE::WarpHole, "Warp_on"},
 		{GROUND_TYPE::SandWall, "SandWall"},
 		{GROUND_TYPE::SnowWall, "SnowWall"}
 	};
 	static inline const UINT BLOCK_NUM = 20;
 	static inline const float BLOCK_SIZE = 1.0f;
-	static inline float WARP_HOLE_SCALE = 0.005f;
+	static inline float WARP_HOLE_SCALE = 1.f / 6;
 	static inline float WALL_SCALE = 1.f / 6;
 private:
 	KDL::FLOAT3 light_dir;
@@ -98,6 +109,11 @@ private:
 	MenyModels<KDL::DX12::Mesh_FBX, Ground> warp_hole;
 	MenyModels<KDL::DX12::Mesh_FBX> snows;
 	MenyModels<KDL::DX12::Mesh_FBX> sands;
+	std::unique_ptr<KDL::DX12::Mesh_FBX> warp_hole_off;
+	std::unique_ptr<KDL::DX12::Sprite_Image> snow_bg;
+	std::unique_ptr<KDL::DX12::Sprite_Image> sand_bg;
+	Model<KDL::DX12::Mesh_FBX> title_parallel;
+	Model<KDL::DX12::Mesh_FBX> title_labyrinth;
 	bool snow;
 public:
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
@@ -105,4 +121,8 @@ public:
 	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+
+	void BreakGrounds();
+	void RemoveGrounds();
+	void FlipGrounds();
 };

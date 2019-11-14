@@ -87,7 +87,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = true);
+				bool z_test = false);
 		};
 
 		class Sprite_Image : public Sprite_Box
@@ -135,7 +135,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = true) override {
+				bool z_test = false) override {
 				return AddCommand(command_list, app, pos, size, center, { 0, 0 }, GetSize(), scale, radian_angle,
 					left_top, right_top, left_bottom, right_bottom, blend_mode, wire_frame, z_test);
 			}
@@ -145,7 +145,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = true);
+				bool z_test = false);
 			template <class T = FLOAT>
 			Number2<T> GetSize() { return { static_cast<T>(m_tex_desc.Width), static_cast<T>(m_tex_desc.Height) }; }
 		};
