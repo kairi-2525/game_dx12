@@ -270,7 +270,8 @@ private:
 	std::optional<ObjectManager> object_manager;
 
 	//std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> bg_board;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> snow_boad;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> sand_boad;
 
 
 	FileDataFlg file_flg;

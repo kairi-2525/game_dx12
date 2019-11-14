@@ -222,11 +222,17 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	object_manager->Draw(p_window, p_app);
 
+	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
+
+	static VF3 Scale{ 100.f, 1.f, 100.f };
+
+	ImguiHeler::SliderFloat(u8"Šp“x", &Scale, 0.f, 100.f, "%.0f");
+
+	ImGui::End();
+
 	// ”wŒi
 	{
-		constexpr VF3 Pos{ 0.5f, -0.5f, 0.5f };
-		constexpr VF2 Scale{ 1000.f, 1000.f };
-		constexpr VF3 Angle{ 3.14f / 2.f, 0.f, 0.f };
+		constexpr VF3 Pos{ 0.f, -50.f, 0.f };
 		constexpr VF4 Color{ WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
 		//constexpr auto Mode{ Geometric_Primitive::SamplerState::Mirror };
@@ -234,16 +240,17 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		DirectX::XMMATRIX W;
 		{
 			DirectX::XMMATRIX S, R, T;
-			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, 1.f);
-			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 0.f, 0.f);
-			T = DirectX::XMMatrixTranslation(Pos.x, Pos.y, Pos.z);
+			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 3.1415f, 0.f);
+			T = DirectX::XMMatrixTranslation(Pos.x, Pos.y, 1.f);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;
 		DirectX::XMStoreFloat4x4(&w, W);
 		camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-		bg_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f }, Scale / 50.f);
+		snow_boad->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f },
+			{ 1.,1. });
 	}
 
 	// ‘I‘ğƒOƒŠƒbƒg
@@ -598,8 +605,11 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	load_count++;
 #endif
-	if (!bg_board)
-		bg_board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Sky.jpg", 1);
+	if (!snow_boad)
+		snow_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\á.png", 1);
+
+	if (!sand_boad)
+		sand_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\»”™.png", 1);
 
 	load_count++;
 
