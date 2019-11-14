@@ -108,7 +108,7 @@ public:
 public:
 	friend std::ofstream& operator<<(std::ofstream& ofs, const WayPoint& data)
 	{
-		ofs << data.pos;
+		ofs << data.pos << std::endl << std::endl;
 
 		return ofs;
 	}
@@ -123,16 +123,8 @@ public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 
-public:
-	static void SetModelHandle(const int handle) noexcept
-	{
-		model_handle = handle;
-	}
-
 private:
 	bool is_back;
-
-	static inline int model_handle{ -1 };
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -143,6 +135,7 @@ struct Node;
 class AI_Manager;
 class RootBase;
 class Player;
+class Wall;
 
 class Enemy final
 	: public Obj3D
@@ -210,40 +203,8 @@ public:
 	static constexpr size_t IndexNumber{ 0u };
 
 public:
-	friend std::ofstream& operator<<(std::ofstream& ofs, const Enemy& data)
-	{
-		ofs << data.pos << std::endl << std::endl;
-
-		if (size_t size{ data.way_points.size() }; size > 0u)
-		{
-			ofs << F_OUT(size);
-
-			for (auto& wp : data.way_points)
-			{
-				ofs << wp;
-			}
-		}
-
-		return ofs;
-	}
-	friend std::ifstream& operator>>(std::ifstream& ifs, Enemy& data)
-	{
-		size_t wp_size{ 0u };
-
-		ifs >> data.pos >> wp_size;
-
-		if (wp_size != 0u)
-		{
-			data.way_points.resize(wp_size);
-
-			for (auto& wp : data.way_points)
-			{
-				ifs >> wp;
-			}
-		}
-
-		return ifs;
-	}
+	friend std::ofstream& operator<<(std::ofstream& ofs, const Enemy& data);
+	friend std::ifstream& operator>>(std::ifstream& ifs, Enemy& data);
 
 public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
@@ -292,20 +253,19 @@ public:
 public:
 	void SetIsSelect(const bool selected) noexcept { is_select = selected; }
 	auto& GetWayPoint() noexcept { return way_points; }
-	static void SetNodeData(Node& set_planes) noexcept { node = &set_planes; }
+	void SetNode(Node& node) noexcept { this->node = &node; }
 
 private:
 	Deque<WayPoint> way_points;
 	Deque<Arrow> arrows;
 	Deque<VF3> next_target_pos;
 	bool is_select;
-	std::optional<NodeData> path_result;
-	std::optional<NodeData> path_goal;
 	std::optional<AI_Manager> ai;
-
-	static inline Node* node;
+	VF3 before_pos;
+	Node* node;
 
 public:
 	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
-	static inline std::shared_ptr<Player>* player{ nullptr };
+	static inline const std::deque<Wall>* walls{ nullptr };
+	static inline const std::shared_ptr<Player>* player{ nullptr };
 };

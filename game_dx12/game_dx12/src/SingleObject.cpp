@@ -11,7 +11,7 @@ Player::Player(const Deque<Plane>& planes, const Deque<WarpHole>& warphole, cons
 	const SharedPtr<Goal>& goal, const Deque<Door>& doors, const Deque<Key>& keys)
 	: Obj3D(), planes(planes), warphole(warphole), start(start), goal(goal), doors(doors), keys(keys)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.16f);
 }
 
 void Player::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -47,9 +47,12 @@ void Player::Move(KDL::Window* p_window, KDL::DX12::App* p_app)
 	using Keys = KDL::KEY_INPUTS;
 
 	constexpr float Movement{ 1.f };
+	constexpr float AdjRadY{ Math::PAI<float> / 2.f };
 
 	bool is_move{ false };
+	float& ang{ angle.y };
 	auto input{ p_window->GetInput() };
+
 	speed.Clear();
 
 	auto KeyInput{ [&](Keys key1, Keys key2) {
@@ -60,21 +63,25 @@ void Player::Move(KDL::Window* p_window, KDL::DX12::App* p_app)
 	{
 		speed.x += Movement;
 		is_move = true;
+		ang = -AdjRadY;
 	}
 	else if (KeyInput( Keys::Right, Keys::D ))
 	{
 		speed.x -= Movement;
 		is_move = true;
+		ang = AdjRadY;
 	}
 	else if (KeyInput( Keys::Up, Keys::W ))
 	{
 		speed.z -= Movement;
 		is_move = true;
+		ang = 0.f;
 	}
 	else if (KeyInput( Keys::Down, Keys::S ))
 	{
 		speed.z += Movement;
 		is_move = true;
+		ang = AdjRadY * 2.f;
 	}
 
 	// ìÆÇ¢ÇΩè„Ç≈êiÇﬂÇÈÇ©ÇÃîªíË
@@ -139,7 +146,7 @@ bool Player::isMoveObjectCheck()
 
 Start::Start()
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.005f);
 	color = { BLUE, 1.f };
 }
 
@@ -183,13 +190,13 @@ void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Goal::Goal(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.005f);
 }
 
 Goal::Goal()
 	: is_back_world(false)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.005f);
 }
 
 void Goal::Update(KDL::Window* p_window, KDL::DX12::App* p_app)

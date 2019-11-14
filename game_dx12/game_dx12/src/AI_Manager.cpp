@@ -3,15 +3,17 @@
 #include "Enemy.h"
 #include "AI_Manager.h"
 
-AI_Manager::AI_Manager(std::deque<WayPoint>* way_points)
+AI_Manager::AI_Manager(std::deque<WayPoint>* way_points, const float* enemy_angle)
 	: change_mode(true), running_mode(nullptr), target_pos(0.f, 0.f, 0.f), way_points(way_points),
-	way_point_count(0u)
+	way_point_count(0u), enemy_angle(enemy_angle)
 {
-	static const std::vector<std::pair<bool, uint64_t>> init_data
+	using std::get;
+
+	static const std::vector<std::tuple<bool, uint64_t, uint16_t>> init_data
 	{
-		// Às‰Â”\A—Dæ‡ˆÊ
-		{ true	   , 1 },  // „‰ñ
-		{ true	   , 2 },  // UŒ‚
+		// Às‰Â”\A—Dæ‡ˆÊAí—Ş
+		{ true	   , 1		, 1u },  // „‰ñ
+		{ true	   , 2		, 2u },  // UŒ‚
 	};
 
 	assert(init_data.size() == run_modes.size() && "‰Šú‰»ƒf[ƒ^‚Ì’Ç‰Á‚µ–Y‚ê");
@@ -21,14 +23,16 @@ AI_Manager::AI_Manager(std::deque<WayPoint>* way_points)
 		const auto& data{ init_data.front() };
 
 		run_modes.front().emplace<0>(
-			std::make_optional<PatrolAI>(data.first, data.second, way_point_count, way_points));
+			std::make_optional<PatrolAI>(
+				get<0>(data), get<1>(data), way_point_count, way_points, get<2>(data), enemy_angle));
 	}
 
 	// UŒ‚ó‘Ô\’z
 	{
 		const auto& data{ init_data.back() };
 
-		run_modes.at(1).emplace<1>(std::make_optional<AttackAI>(data.first, data.second));
+		run_modes.at(1).emplace<1>(
+			std::make_optional<AttackAI>(get<0>(data), get<1>(data), get<2>(data), way_points));
 	}
 }
 
@@ -70,8 +74,9 @@ void AI_Manager::Update(Enemy& enemy, float elapsed_time, Node* node)
 void AI_Manager::InitModeData()
 {
 	using std::visit;
+	using std::get;
 
-	std::vector<std::pair<bool, uint64_t>> init_data;
+	std::vector<std::tuple<bool, uint64_t, uint16_t>> init_data;
 
 	// —Dæ‡ˆÊ‚ÆÀs‰Â”\ó‘Ô‚ğæ“¾‚µ
 	for (auto& p_mode : run_modes)
@@ -80,8 +85,9 @@ void AI_Manager::InitModeData()
 
 		uint64_t priority_num{ visit([](const auto& mode) { return mode->GetPriorityNumber(); }, p_mode) };
 		bool is_executable{ visit([](const auto& mode) { return mode->GetExecutable(); }, p_mode) };
+		uint16_t kinds{ visit([](const auto& mode) { return mode->GetKindNode(); }, p_mode) };
 
-		init_data.emplace_back(is_executable, MaxNum - priority_num);
+		init_data.emplace_back(is_executable, MaxNum - priority_num, kinds);
 	}
 
 	// ƒ‚[ƒh‚ğÁ‹
@@ -97,14 +103,16 @@ void AI_Manager::InitModeData()
 			const auto& data{ init_data.front() };
 
 			run_modes.front().emplace<0>(
-				std::make_optional<PatrolAI>(data.first, data.second, way_point_count, way_points));
+				std::make_optional<PatrolAI>(
+					get<0>(data), get<1>(data), way_point_count, way_points, get<2>(data), enemy_angle));
 		}
 
 		// UŒ‚ó‘Ô\’z
 		{
 			const auto& data{ init_data.back() };
 
-			run_modes.at(1).emplace<1>(std::make_optional<AttackAI>(data.first, data.second));
+			run_modes.at(1).emplace<1>(
+				std::make_optional<AttackAI>(get<0>(data), get<1>(data), get<2>(data), way_points));
 		}
 	}
 }

@@ -88,7 +88,7 @@ namespace Math
 	{
 		static_assert(std::is_floating_point<_Ty>::value, "This type isn't floating point.");
 
-		return (Math::ToAngle(RadiansNormalize(Math::ToRadian(degrees))));
+		return (Math::ToDegree(RadiansNormalize(Math::ToRadian(degrees))));
 	}
 
 
@@ -113,7 +113,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(angle * PAI<_Ty> / _180<_Ty>);
 	}
@@ -128,7 +128,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(radian * _180<_Ty> / PAI<_Ty>);
 	}
@@ -144,7 +144,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(std::atan2<_Ty, _Ty>(hight, width));
 	}
@@ -157,11 +157,11 @@ namespace Math
 	// floatÅFÉâÉWÉAÉì
 	template<class _Ty>
 	static inline _Ty PosToRadian(const Vector2<_Ty>& base_pos,
-								   const Vector2<_Ty>& another_pos)
+		const Vector2<_Ty>& another_pos)
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return Atan2<_Ty>(another_pos.x - base_pos.x, another_pos.y - base_pos.y);
 	}
@@ -179,7 +179,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(base + period + std::sin(PAI<_Ty> * _2<_Ty> / period * count) * amolitude);
 	}
@@ -195,7 +195,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(std::pow<_Ty, _Ty>(
 			Pow2<_Ty>(pos2.x - pos1.x) + Pow2<_Ty>(pos2.y - pos1.y), _05<_Ty>
@@ -213,7 +213,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(std::pow<_Ty, _Ty>(
 			Pow2<_Ty>(pos2.x - pos1.x) + Pow2<_Ty>(pos2.y - pos1.y) + Pow2<_Ty>(pos2.z - pos1.z), _05<_Ty>
@@ -295,7 +295,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(speed * std::cos(rad));
 	}
@@ -311,7 +311,7 @@ namespace Math
 	{
 		// è¨êîÇ≈Ç»ÇØÇÍÇŒÇ»ÇÁÇ»Ç¢
 		static_assert(std::is_floating_point<_Ty>::value == true,
-					  "Have to be deciaml.");
+			"Have to be deciaml.");
 
 		return static_cast<_Ty>(speed * std::sin(rad));
 	}

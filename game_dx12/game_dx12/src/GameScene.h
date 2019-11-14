@@ -285,6 +285,7 @@ private:
 public:
 	static inline bool is_save;
 	static inline bool back_world_mode{ false };
+	static inline bool execution_quick_exit{ false }; // 実行モードを直ちに終了するか
 	static inline std::atomic<size_t> load_count{ 0 };
 	static inline std::unique_ptr<KDL::TOOL::Camera> camera;
 };

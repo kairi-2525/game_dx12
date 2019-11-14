@@ -63,6 +63,9 @@
     <ClCompile Include="src\GameScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\NodeData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main.h">
@@ -81,9 +84,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\ObjectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RootBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\SingleObject.h">
@@ -140,8 +140,11 @@
     <ClInclude Include="src\GameScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\RootBase.h">
+      <Filter>AI</Filter>
+    </ClInclude>
     <ClInclude Include="src\TitleScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

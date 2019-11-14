@@ -17,7 +17,7 @@ private:
 	using AI_Control = std::variant<std::optional<PatrolAI>, std::optional<AttackAI>>;
 
 public:
-	AI_Manager(std::deque<WayPoint>* way_points);
+	AI_Manager(std::deque<WayPoint>* way_points, const float* enemy_angle);
 	~AI_Manager() noexcept = default;
 	AI_Manager(const AI_Manager&) = delete;
 	auto& operator=(const AI_Manager&) = delete;
@@ -30,6 +30,7 @@ public:
 		running_mode = _rt.running_mode;
 		target_pos = _rt.target_pos;
 		way_point_count = _rt.way_point_count;
+		enemy_angle = _rt.enemy_angle;
 	}
 	auto& operator=(AI_Manager&& _rt) noexcept
 	{
@@ -43,6 +44,7 @@ public:
 			running_mode = _rt.running_mode;
 			target_pos = _rt.target_pos;
 			way_point_count = _rt.way_point_count;
+			enemy_angle = _rt.enemy_angle;
 		}
 
 		return (*this);
@@ -56,8 +58,11 @@ private:
 private:
 	std::array<AI_Control, 2u> run_modes;
 	AI_Control* running_mode;
+
 	std::deque<WayPoint>* way_points;
 	size_t way_point_count;
+
 	bool change_mode;
 	DirectX::XMFLOAT3 target_pos;
+	const float* enemy_angle;
 };

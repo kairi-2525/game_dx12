@@ -262,41 +262,6 @@ public:
 	Optional<Variant<Enemy*, Plane*, Wall*, WarpHole*, Key*, Door*>> select_m_obj;
 };
 
-struct Node
-{
-	using VF3 = DirectX::XMFLOAT3;
-
-	// パス情報の設定
-	void PathSetting(Object& objects);
-	// パスの発見（nullptrの場合は袋小路状態）
-	[[nodiscard]] NodeData* PathFindingDijkstra(
-		const VF3& base_pos, const VF3& target_pos, int64_t* processing_time = nullptr);
-	// パスの発見
-	[[nodiscard]] NodeData& PathFindingAstar(
-		const VF3& base_pos, const VF3& target_pos, int64_t* processing_time = nullptr);
-	// ノードの接続
-	[[nodiscard]] bool ConnectNode(NodeData* n1, NodeData* n2)
-	{
-		auto& connect_node{ n1->coonect_node };
-
-		for (auto& node : connect_node)
-		{
-			//登録済みでないか
-			if (node.next_node == n2)	return false;
-		}
-
-		constexpr uint16_t Cost{ 1u };  // 無条件にコストは１
-
-		//接続
-		n1->coonect_node.emplace_back(n2, Cost);
-		n2->coonect_node.emplace_back(n1, Cost);
-
-		return true;
-	}
-
-	std::deque<NodeData> data;
-};
-
 class ObjectManager final
 {
 private:

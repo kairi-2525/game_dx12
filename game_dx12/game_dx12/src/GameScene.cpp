@@ -14,6 +14,9 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	object_manager.emplace();
 	open_file_path.clear();
 	file_flg = false;
+	camera_angle = { Math::ToRadian(-80.f), 0.f, 0.f };
+	camera_dis = 50.f;
+
 	masu_pos = Fill3(0.f);
 	edit_mode = false;
 	enm_edit_mode = false;
@@ -56,6 +59,9 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 			);
 
 	camera->SetPosition(CreateRotationPos(camera_angle, 30.f));
+
+	Enemy::player = &object_manager->GetObjectData<Player>();
+	Enemy::walls = &object_manager->GetObjectData<Wall>();
 }
 
 void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -348,6 +354,7 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 // 編集モード更新
 void SceneGame::EditModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+#if false
 	using Keys = KDL::KEY_INPUTS;
 
 	auto camera_pos{ camera->GetPosition() };
@@ -410,7 +417,6 @@ void SceneGame::EditModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_window,
 	}
 
 #ifdef KDL_USE_IMGUI
-#if false
 	ImGui::Text(u8"カメラ座標：%.01f, %.01f", camera_pos.x, camera_pos.z);
 	ImGui::SliderFloat(u8"カメラ距離", &camera_dis, 10.f, 150.f, "%.0f");
 	ImGui::SliderFloat(u8"カメラ速度", &cam_speed, 5.f, 50.f, "%.0f");
@@ -604,6 +610,7 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 void SceneGame::FileDataFlg::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+#if false
 	using Keys = KDL::KEY_INPUTS;
 
 	const auto* input = p_window->GetInput();
@@ -647,6 +654,7 @@ void SceneGame::FileDataFlg::Update(SceneManager* p_scene_mgr, KDL::Window* p_wi
 	// コピー
 	//else if (press_shift && down_c)
 	//	is_copy = true;
+#endif
 }
 
 // 書き出し
@@ -755,5 +763,3 @@ bool SceneGame::Input(const Path& input_path, const bool temp_file)
 
 	return true;
 }
-
-//todo : https://knzw.tech/raytracing/?page_id=78  // レイキャスト
