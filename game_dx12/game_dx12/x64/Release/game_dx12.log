@@ -1,7 +1,7 @@
-﻿  scene_title.cpp
+﻿  main.cpp
   コード生成しています。
-  5 of 7400 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+  7377 of 7400 functions (99.7%) were compiled, the rest were copied from previous compilation.
+    358 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
-  game_dx12.vcxproj -> E:\学校用\GitHub\download\KDL2\KDL\x64\Release\game_dx12.exe
+  game_dx12.vcxproj -> C:\Users\nicon\Desktop\2019後期一回目\game_dx12\x64\Release\game_dx12.exe
