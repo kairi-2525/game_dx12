@@ -56,6 +56,7 @@ private:
 				hr = it.Model_Base::Draw<_T>(p_app, p_camera, light_dir, model.get());
 				if (FAILED(hr)) return hr;
 			}
+			return hr;
 		}
 	};
 	struct Ground : public Model_Base
@@ -64,25 +65,40 @@ private:
 	};
 	enum class GROUND_TYPE : int
 	{
+		Air,
 		Sand,
 		SandBroken,
 		Snow,
-		SnowBroken
+		SnowBroken,
+		WarpHole,
+		SandWall,
+		SnowWall,
 	};
 private:
 	static inline const std::unordered_map<GROUND_TYPE, std::string> grounds_list =
 	{
+		{GROUND_TYPE::Air, "Air"},
 		{GROUND_TYPE::Sand, "Sand"},
 		{GROUND_TYPE::SandBroken, "SandBroken"},
 		{GROUND_TYPE::Snow, "Snow"},
-		{GROUND_TYPE::SnowBroken, "SnowBroken"}
+		{GROUND_TYPE::SnowBroken, "SnowBroken"},
+		{GROUND_TYPE::WarpHole, "WarpHole2"},
+		{GROUND_TYPE::SandWall, "SandWall"},
+		{GROUND_TYPE::SnowWall, "SnowWall"}
 	};
 	static inline const UINT BLOCK_NUM = 20;
+	static inline const float BLOCK_SIZE = 1.0f;
+	static inline float WARP_HOLE_SCALE = 0.005f;
+	static inline float WALL_SCALE = 1.f / 6;
 private:
 	KDL::FLOAT3 light_dir;
 	std::unique_ptr<KDL::TOOL::Camera> camera;
 	Model<KDL::DX12::Mesh_FBX> player;
 	std::unordered_map<GROUND_TYPE, MenyModels<KDL::DX12::Geometric_Board, Ground>> grounds;
+	MenyModels<KDL::DX12::Mesh_FBX, Ground> warp_hole;
+	MenyModels<KDL::DX12::Mesh_FBX> snows;
+	MenyModels<KDL::DX12::Mesh_FBX> sands;
+	bool snow;
 public:
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);

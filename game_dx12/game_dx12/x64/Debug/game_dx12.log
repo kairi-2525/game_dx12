@@ -5,5 +5,5 @@ D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Dx12\App.h(1,1): war
 D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Dx12\App.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
   コードを生成中...
 D:\Program\個人\git\game_dx12\game_dx12\game_dx12\inc\KDL_Dx12\App.h(1,1): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
-D:\Program\個人\git\game_dx12\game_dx12\game_dx12\src\TitleScene.h(59): warning C4715: 'SceneTitle::MenyModels<KDL::DX12::Geometric_Board,SceneTitle::Ground>::Draw': 値を返さないコントロール パスがあります。
+  LINK : 前回のインクリメンタル リンクで D:\Program\個人\git\game_dx12\game_dx12\x64\Debug\game_dx12.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
   game_dx12.vcxproj -> D:\Program\個人\git\game_dx12\game_dx12\x64\Debug\game_dx12.exe

@@ -90,7 +90,7 @@ class SceneManager
 public:
 	SceneManager(SceneBase* p_scene, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Exit() { m_exit = false; }
+	void Exit() { m_exit = true; }
 	bool IsExit() { return m_exit; }
 };
 
