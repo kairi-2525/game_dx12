@@ -1,6 +1,21 @@
-﻿  コード生成しています。
-  1 of 7071 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    5 functions had inline decision re-evaluated but remain unchanged
+﻿  AI_Manager.cpp
+  AttackAI.cpp
+  Enemy.cpp
+  FileOperate.cpp
+  GameScene.cpp
+  main.cpp
+  MultipleObject.cpp
+  NodeData.cpp
+  ObjectManager.cpp
+  PatrolAI.cpp
+  scene.cpp
+  SceneSelect.cpp
+  scene_main.cpp
+  scene_title.cpp
+  SingleObject.cpp
+  コード生成しています。
+  163 of 7223 functions ( 2.3%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    40 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   game_dx12.vcxproj -> E:\学校用\GitHub\download\KDL2\KDL\x64\Release\game_dx12.exe

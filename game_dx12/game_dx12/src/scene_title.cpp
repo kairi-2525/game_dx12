@@ -1,5 +1,5 @@
 #include "TitleScene.h"
-#include "GameScene.h"
+#include "SceneSelect.h"
 
 void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
@@ -148,7 +148,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 #endif
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
 	{
-		SetNextScene<SceneLoad>();	//別スレッドでシーン切り替え
+		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
 	}
 #ifdef _DEBUG
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Space))

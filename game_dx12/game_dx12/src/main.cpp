@@ -13,7 +13,11 @@ int WINAPI WinMain(
 	_In_ int nCmdShow)
 {
 	{
+#ifdef NDEBUG
 		KDL::Window main_window("game", KDL::Window::STYLE_FULLSCREEN);
+#else
+		KDL::Window main_window("game", { 1888, 1062 });
+#endif
 		p_main_window = &main_window;
 		{
 			KDL::DX12::App dx12(main_window.GetHWND(), 1);
