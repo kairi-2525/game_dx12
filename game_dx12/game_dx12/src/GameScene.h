@@ -11,8 +11,6 @@
 #include "KDL_Dx12/Primitive.h"
 #include "KDL_Dx12/Sprite.h"
 
-#if true
-
 class SceneGame final
 	: public SceneBase
 {
@@ -65,14 +63,14 @@ private:
 	};
 
 public:
-	static constexpr DirectX::XMFLOAT4 LightDir{ 0.f, -1.f, 0.f, 1.f };
-	static constexpr std::string_view LabelName{ "GameEdit" };
-	static inline const Path FileDir{ "Data\\File" };
+	static constexpr VF4 LightDir{ 0.f, -1.f, 0.f, 1.f };
+	static inline const Path FileDir{ "data\\File" };
 	static inline const Path FileExtension{ ".bin" };
-	static inline const Path PlanePathFileDir{ FileDir / "PathData" };
 	static inline const Path SaveFileDir{ FileDir / "Stage" };
-	static inline const Path TempFileDir{ FileDir / "Temp" += FileExtension };
 	static inline const Path CameraFileDir{ FileDir / "Camera" += FileExtension };
+	//static constexpr std::string_view LabelName{ "GameEdit" };
+	//static inline const Path PlanePathFileDir{ FileDir / "PathData" };
+	//static inline const Path TempFileDir{ FileDir / "Temp" += FileExtension };
 
 public:
 	static const VF3& GetMasuPos() noexcept { return masu_pos; }
@@ -275,7 +273,6 @@ private:
 	std::unique_ptr<KDL::DX12::Geometric_Board_S> bg_board;
 
 
-	Path open_file_path;
 	FileDataFlg file_flg;
 
 private:
@@ -283,6 +280,7 @@ private:
 	static inline bool edit_mode{ false };
 	static inline bool enm_edit_mode{ false };
 public:
+	static inline Path open_file_path;
 	static inline bool is_save;
 	static inline bool back_world_mode{ false };
 	static inline bool execution_quick_exit{ false }; // 実行モードを直ちに終了するか
@@ -333,4 +331,3 @@ public:
 	}
 	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
 };
-#endif

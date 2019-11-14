@@ -313,11 +313,11 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	ImGui::Text(u8"F1 で 編集モードじゃぁ～");
 #endif
 #endif
-	if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Space))
-	{
-		SetNextScene<SceneLoad>();
-		return;
-	}
+	//if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Space))
+	//{
+	//	SetNextScene<SceneLoad>();
+	//	return;
+	//}
 
 	// リトライ機能
 	if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Enter))
@@ -660,6 +660,7 @@ void SceneGame::FileDataFlg::Update(SceneManager* p_scene_mgr, KDL::Window* p_wi
 // 書き出し
 bool SceneGame::Output(const Path& output_path, const bool temp_file)
 {
+#if false
 	// 一時ファイルはオブジェクトだけ出力
 	if (temp_file)
 	{
@@ -690,6 +691,7 @@ bool SceneGame::Output(const Path& output_path, const bool temp_file)
 				return false;
 		}
 	}
+#endif
 
 	return true;
 }
@@ -699,6 +701,7 @@ bool SceneGame::Input(const Path& input_path, const bool temp_file)
 {
 	namespace fs = std::filesystem;
 
+#if false
 	// 一時ファイルはオブジェクトだけ入力
 	if (temp_file)
 	{
@@ -760,6 +763,21 @@ bool SceneGame::Input(const Path& input_path, const bool temp_file)
 			}
 		}
 	}
+#else
+	if (std::ifstream ifs{ CameraFileDir }; ifs)
+	{
+		ifs >> camera_angle >> camera_dis;
+	}
+	else
+		return false;
 
+	if (std::ifstream ifs{ input_path }; ifs)
+	{
+		object_manager->Input(ifs);
+	}
+	else
+		return false;
+
+#endif
 	return true;
 }

@@ -1,7 +1,7 @@
 #include "main.h"
 #include "scene.h"
 #include "TitleScene.h"
-#include "GameScene.h"
+#include "SceneSelect.h"
 
 KDL::Window* p_main_window = nullptr;
 KDL::DX12::App* p_app = nullptr;
@@ -22,7 +22,7 @@ int WINAPI WinMain(
 			ImGuiIO& io = ImGui::GetIO();
 			io.Fonts->AddFontFromFileTTF("./data/fonts/APJapanesefont.ttf", 20.0f, nullptr, KDL::TOOL::glyphRangesJapanese);
 #endif
-			SceneManager scene_mgr(new SceneLoad, &main_window, &dx12);
+			SceneManager scene_mgr(new SceneSelect, &main_window, &dx12);
 
 			while (main_window.Update())
 			{

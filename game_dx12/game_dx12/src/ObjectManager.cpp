@@ -807,7 +807,7 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		{
 			assert(!(*load_models[i]) && "Šù‚É“Ç‚İ‚Ü‚ê‚Ä‚¢‚é");
 
-			*load_models[i] = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, fbx_paths[i]);
+			*load_models[i] = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, fbx_paths[i], 1000u);
 
 			(*load_count)++;
 		}
