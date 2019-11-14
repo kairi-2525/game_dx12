@@ -219,6 +219,13 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
+	decltype(WarpOn)* draw_obj{ nullptr };
+
+	if (GS::back_world_mode == is_back_world)
+		draw_obj = &WarpOn;
+	else
+		draw_obj = &WarpOff;
+
 	const VF4 color{ WHITE, (GS::back_world_mode == is_back_world ? 1.f : 0.5f) };
 
 	DirectX::XMMATRIX W;
@@ -236,7 +243,7 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	auto Draw{ [&](auto& obj)
 	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
 
-	Draw(model);
+	Draw(*draw_obj);
 }
 
 //------------------------------------------------------------------------------------------------------

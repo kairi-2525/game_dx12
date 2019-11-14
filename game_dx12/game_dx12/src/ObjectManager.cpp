@@ -792,7 +792,8 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 			&Wall::sand_model,
 			&Wall::snow_model,
 			&Start::model,
-			&WarpHole::model,
+			&WarpHole::WarpOn,
+			&WarpHole::WarpOff,
 		};
 
 		// FBX以外のファイル名を削除
@@ -853,7 +854,8 @@ void ObjectManager::UnInitialize()
 		&Wall::sand_model,
 		&Wall::snow_model,
 		&Start::model,
-		&WarpHole::model,
+		&WarpHole::WarpOn,
+		&WarpHole::WarpOff,
 	};
 
 	const std::vector<decltype(&Plane::sand_boad)> release_textures{
