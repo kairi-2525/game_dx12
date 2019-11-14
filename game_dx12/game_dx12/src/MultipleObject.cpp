@@ -193,13 +193,13 @@ void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 WarpHole::WarpHole(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = Fill3(0.005f);
+	scale = Fill3(0.16f);
 }
 
 WarpHole::WarpHole()
 	: is_back_world(false)
 {
-	scale = Fill3(0.005f);
+	scale = Fill3(0.16f);
 }
 
 void WarpHole::Update(KDL::Window* p_window, KDL::DX12::App* p_app)

@@ -1,21 +1,35 @@
-﻿  AI_Manager.cpp
-  AttackAI.cpp
-  Enemy.cpp
-  FileOperate.cpp
-  GameScene.cpp
-  main.cpp
-  MultipleObject.cpp
-  NodeData.cpp
-  ObjectManager.cpp
-  PatrolAI.cpp
-  scene.cpp
-  SceneSelect.cpp
-  scene_main.cpp
-  scene_title.cpp
-  SingleObject.cpp
-  コード生成しています。
-  163 of 7223 functions ( 2.3%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
-    40 functions had inline decision re-evaluated but remain unchanged
-  コード生成が終了しました。
-  game_dx12.vcxproj -> E:\学校用\GitHub\download\KDL2\KDL\x64\Release\game_dx12.exe
+﻿
+プロジェクト パフォーマンスの概要:
+       43 ミリ秒  C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\game_dx12.vcxproj   1 回呼び出し
+                 43 ミリ秒  Clean                                      1 回呼び出し
+
+ターゲット パフォーマンスの概要:
+        0 ミリ秒  CleanReferencedProjects                    1 回呼び出し
+        0 ミリ秒  PGInstrumentedClean                        1 回呼び出し
+        0 ミリ秒  AfterCppClean                              1 回呼び出し
+        0 ミリ秒  BeforeCppClean                             1 回呼び出し
+        0 ミリ秒  AfterClean                                 1 回呼び出し
+        0 ミリ秒  CleanPublishFolder                         1 回呼び出し
+        0 ミリ秒  CppClean                                   1 回呼び出し
+        0 ミリ秒  Clean                                      1 回呼び出し
+        0 ミリ秒  _SplitProjectReferencesByFileExistence     1 回呼び出し
+        0 ミリ秒  BeforeClean                                1 回呼び出し
+        0 ミリ秒  PrepareProjectReferences                   1 回呼び出し
+        1 ミリ秒  _PrepareForClean                           1 回呼び出し
+        1 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
+        1 ミリ秒  _GetProjectReferenceTargetFrameworkProperties   1 回呼び出し
+        2 ミリ秒  _CheckForInvalidConfigurationAndPlatform   1 回呼び出し
+        2 ミリ秒  CoreClean                                  1 回呼び出し
+       35 ミリ秒  CoreCppClean                               1 回呼び出し
+
+タスク パフォーマンスの概要:
+        0 ミリ秒  Message                                    2 回呼び出し
+        0 ミリ秒  Delete                                     4 回呼び出し
+        0 ミリ秒  ReadLinesFromFile                          1 回呼び出し
+        0 ミリ秒  RemoveDuplicates                           1 回呼び出し
+        0 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
+        1 ミリ秒  FindUnderPath                              2 回呼び出し
+        1 ミリ秒  MSBuild                                    1 回呼び出し
+        1 ミリ秒  MakeDir                                    2 回呼び出し
+        3 ミリ秒  WriteLinesToFile                           2 回呼び出し
+       32 ミリ秒  CppClean                                   1 回呼び出し
