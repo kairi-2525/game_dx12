@@ -115,6 +115,11 @@ private:
 	Model<KDL::DX12::Mesh_FBX> title_parallel;
 	Model<KDL::DX12::Mesh_FBX> title_labyrinth;
 	bool snow;
+	int sound_bgm;
+	int sound_bgm_p;
+	int sound_se_break;
+	int sound_se_crack;
+	int sound_se_warp;
 public:
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
@@ -122,7 +127,7 @@ public:
 	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 
-	void BreakGrounds();
-	void RemoveGrounds();
-	void FlipGrounds();
+	void BreakGrounds(KDL::Window* p_window);
+	void RemoveGrounds(KDL::Window* p_window);
+	void FlipGrounds(KDL::Window* p_window);
 };

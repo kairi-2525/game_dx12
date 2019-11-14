@@ -88,7 +88,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			{
 				static VF2 adj{ -300.f, -200.f };
 
-				sprites.at("stage")->AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+				sprites.at("Stage")->AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
 					Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 			}
 

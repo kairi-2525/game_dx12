@@ -43,6 +43,13 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	sand_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Sand.png", 100);
 	snow_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Snow.png", 100);
 	warp_hole_off = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Game/Warp_off.fbx", 100);
+
+	auto* audio = p_window->GetAudio();
+	sound_bgm = audio->Load("./data/sounds/BGM.wav");
+	sound_bgm_p = 0;
+	sound_se_break = audio->Load("./data/sounds/break.wav");
+	sound_se_crack = audio->Load("./data/sounds/crack.wav");
+	sound_se_warp = audio->Load("./data/sounds/warp.wav");
 }
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -98,6 +105,11 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	it.position = KDL::FLOAT3{ set_pos, 0, 0 };
 	it.rotate = KDL::FLOAT3{ 0, 0, 0 };
 	it.scale = KDL::FLOAT3{ WARP_HOLE_SCALE, WARP_HOLE_SCALE, WARP_HOLE_SCALE };
+
+	auto* audio = p_window->GetAudio();
+	audio->Stop(sound_bgm, sound_bgm_p, 1.0f);
+	sound_bgm_p = audio->CreatePlayHandle(sound_bgm, 0.f, true, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sound_bgm, sound_bgm_p, 0.01f, 0.2f, false);
 }
 
 void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -196,7 +208,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 		}
 		if (snow != snow_log)
 		{
-			FlipGrounds();
+			FlipGrounds(p_window);
 			auto& set_data = grounds.at(snow ? GROUND_TYPE::Snow : GROUND_TYPE::Sand).data;
 			auto& set_break_data = grounds.at(snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken).data;
 			auto& clear_data = grounds.at(!snow ? GROUND_TYPE::Snow : GROUND_TYPE::Sand).data;
@@ -233,7 +245,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					grounds[GROUND_TYPE::SandBroken].data.emplace_back(data[i]);
 					data[i] = grounds[GROUND_TYPE::Sand].data.back();
 					data.pop_back();
-					BreakGrounds();
+					BreakGrounds(p_window);
 				}
 				else i++;
 			}
@@ -248,7 +260,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					grounds[GROUND_TYPE::SnowBroken].data.emplace_back(data[i]);
 					data[i] = data.back();
 					data.pop_back();
-					BreakGrounds();
+					BreakGrounds(p_window);
 				}
 				else i++;
 			}
@@ -262,7 +274,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SandBroken);
-					RemoveGrounds();
+					RemoveGrounds(p_window);
 				}
 				else i++;
 			}
@@ -276,7 +288,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SnowBroken);
-					RemoveGrounds();
+					RemoveGrounds(p_window);
 				}
 				else i++;
 			}
@@ -428,23 +440,33 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-
+	auto* audio = p_window->GetAudio();
+	audio->Delete(sound_bgm);
+	audio->Delete(sound_se_break);
+	audio->Delete(sound_se_crack);
+	audio->Delete(sound_se_warp);
 }
 
 //サウンド用
 
 //ヒビが入ったとき
-void SceneTitle::BreakGrounds()
+void SceneTitle::BreakGrounds(KDL::Window* p_window)
 {
-
+	auto* audio = p_window->GetAudio();
+	int handle = audio->CreatePlayHandle(sound_se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sound_se_crack, handle, 0.01f, 0.2f, false);
 }
 //消えたとき
-void SceneTitle::RemoveGrounds()
+void SceneTitle::RemoveGrounds(KDL::Window* p_window)
 {
-
+	auto* audio = p_window->GetAudio();
+	int handle = audio->CreatePlayHandle(sound_se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sound_se_break, handle, 0.01f, 0.2f, false);
 }
 //反転したとき
-void SceneTitle::FlipGrounds()
+void SceneTitle::FlipGrounds(KDL::Window* p_window)
 {
-
+	auto* audio = p_window->GetAudio();
+	int handle = audio->CreatePlayHandle(sound_se_warp, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sound_se_warp, handle, 0.01f, 0.2f, false);
 }
