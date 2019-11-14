@@ -12,7 +12,7 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	const auto fonts{ GetAllFileName("data\\images\\Select") };
 
 	// ”wŒi“Ç‚İ‚İ
-	bg_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\á.png", 1u);
+	bg_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Snow.png", 1u);
 
 	// ‰æ‘œ“Ç‚İ‚İ
 	for (auto& name : fonts)

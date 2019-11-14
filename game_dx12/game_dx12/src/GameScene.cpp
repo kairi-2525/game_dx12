@@ -606,10 +606,10 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	load_count++;
 #endif
 	if (!snow_boad)
-		snow_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\ê·.png", 1);
+		snow_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Snow.png", 1);
 
 	if (!sand_boad)
-		sand_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\çªîô.png", 1);
+		sand_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Sand.png", 1);
 
 	load_count++;
 
