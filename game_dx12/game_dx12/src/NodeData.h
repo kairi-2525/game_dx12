@@ -110,3 +110,62 @@ public:
 	bool is_finded;    // 探索済みかどうか
 	NodeData* to_goal; // ゴールへの最短ルートにつながるノード
 };
+
+struct Object;
+
+struct Node
+{
+	using VF3 = DirectX::XMFLOAT3;
+
+	Node() = default;
+	~Node() noexcept = default;
+
+	Node(const Node& _rt) = delete;
+	Node(Node&& _rt) noexcept
+	{
+		data.swap(_rt.data);
+	}
+
+	auto& operator=(const Node& _rt)
+	{
+		data = _rt.data;
+
+		return (*this);
+	}
+	auto& operator=(Node&& _rt) noexcept
+	{
+		data.swap(_rt.data);
+
+		return (*this);
+	}
+
+	// パス情報の設定
+	void PathSetting(Object& objects);
+	// パスの発見（nullptrの場合は袋小路状態）
+	[[nodiscard]] std::deque<NodeData> PathFindingDijkstra(
+		const VF3& base_pos, const VF3& target_pos, int64_t* processing_time = nullptr);
+	// パスの発見
+	[[nodiscard]] NodeData& PathFindingAstar(
+		const VF3& base_pos, const VF3& target_pos, int64_t* processing_time = nullptr);
+	// ノードの接続
+	[[nodiscard]] bool ConnectNode(NodeData* n1, NodeData* n2)
+	{
+		auto& connect_node{ n1->coonect_node };
+
+		for (auto& node : connect_node)
+		{
+			//登録済みでないか
+			if (node.next_node == n2)	return false;
+		}
+
+		constexpr uint16_t Cost{ 1u };  // 無条件にコストは１
+
+		//接続
+		n1->coonect_node.emplace_back(n2, Cost);
+		n2->coonect_node.emplace_back(n1, Cost);
+
+		return true;
+	}
+
+	std::deque<NodeData> data;
+};

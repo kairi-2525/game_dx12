@@ -86,11 +86,11 @@ public:
 public:
 	VF3 pos;
 	bool is_move_select;
+	VF3 angle;
 
 protected:
 	bool exist;
 	VF3 scale;
 	Vector3<float> speed;
-	VF3 angle;
 	VF4 color;
 };

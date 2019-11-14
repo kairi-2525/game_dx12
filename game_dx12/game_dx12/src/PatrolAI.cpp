@@ -1,26 +1,30 @@
 #include <vector>
 
 #include "ImGuiSeting.h"
-#include "KDL.h"
 #include "PatrolAI.h"
 #include "ObjectManager.h"
 #include "Enemy.h"
 #include "XMFLOAT_Hlper.h"
+#include "GameScene.h"
+
 #if !_DEBUG
 #include "MessageBox.h"
 #endif
 
 PatrolAI::PatrolAI(const bool executable, const uint64_t priority_number, size_t& way_point_count,
-	std::deque<WayPoint>* way_points)
-	: RootBase(executable, (std::numeric_limits<uint64_t>::max)() - priority_number), change_mode(true),
-	patroling_mode(nullptr), way_point_count(way_point_count), way_points(way_points)
+	std::deque<WayPoint>* way_points, const uint16_t kind_node, const float* enemy_angle)
+	: RootBase(executable, (std::numeric_limits<uint64_t>::max)() - priority_number, kind_node),
+	change_mode(true), patroling_mode(nullptr), way_point_count(way_point_count), way_points(way_points),
+	end_number((std::numeric_limits<uint16_t>::max)()), enemy_angle_y(enemy_angle)
 {
-	static const std::vector<std::pair<bool, uint64_t>> init_data
+	using std::get;
+
+	static const std::vector<std::tuple<bool, uint64_t, uint16_t>> init_data
 	{
-		// 実行可能、優先順位
-		{ true	   , 2 },  // 移動
-		{ true	   , 3 },  // 停止
-		{ false	   , 1 },  // 発見
+		// 実行可能、優先順位、種類
+		{ true	   , 2		, 1 },  // 移動
+		{ true	   , 3		, 2 },  // 停止
+		{ false	   , 1		, 3 },  // 発見
 	};
 
 	assert(init_data.size() == 3u && "初期化データの追加し忘れ");
@@ -31,7 +35,8 @@ PatrolAI::PatrolAI(const bool executable, const uint64_t priority_number, size_t
 
 		auto& back{ patrol_modes.emplace_back() };
 
-		back.emplace<0>(std::make_optional<MoveAI>(data.first, data.second, way_point_count, way_points));
+		back.emplace<0>(std::make_optional<MoveAI>(
+			get<0>(data), get<1>(data), way_point_count, way_points, get<2>(data)));
 	}
 
 	// 停止状態構築
@@ -40,7 +45,7 @@ PatrolAI::PatrolAI(const bool executable, const uint64_t priority_number, size_t
 
 		auto& back{ patrol_modes.emplace_back() };
 
-		back.emplace<1>(std::make_optional<StopAI>(data.first, data.second));
+		back.emplace<1>(std::make_optional<StopAI>(get<0>(data), get<1>(data), get<2>(data)));
 	}
 
 	// 発見状態構築
@@ -49,16 +54,33 @@ PatrolAI::PatrolAI(const bool executable, const uint64_t priority_number, size_t
 
 		auto& back{ patrol_modes.emplace_back() };
 
-		back.emplace<2>(std::make_optional<FindAI>(data.first, data.second));
+		back.emplace<2>(std::make_optional<FindAI>(get<0>(data), get<1>(data), get<2>(data)));
 	}
 }
 
-void PatrolAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
+void PatrolAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 {
 	using std::visit;
 
-#if _DEBUG && false
+#if USE_IMGUI && false
+	auto s_size{ GMLIB->GetScreenSize() };
+
+	ImguiTool::BeginShowTempWindow({ 1920.f / 2.f, 0.f }, "PatrolAI");
+
+	ImGui::SliderFloat(u8"認識距離(マス単位)", &hit_distance, 0.f, 20.f, "%.1f");
+	ImGui::SliderAngle(u8"認識範囲", &hit_angle, 0.f, 90.f, "%.1f");
+	ImguiTool::ShowHelp(u8"敵の正面が0°敵の真横が90°としています");
+
+	ImGui::End();
+#endif
+
+#if true
+	// 前回のFindAIノードが終了してした時
+	if (end_number == 3u && change_mode)
+#else
+	// 手動
 	if (GMLIB->isKeyDown(KeyData::Keys::P))
+#endif
 	{
 		// このモードを終了
 		is_mode_end = true;
@@ -66,10 +88,8 @@ void PatrolAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 		// 優先度を下げる
 		priority_number -= RootBase::SubStructNumber;
 	}
-#endif
-
 	// モード変更処理
-	if (change_mode)
+	else if (change_mode)
 	{
 		change_mode = false;
 
@@ -83,7 +103,8 @@ void PatrolAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 		{
 			constexpr uint64_t MaxNum{ (std::numeric_limits<uint64_t>::max)() };
 
-			uint64_t priority_num{ visit([](const auto& mode) { return mode->GetPriorityNumber(); }, p_mode) };
+			uint64_t priority_num
+			{ visit([](const auto& mode) { return mode->GetPriorityNumber(); }, p_mode) };
 			bool is_executable{ visit([](const auto& mode) { return mode->GetExecutable(); }, p_mode) };
 
 			init_data.emplace_back(is_executable, MaxNum - priority_num);
@@ -121,6 +142,12 @@ void PatrolAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 	// 更新処理
 	else if (patroling_mode)
 	{
+		constexpr uint16_t InitNumber{ (std::numeric_limits<uint16_t>::max)() };
+
+		end_number = InitNumber;
+
+		uint16_t kinds_num{ 0 };
+
 		visit([&](auto& mode)
 			{
 				// 更新
@@ -128,15 +155,137 @@ void PatrolAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 
 				// そのモードの更新が終了を確認する
 				change_mode = mode->GetModeEnd();
+
+				kinds_num = mode->GetKindNode();
+
+				// そのモードの終了時に種類を保存
+				if (change_mode)
+					end_number = kinds_num;
 			}, *patroling_mode);
+
+#if _DEBUG
+		if (!(*Enemy::player))
+		{
+			assert(!"プレイヤーを配置していない（続行可）");
+			SceneGame::execution_quick_exit = true;
+			return;
+		}
+#else
+		if (!(*Enemy::player) && Message(L"プレイヤーを配置していない", L"エディターへ移行するZE☆") == BoxReturn::Yes_Ok)
+		{
+			SceneGame::execution_quick_exit = true;
+			return;
+		}
+#endif
+
+		// 自棄との当たり判定（Findノードを除く）
+		if (!change_mode && kinds_num != 3 &&
+			IsPlayerRayHit(enemy_pos, (*Enemy::player)->pos))
+		{
+			// Findノードを実行可能状態へ
+			visit([](auto& mode) { mode->SetExecutable(true); }, patrol_modes.back());
+
+			// モード変更可能に
+			change_mode = true;
+		}
 	}
+}
+
+bool PatrolAI::IsPlayerRayHit(const VF3& enemy_pos, const VF3& player_pos)
+{
+	namespace DX = DirectX;
+	using Math::AdjEqual;
+	using VF2 = DX::XMFLOAT2;
+	using Vec2sub::MakeVector2;
+
+	// 敵が反応距離内にいない
+	if (Math::Distance(enemy_pos, player_pos) > hit_distance)	return false;
+
+	DX::XMVECTOR enm_vec{ DX::XMVectorSet(0.f, 0.f, 0.f, 0.f) };
+
+	// 敵の反応範囲
+	{
+		constexpr float AdjRadY{ Math::PAI<float> / 2.f };
+
+		const auto e_pos{ MakeVector2<float>(enemy_pos.x, enemy_pos.z) };
+		const auto p_pos{ MakeVector2<float>(player_pos.x, player_pos.z) };
+
+		const auto enm_to_pl_vec{ ToNormalizeXMVECTOR(e_pos - p_pos) };
+
+		// 右
+		if (AdjEqual(*enemy_angle_y, AdjRadY))
+		{
+			static const auto InitVec{ ToXMVECTOR(VF2{ +1.f, 0.f }) };
+
+			enm_vec = InitVec;
+		}
+		// 左
+		else if (AdjEqual(*enemy_angle_y, -AdjRadY))
+		{
+			static const auto InitVec{ ToXMVECTOR(VF2{ -1.f, 0.f }) };
+
+			enm_vec = InitVec;
+		}
+		// 上
+		else if (AdjEqual(*enemy_angle_y, AdjRadY * 0.f))
+		{
+			static const auto InitVec{ ToXMVECTOR(VF2{ 0.f, +1.f }) };
+
+			enm_vec = InitVec;
+		}
+		// 下
+		else if (AdjEqual(*enemy_angle_y, AdjRadY * 2.f))
+		{
+			static const auto InitVec{ ToXMVECTOR(VF2{ 0.f, -1.f }) };
+
+			enm_vec = InitVec;
+		}
+
+		// 敵を基準にしたプレーヤーの角度
+		const float radian{ std::acos(ToXMFLOAT1(DX::XMVector2Dot(enm_to_pl_vec, enm_vec))) };
+
+		// 敵が反応範囲内にいない
+		if (radian > hit_angle)		return false;
+	}
+
+	for (auto& wall : *Enemy::walls)
+	{
+		constexpr float WallDivSize{ 0.6f };
+
+		// 認識範囲外は処理しない
+		if (Math::Distance(wall.pos, enemy_pos) > hit_distance)	continue;
+
+		const auto e_pos{ MakeVector2<float>(enemy_pos.x, enemy_pos.z) };
+		const auto w_pos{ MakeVector2<float>(wall.pos.x, wall.pos.z) };
+
+		const auto& enm_wall_vec{ ToNormalizeXMVECTOR(-(w_pos - e_pos)) };
+
+		// 敵を基準にした壁の角度
+		const float radian{ std::acos(ToXMFLOAT1(DX::XMVector2Dot(enm_wall_vec, enm_vec))) };
+
+		// 壁が反応範囲内にいない
+		if (radian > hit_angle)		continue;
+
+		const auto point{ ToXMVECTOR(w_pos) };
+		const auto line_point1{ ToXMVECTOR(VF2{ player_pos.x, player_pos.z }) };
+		const auto line_point2{ ToXMVECTOR(VF2{ enemy_pos.x, enemy_pos.z }) };
+
+		// 敵と自機の線と壁の最短距離
+		const float dis{ ToXMFLOAT1(DX::XMVector2LinePointDistance(line_point1, line_point2, point)) };
+
+		// 最短距離が壁を球と見なした時の半径よりも短い
+		if (dis < WallDivSize)	return false;
+	}
+
+	return true;
 }
 
 void PatrolAI::InitModeData()
 {
 	using std::visit;
+	using std::get;
 
-	std::vector<std::pair<bool, uint64_t>> init_data;
+	std::vector<std::tuple<bool, uint64_t, uint16_t>> init_data;
 
 	// 優先順位と実行可能状態を取得し
 	for (auto& p_mode : patrol_modes)
@@ -145,8 +294,9 @@ void PatrolAI::InitModeData()
 
 		uint64_t priority_num{ visit([](const auto& mode) { return mode->GetPriorityNumber(); }, p_mode) };
 		bool is_executable{ visit([](const auto& mode) { return mode->GetExecutable(); }, p_mode) };
+		uint16_t kinds{ visit([](const auto& mode) { return mode->GetKindNode(); }, p_mode) };
 
-		init_data.emplace_back(is_executable, MaxNum - priority_num);
+		init_data.emplace_back(is_executable, MaxNum - priority_num, kinds);
 	}
 
 	// モードを消去
@@ -160,10 +310,8 @@ void PatrolAI::InitModeData()
 
 			auto& back{ patrol_modes.emplace_back() };
 
-			back.emplace<0>(std::make_optional<MoveAI>(data.first, data.second, way_point_count,
-				way_points));
-
-			//BuildAINode<MoveAI>(data.first, data.second, way_point_count, way_points);
+			back.emplace<0>(std::make_optional<MoveAI>(
+				get<0>(data), get<1>(data), way_point_count, way_points, get<2>(data)));
 		}
 
 		// 停止状態構築
@@ -172,7 +320,7 @@ void PatrolAI::InitModeData()
 
 			auto& back{ patrol_modes.emplace_back() };
 
-			back.emplace<1>(std::make_optional<StopAI>(data.first, data.second));
+			back.emplace<1>(std::make_optional<StopAI>(get<0>(data), get<1>(data), get<2>(data)));
 		}
 
 		// 発見状態構築
@@ -181,14 +329,14 @@ void PatrolAI::InitModeData()
 
 			auto& back{ patrol_modes.emplace_back() };
 
-			back.emplace<2>(std::make_optional<FindAI>(data.first, data.second));
+			back.emplace<2>(std::make_optional<FindAI>(get<0>(data), get<1>(data), get<2>(data)));
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------------------------------------
 
-void MoveAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
+void MoveAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 {
 #if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
@@ -203,6 +351,13 @@ void MoveAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 	// このノードに来て最初
 	if (is_first && way_points)
 	{
+		// ウェイポイントが無い敵はこのノードでは何もしない
+		if (way_points->empty())
+		{
+			is_mode_end = true;
+			return;
+		}
+
 		// 二回目以降
 		is_first = false;
 
@@ -216,34 +371,41 @@ void MoveAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 		target_pos = way_points->at(way_point_count).pos;
 
 		// パス検索し、結果を取得
-		node_data = node->PathFindingDijkstra(enemy_pos, target_pos);
+		node_data = (node->PathFindingDijkstra(enemy_pos, target_pos));
+		node_array_count = 0u;
 
 		// パスを発見出来た場合
-		if (node_data)
+		if (!node_data.empty())
 		{
 			// 次のパスノードの位置を取得
-			halfway_path = node_data->to_goal->pos;
-
-			assert(node_data && node_data->to_goal && "死んでいる");
+			halfway_path = node_data[node_array_count].pos;
 
 			// 次のパスノード情報を取得
-			node_data = node_data->to_goal;
+			node_array_count++;
 		}
 		// 袋小路（パスを発見できず）
 		else
 		{
 #if _DEBUG
-			assert(!"ウェイポイントの設置位置がおかしい");
+			assert(!"ウェイポイントの設置位置がおかしい（続行可）");
+			SceneGame::execution_quick_exit = true;
+			return;
 #else
-			if (Message(L"ウェイポイントの設置位置がおかしい", L"終了します") == BoxReturn::Yes_Ok)
+			std::wstring text{ L"ウェイポイントの設置位置がおかしいよ！！\n" };
+
+			text += std::to_wstring(way_point_count + 1);
+			text += L"個目のウェイポイントの設置位置まで行けないよ！！";
+
+			if (Message(text.data(), L"エディターへ移行するZE☆") == BoxReturn::Yes_Ok)
 			{
-				exit(EXIT_SUCCESS);
+				SceneGame::execution_quick_exit = true;
+				return;
 			}
 #endif
 		}
 	}
 	// 二回目以降
-	else if (node_data)
+	else if (!node_data.empty())
 	{
 		constexpr float DisErrorRange{ 0.01f };  // 距離の誤差
 
@@ -265,13 +427,11 @@ void MoveAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 		// 次のパスノードに敵が来る
 		else if (Math::Distance(halfway_path, enemy_pos) < DisErrorRange)
 		{
-			assert(node_data && node_data->to_goal && "死んでいる");
-
 			// 次のパスノードの位置を取得
-			halfway_path = node_data->to_goal->pos;
+			halfway_path = node_data[node_array_count].pos;
 
 			// 次のパスノード情報を取得
-			node_data = node_data->to_goal;
+			node_array_count++;
 
 			// 誤差分修正する
 			enemy_pos = Round(enemy_pos);
@@ -289,7 +449,7 @@ void MoveAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void StopAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
+void StopAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 {
 #if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
@@ -312,7 +472,7 @@ void StopAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 
 //-----------------------------------------------------------------------------------------------------------
 
-void FindAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
+void FindAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 {
 #if USE_IMGUI && false
 	auto s_size{ GMLIB->GetScreenSize() };
@@ -327,8 +487,6 @@ void FindAI::Update(VF3& enemy_pos, const float elapsed_time, Node* node)
 	if (timer += elapsed_time; timer > stop_time)
 	{
 		is_mode_end = true;
-
-		// 優先度を下げる
-		priority_number -= RootBase::SubStructNumber;
+		executable = false;
 	}
 }

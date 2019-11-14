@@ -51,12 +51,13 @@ void WayPoint::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 //------------------------------------------------------------------------------------------------------
 
 Enemy::Enemy()
-	: is_select(false), path_result(std::nullopt), ai(std::nullopt)
+	: is_select(false), ai(std::nullopt)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.1f);
 	color = { PINK, 1.f };
+	before_pos = pos;
 
-	ai.emplace(&way_points);
+	ai.emplace(&way_points, &angle.y);
 }
 
 void Enemy::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -138,9 +139,37 @@ void Enemy::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 		pos = GS::GetMasuPos();  // 座標をマス座標にする
 	}
 #else
-	if (!ai) ai.emplace(&way_points);
+	constexpr float AdjDistance{ 0.05f };
+
+	if (!ai) ai.emplace(&way_points, &angle.y);
 
 	ai->Update(*this, p_window->GetElapsedTime(), node);
+
+	// 移動した
+	if (Math::Distance(pos, before_pos) >= AdjDistance)
+	{
+		using Vec2sub::MakeVector2;
+
+		constexpr float AdjRadY{ Math::PAI<float> / 2.f };
+
+		float& ang{ angle.y };
+
+		// 右
+		if (pos.x < before_pos.x)
+			ang = AdjRadY;
+		// 左
+		else if (pos.x > before_pos.x)
+			ang = -AdjRadY * 1.f;
+		// 上
+		else if (pos.z < before_pos.z)
+			ang = AdjRadY * 0.f;
+		// 下
+		else if (pos.z > before_pos.z)
+			ang = AdjRadY * 2.f;
+
+		// 履歴更新
+		before_pos = pos;
+	}
 #endif
 }
 
@@ -192,4 +221,47 @@ void Enemy::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 		}
 	}
 #endif
+}
+
+std::ofstream& operator<<(std::ofstream& ofs, const Enemy& data)
+{
+	ofs << data.pos << data.angle << std::endl << std::endl;
+
+	OutputComment(ofs, "WeyPoints", "", "", 2u);
+	ofs << F_OUT(data.way_points.size()) << std::endl;
+
+	if (size_t size{ data.way_points.size() }; size > 0u)
+	{
+		for (auto& wp : data.way_points)
+		{
+			ofs << wp;
+		}
+	}
+
+	ofs << std::endl;
+
+	return ofs;
+}
+
+std::ifstream& operator>>(std::ifstream& ifs, Enemy& data)
+{
+	size_t wp_size{ 0u };
+
+	ifs >> data.pos >> data.angle;
+	data.before_pos = data.pos;
+
+	InputComment(ifs);
+	ifs >> wp_size;
+
+	if (wp_size != 0u)
+	{
+		data.way_points.resize(wp_size);
+
+		for (auto& wp : data.way_points)
+		{
+			ifs >> wp;
+		}
+	}
+
+	return ifs;
 }

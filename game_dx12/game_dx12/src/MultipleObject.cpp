@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------------------------------
 
 Plane::Plane()
-	: hp(HpMax), pl_stand(false), pl_stand_first(false), is_dead(false)
+	: hp(HpMax), pl_stand(false), is_dead(false)
 {
 	angle.x = 3.14f * 0.5f;
 
@@ -15,7 +15,7 @@ Plane::Plane()
 }
 
 Plane::Plane(const uint32_t hp)
-	: hp(hp), pl_stand(false), pl_stand_first(false), is_dead(false)
+	: hp(hp), pl_stand(false), is_dead(false)
 {
 	angle.x = 3.14f * 0.5f;
 
@@ -57,25 +57,23 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	// まだ生きている
 	if (hp != 0)
 	{
+		// 自機が上にいる
 		if (pl_pos == pos)
 			pl_stand = true;
+		// 上にいない
 		else
 		{
-			pl_stand = false;
-			pl_stand_first = false;
-		}
+			if (pl_stand)
+				hp--;
 
-		// プレーヤーがいる上に初回だけ処理する
-		if (pl_stand && !pl_stand_first)
-		{
-			hp--;
-			pl_stand_first = true;
+			pl_stand = false;
 		}
 	}
 	// 死んでいるが消えるのを防止する為、プレーヤーが離れてから消す
 	else
 	{
-		if (hp == 0u && pl_pos != pos)	is_dead = true;
+		if (hp == 0u && pl_pos != pos)
+			is_dead = true;
 	}
 #endif
 
@@ -147,7 +145,7 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 Wall::Wall()
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.16f);
 }
 
 void Wall::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -195,13 +193,13 @@ void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 WarpHole::WarpHole(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.005f);
 }
 
 WarpHole::WarpHole()
 	: is_back_world(false)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.005f);
 }
 
 void WarpHole::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -248,13 +246,13 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Key::Key(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.16f);
 }
 
 Key::Key()
 	: is_back_world(false)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.16f);
 }
 
 void Key::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -304,13 +302,13 @@ void Key::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Door::Door(const bool is_back_world)
 	: is_open(false), is_back_world(is_back_world)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.16f);
 }
 
 Door::Door()
 	: is_open(false), is_back_world(false)
 {
-	scale = { 0.005f, 0.005f, 0.005f };
+	scale = Fill3(0.16f);
 }
 
 void Door::Update(KDL::Window* p_window, KDL::DX12::App* p_app)

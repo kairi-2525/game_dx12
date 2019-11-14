@@ -20,7 +20,6 @@ public:
 
 		hp = _rt.hp;
 		pl_stand = _rt.pl_stand;
-		pl_stand_first = _rt.pl_stand_first;
 		is_dead = _rt.is_dead;
 
 	}
@@ -30,15 +29,13 @@ public:
 
 		hp = _rt.hp;
 		pl_stand = _rt.pl_stand;
-		pl_stand_first = _rt.pl_stand_first;
 		is_dead = _rt.is_dead;
 
 		return (*this);
 	}
 
 	Plane(Plane&& _rt) noexcept
-		: Obj3D(std::move(_rt)), hp(_rt.hp), pl_stand(_rt.pl_stand), pl_stand_first(_rt.pl_stand_first),
-		is_dead(_rt.is_dead)
+		: Obj3D(std::move(_rt)), hp(_rt.hp), pl_stand(_rt.pl_stand), is_dead(_rt.is_dead)
 	{}
 	auto& operator=(Plane&& _rt) noexcept
 	{
@@ -50,7 +47,6 @@ public:
 
 			hp = _rt.hp;
 			pl_stand = _rt.pl_stand;
-			pl_stand_first = _rt.pl_stand_first;
 			is_dead = _rt.is_dead;
 		}
 
@@ -88,7 +84,6 @@ public:
 	{
 		// ”O‚Ìˆ×
 		pl_stand = false;
-		pl_stand_first = false;
 
 		if (hp == 0u)
 		{
@@ -107,12 +102,11 @@ public:
 	static void SetPlPosition(const VF3& pos) noexcept { pl_pos = pos; }
 	uint16_t GetHP() const noexcept { return hp; }
 	bool GetIsDead() const noexcept { return is_dead; }
-	void InitHP() noexcept { pl_stand = pl_stand_first = false; }
+	void InitHP() noexcept { pl_stand = false; }
 
 private:
 	uint16_t hp;
 	bool pl_stand;
-	bool pl_stand_first;
 	bool is_dead;
 
 	static inline VF3 pl_pos;

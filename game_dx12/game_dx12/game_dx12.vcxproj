@@ -138,6 +138,7 @@
     <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MultipleObject.cpp" />
+    <ClCompile Include="src\NodeData.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\PatrolAI.cpp" />
     <ClCompile Include="src\scene.cpp" />
