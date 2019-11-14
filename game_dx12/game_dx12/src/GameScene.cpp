@@ -222,13 +222,15 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	object_manager->Draw(p_window, p_app);
 
-	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
-
 	static VF3 Scale{ 100.f, 1.f, 100.f };
+
+#ifdef KDL_USE_IMGUI
+	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
 
 	ImguiHeler::SliderFloat(u8"äpìx", &Scale, 0.f, 100.f, "%.0f");
 
 	ImGui::End();
+#endif
 
 	// îwåi
 	{
