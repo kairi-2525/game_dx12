@@ -10,7 +10,9 @@
 #include "KDL_Math.h"
 #include "KDL_Window.h"
 
+#ifdef _DEBUG
 #define KDL_USE_IMGUI
+#endif
 
 #ifdef KDL_USE_DX12
 #include "KDL_Dx12/App.h"

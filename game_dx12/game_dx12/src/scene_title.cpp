@@ -5,6 +5,9 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 {
 	player.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/player.fbx", 100);
 
+	title_parallel.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Tittle/parallel.fbx", 100);
+	title_labyrinth.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Tittle/labyrinth.fbx", 100);
+
 	for (auto& it : grounds_list)
 	{
 		switch (it.first)
@@ -39,6 +42,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 
 	sand_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Sand.png", 100);
 	snow_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Snow.png", 100);
+	warp_hole_off = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Game/Warp_off.fbx", 100);
 }
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -56,9 +60,27 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 		);
 	light_dir = KDL::FLOAT3{ 0.f, -1.f, 1.f };
 	light_dir /= light_dir.Length();
+
 	player.position = KDL::FLOAT3{ 0.f, 0.8f, 0.f };
 	player.rotate = KDL::FLOAT3{ 0.f, DirectX::XMConvertToRadians(-90.f), 0.f };
 	player.scale = KDL::FLOAT3{ 0.1f, 0.1f, 0.1f };
+
+#if 0
+	title_parallel.position = KDL::FLOAT3{ -1.f, 2.035f, 0.f };
+	title_parallel.rotate = KDL::FLOAT3{ 0.f, 0.f, 0.f };
+	title_parallel.scale = KDL::FLOAT3{ 0.024f, 0.024f, 0.024f };
+	title_labyrinth.position = KDL::FLOAT3{ 1.f, 2.035f, 0.f };
+	title_labyrinth.rotate = KDL::FLOAT3{ 0.f, 0.f, 0.f };
+	title_labyrinth.scale = KDL::FLOAT3{ 0.024f, 0.024f, 0.024f };
+#else
+	title_parallel.position = KDL::FLOAT3{ -1.1f, 2.035f, 0.f };
+	title_parallel.rotate = KDL::FLOAT3{ 0.f, 0.f, 0.f };
+	title_parallel.scale = KDL::FLOAT3{ 0.033f, 0.033f, 0.033f };
+	title_labyrinth.position = KDL::FLOAT3{ 0.9f, 1.614f, 0.f };
+	title_labyrinth.rotate = KDL::FLOAT3{ 0.f, 0.f, 0.f };
+	title_labyrinth.scale = KDL::FLOAT3{ 0.033f, 0.033f, 0.033f };
+#endif
+
 	snow = true;
 	for (auto& it : grounds)
 		it.second.data.clear();
@@ -89,6 +111,12 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 #ifdef KDL_USE_IMGUI
 	ImGui::Begin("gui");
 	{
+		ImGui::SliderFloat3("title_LB_p", &title_labyrinth.position.x, -4.f, +4.f);
+		ImGui::SliderFloat("title_LB_s", &title_labyrinth.scale.x, 0, +1);
+		title_labyrinth.scale.y = title_labyrinth.scale.z = title_labyrinth.scale.x;
+		ImGui::SliderFloat3("title_PR_p", &title_parallel.position.x, -4.f, +4.f);
+		ImGui::SliderFloat("title_PR_s", &title_parallel.scale.x, 0, +1);
+		title_parallel.scale.y = title_parallel.scale.z = title_parallel.scale.x;
 		ImGui::SliderFloat("WALL_HOLE_SCALE", &WARP_HOLE_SCALE, 0.f, 1.01f);
 		for (auto& data : warp_hole.data)
 		{
@@ -168,6 +196,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 		}
 		if (snow != snow_log)
 		{
+			FlipGrounds();
 			auto& set_data = grounds.at(snow ? GROUND_TYPE::Snow : GROUND_TYPE::Sand).data;
 			auto& set_break_data = grounds.at(snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken).data;
 			auto& clear_data = grounds.at(!snow ? GROUND_TYPE::Snow : GROUND_TYPE::Sand).data;
@@ -204,6 +233,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					grounds[GROUND_TYPE::SandBroken].data.emplace_back(data[i]);
 					data[i] = grounds[GROUND_TYPE::Sand].data.back();
 					data.pop_back();
+					BreakGrounds();
 				}
 				else i++;
 			}
@@ -218,6 +248,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					grounds[GROUND_TYPE::SnowBroken].data.emplace_back(data[i]);
 					data[i] = data.back();
 					data.pop_back();
+					BreakGrounds();
 				}
 				else i++;
 			}
@@ -231,6 +262,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SandBroken);
+					RemoveGrounds();
 				}
 				else i++;
 			}
@@ -244,6 +276,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SnowBroken);
+					RemoveGrounds();
 				}
 				else i++;
 			}
@@ -338,6 +371,16 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		p_scene_mgr->Exit();
 		return;
 	}
+	if (FAILED(title_parallel.Draw(p_app, camera.get(), { 0, 0, 1 })))
+	{
+		p_scene_mgr->Exit();
+		return;
+	}
+	if (FAILED(title_labyrinth.Draw(p_app, camera.get(), { 0, 0, 1 })))
+	{
+		p_scene_mgr->Exit();
+		return;
+	}
 	for (auto& it : grounds)
 	{
 		if (it.first == GROUND_TYPE::Air) continue;
@@ -347,7 +390,13 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 			return;
 		}
 	}
-	warp_hole.Draw(p_app, camera.get(), light_dir);
+	bool fliped = false;
+	for (const auto& it : warp_hole.data)
+		fliped = it.changed ? true : fliped;
+	if (fliped)
+		warp_hole.Draw<KDL::DX12::Mesh_FBX>(p_app, camera.get(), light_dir, warp_hole_off.get());
+	else
+		warp_hole.Draw(p_app, camera.get(), light_dir);
 
 	float x_zero = BLOCK_SIZE;
 	for (const auto& it : grounds)
@@ -364,11 +413,11 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		wall.data.clear();
 		wall.data.resize(BLOCK_NUM);
 		size_t count = 0u;
-		float set_x = static_cast<float>(BLOCK_NUM) / 2;
+		float set_x = -static_cast<float>(BLOCK_NUM) / 2;
 		set_x += x_zero;
 		for (auto& it : wall.data)
 		{
-			it.position = KDL::FLOAT3{ set_x - (count * BLOCK_SIZE), BLOCK_SIZE / 2, BLOCK_SIZE };
+			it.position = KDL::FLOAT3{ set_x + (count * BLOCK_SIZE), BLOCK_SIZE / 2, BLOCK_SIZE };
 			it.rotate = KDL::FLOAT3{ 0, 0, 0 };
 			it.scale = KDL::FLOAT3{ WALL_SCALE, WALL_SCALE, WALL_SCALE };
 			count++;
@@ -378,6 +427,24 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 }
 
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+{
+
+}
+
+//サウンド用
+
+//ヒビが入ったとき
+void SceneTitle::BreakGrounds()
+{
+
+}
+//消えたとき
+void SceneTitle::RemoveGrounds()
+{
+
+}
+//反転したとき
+void SceneTitle::FlipGrounds()
 {
 
 }

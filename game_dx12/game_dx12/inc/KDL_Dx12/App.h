@@ -58,7 +58,7 @@ namespace KDL
 			static inline const UINT GUI_COMMAND_LIST_NUM = 2;
 #endif
 			static inline const UINT GPU_WAIT_TIMEOUT = (10 * 1000);  // 10s
-			static inline const UINT ALLOCATOR_COUNTER_MAX = 3;	//Windowsï¿½Ìê‡ï¿½Aï¿½Tï¿½uï¿½~ï¿½bï¿½gï¿½ï¿½ï¿½ê‚½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½Ìï¿½ï¿½sï¿½ï¿½3ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+			static inline const UINT ALLOCATOR_COUNTER_MAX = 3;	//Windows‚Ìê‡AƒTƒuƒ~ƒbƒg‚³‚ê‚½ƒRƒ}ƒ“ƒh‚ÌÀs‚Í3ƒtƒŒ[ƒ€’x‰„‚³‚ê‚Ü‚·B
 		public:
 			static inline const std::wstring DUMMY_TEXTURE_NAME = L"Dummy";
 			static inline const UINT FrameBufferCount = 2;
@@ -114,7 +114,7 @@ namespace KDL
 			HRESULT ScreenFlip();
 			HRESULT ClearBackBuffer(const KDL::COLOR4F& clear_color);
 			ComPtr<ID3D12Device>& GetDevice() { return m_device; }
-			ID3D12GraphicsCommandList* GetCommandList(size_t num = 0u) { assert(m_worker_threads[m_frame_index].size() > num && "ï¿½ï¿½ï¿½ï¿½numï¿½É‘Î‰ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ñ‚ŒB");  return m_worker_threads[m_frame_index][num].command_list.Get(); }
+			ID3D12GraphicsCommandList* GetCommandList(size_t num = 0u) { assert(m_worker_threads[m_frame_index].size() > num && "‚±‚Ìnum‚É‘Î‰‚·‚éƒRƒ}ƒ“ƒhƒŠƒXƒg‚ª‚ ‚è‚Ü‚¹‚ñ‚ŒB");  return m_worker_threads[m_frame_index][num].command_list.Get(); }
 			UINT GetFrameIndex() const { return m_frame_index; }
 			const CD3DX12_VIEWPORT& GetViewport() const { return m_viewport; };
 			const CD3DX12_RECT& GetScissorRect() const { return m_scissor_rect; }
