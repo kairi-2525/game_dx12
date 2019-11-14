@@ -3,7 +3,7 @@
 
 void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	player.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/player.fbx", 1);
+	player.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/player.fbx", 100);
 
 	for (auto& it : grounds_list)
 	{
@@ -11,7 +11,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		{
 			case  GROUND_TYPE::WarpHole:
 			{
-				warp_hole.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 20);
+				warp_hole.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
 				continue;
 			}
 			case GROUND_TYPE::SandWall:
@@ -36,6 +36,9 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 			}
 		}	
 	}
+
+	sand_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Sand.png", 100);
+	snow_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Snow.png", 100);
 }
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -86,7 +89,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 #ifdef KDL_USE_IMGUI
 	ImGui::Begin("gui");
 	{
-		ImGui::SliderFloat("WALL_HOLE_SCALE", &WALL_SCALE, 0.f, 1.01f);
+		ImGui::SliderFloat("WALL_HOLE_SCALE", &WARP_HOLE_SCALE, 0.f, 1.01f);
 		for (auto& data : warp_hole.data)
 		{
 			data.scale = KDL::FLOAT3{ WARP_HOLE_SCALE, WARP_HOLE_SCALE, WARP_HOLE_SCALE };
@@ -119,10 +122,12 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 	{
 		SetNextScene<SceneLoad>();	//別スレッドでシーン切り替え
 	}
+#ifdef _DEBUG
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Space))
 	{
 		Initialize(p_scene_mgr, p_window, p_app);
 	}
+#endif
 	const float speed = 1.f;
 	const float end_line = -5.f;
 	const float check_line = 0.f;
@@ -312,6 +317,22 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 
 void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+
+	{
+		auto& bg = snow ? snow_bg : sand_bg;
+		const auto vp{ p_app->GetViewport() };
+		const KDL::FLOAT2 s_size{ vp.Width, vp.Height };
+		const KDL::COLOR4F bg_color = { 1.f, 1.f, 1.f, 1.f };
+		const float set_scale = 1.f;
+		if (FAILED(bg->AddCommand(p_app->GetCommandList(), p_app,
+			{ 0.f, 0.f }, s_size, { 0.f, 0.f }, { 0.f, 0.f }, bg->GetSize(), { set_scale, set_scale }, 0.f, bg_color, bg_color, bg_color, bg_color,
+			0, false, false)))
+		{
+			p_scene_mgr->Exit();
+			return;
+		}
+	}
+
 	if (FAILED(player.Draw(p_app, camera.get(), light_dir)))
 	{
 		p_scene_mgr->Exit();
