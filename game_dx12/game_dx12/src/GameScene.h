@@ -297,7 +297,7 @@ public:
 
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 	{
-		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 1u);
+		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 10u);
 		size = 0.f;
 	}
 	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

@@ -13,7 +13,7 @@ int WINAPI WinMain(
 	_In_ int nCmdShow)
 {
 	{
-		KDL::Window main_window("game", { 1280u, 720u });
+		KDL::Window main_window("game", { 1920u, 1080u });
 		p_main_window = &main_window;
 		{
 			KDL::DX12::App dx12(main_window.GetHWND(), 1);

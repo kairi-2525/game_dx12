@@ -9,7 +9,7 @@
 Plane::Plane()
 	: hp(HpMax), pl_stand(false), is_dead(false)
 {
-	angle.x = 3.14f * 0.5f;
+	//angle.x = 3.14f * 0.5f;
 
 	pl_pos = Fill3((std::numeric_limits<float>::max)());
 }
@@ -17,7 +17,7 @@ Plane::Plane()
 Plane::Plane(const uint32_t hp)
 	: hp(hp), pl_stand(false), is_dead(false)
 {
-	angle.x = 3.14f * 0.5f;
+	//angle.x = 3.14f * 0.5f;
 
 	pl_pos = Fill3((std::numeric_limits<float>::max)());
 }

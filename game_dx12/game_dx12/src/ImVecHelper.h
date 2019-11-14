@@ -420,7 +420,7 @@ static inline auto ToImVec(const DirectX::XMFLOAT2& vec)
 	return ImVec2{ vec.x, vec.y };
 }
 
-class [[maybe_unused]] ImguiHeler
+struct [[maybe_unused]] ImguiHeler
 {
 	using VF2 = DirectX::XMFLOAT2;
 	using VF3 = DirectX::XMFLOAT3;

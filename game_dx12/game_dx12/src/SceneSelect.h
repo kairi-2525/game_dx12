@@ -11,6 +11,9 @@ class SceneSelect :
 {
 private:
 	using Path = std::filesystem::path;
+	using VF4 = DirectX::XMFLOAT4;
+	using VF3 = DirectX::XMFLOAT3;
+	using VF2 = DirectX::XMFLOAT2;
 
 public:
 	SceneSelect()
@@ -32,6 +35,7 @@ public:
 private:
 	std::vector<Path> file_names;
 	std::unordered_map<std::string, std::unique_ptr<KDL::DX12::Sprite_Image>> sprites;
+	std::unique_ptr<KDL::DX12::Sprite_Image> bg_sprite;
 	int select_num;
 };
 

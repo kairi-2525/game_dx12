@@ -12,7 +12,6 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 
 	// 初期化
 	object_manager.emplace();
-	open_file_path.clear();
 	file_flg = false;
 	camera_angle = { Math::ToRadian(-80.f), 0.f, 0.f };
 	camera_dis = 50.f;
@@ -43,8 +42,8 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	}
 
 	// 一時ファイルが存在しているなら、削除
-	if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
-		assert(!"一時ファイルの削除に失敗");
+	//if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
+	//	assert(!"一時ファイルの削除に失敗");
 
 	camera =
 		std::make_unique<KDL::TOOL::Camera>(
@@ -62,6 +61,8 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 
 	Enemy::player = &object_manager->GetObjectData<Player>();
 	Enemy::walls = &object_manager->GetObjectData<Wall>();
+
+	Input(open_file_path);
 }
 
 void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -72,8 +73,8 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	camera = nullptr;
 
 	// 一時ファイルが存在しているなら、削除
-	if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
-		assert(!"一時ファイルの削除に失敗");
+	//if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
+	//	assert(!"一時ファイルの削除に失敗");
 
 	ObjectManager::UnInitialize();
 }
@@ -234,7 +235,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		{
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, 1.f);
-			R = DirectX::XMMatrixRotationRollPitchYaw(3.14f / 2.f, 0.f, 0.f);
+			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 0.f, 0.f);
 			T = DirectX::XMMatrixTranslation(Pos.x, Pos.y, Pos.z);
 			W = S * R * T;
 		}
