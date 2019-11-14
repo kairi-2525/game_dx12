@@ -22,7 +22,7 @@ int WINAPI WinMain(
 			ImGuiIO& io = ImGui::GetIO();
 			io.Fonts->AddFontFromFileTTF("./data/fonts/APJapanesefont.ttf", 20.0f, nullptr, KDL::TOOL::glyphRangesJapanese);
 #endif
-			SceneManager scene_mgr(new SceneSelect, &main_window, &dx12);
+			SceneManager scene_mgr(new SceneTitle, &main_window, &dx12);
 
 			while (main_window.Update())
 			{
