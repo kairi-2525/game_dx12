@@ -384,13 +384,13 @@ public:
 public:
 	friend std::ofstream& operator<<(std::ofstream& ofs, const Door& data)
 	{
-		ofs << data.pos << F_OUT(data.is_back_world) << std::endl;
+		ofs << data.pos << data.angle << F_OUT(data.is_back_world) << std::endl << std::endl;
 
 		return ofs;
 	}
 	friend std::ifstream& operator>>(std::ifstream& ifs, Door& data)
 	{
-		ifs >> data.pos >> data.is_back_world;
+		ifs >> data.pos >> data.angle >> data.is_back_world;
 
 		return ifs;
 	}
@@ -398,6 +398,7 @@ public:
 public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	bool GetBackWorld() const noexcept { return is_back_world; }
 
 private:
 	bool is_back_world;

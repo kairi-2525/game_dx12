@@ -62,26 +62,18 @@ void PatrolAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 {
 	using std::visit;
 
-#if USE_IMGUI && false
-	auto s_size{ GMLIB->GetScreenSize() };
-
-	ImguiTool::BeginShowTempWindow({ 1920.f / 2.f, 0.f }, "PatrolAI");
-
-	ImGui::SliderFloat(u8"認識距離(マス単位)", &hit_distance, 0.f, 20.f, "%.1f");
-	ImGui::SliderAngle(u8"認識範囲", &hit_angle, 0.f, 90.f, "%.1f");
-	ImguiTool::ShowHelp(u8"敵の正面が0°敵の真横が90°としています");
-
-	ImGui::End();
-#endif
-
-#if true
 	// 前回のFindAIノードが終了してした時
 	if (end_number == 3u && change_mode)
-#else
-	// 手動
-	if (GMLIB->isKeyDown(KeyData::Keys::P))
-#endif
 	{
+		// パス検索した結果、パスを見つけられないなら攻撃状態へ移らない
+		if (node->PathFindingDijkstra(enemy_pos, (*Enemy::player)->pos).empty())
+		{
+			end_number = (std::numeric_limits<uint16_t>::max)();
+			change_mode = true;
+
+			return;
+		}
+
 		// このモードを終了
 		is_mode_end = true;
 
@@ -484,8 +476,10 @@ void FindAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 	ImGui::End();
 #endif
 
+	// 一定時間後
 	if (timer += elapsed_time; timer > stop_time)
 	{
+		// このモードを終了
 		is_mode_end = true;
 		executable = false;
 	}

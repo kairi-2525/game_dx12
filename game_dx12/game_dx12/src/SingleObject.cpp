@@ -9,9 +9,9 @@
 
 Player::Player(const Deque<Plane>& planes, const Deque<WarpHole>& warphole, const SharedPtr<Start>& start,
 	const SharedPtr<Goal>& goal, const Deque<Door>& doors, const Deque<Key>& keys)
-	: Obj3D(), planes(planes), warphole(warphole), start(start), goal(goal), doors(doors), keys(keys)
+	: Obj3D(), planes(planes), warphole(warphole), start(start), goal(goal), doors(doors), keys(keys), key_num(0)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 void Player::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -49,34 +49,38 @@ void Player::Move(KDL::Window* p_window, KDL::DX12::App* p_app)
 	constexpr float Movement{ 1.f };
 	constexpr float AdjRadY{ Math::PAI<float> / 2.f };
 
-	bool is_move{ false };
 	float& ang{ angle.y };
 	auto input{ p_window->GetInput() };
 
+	is_move = false;
 	speed.Clear();
 
 	auto KeyInput{ [&](Keys key1, Keys key2) {
 		return input->IsTrgKey(key1) || input->IsTrgKey(key2);
 	} };
 
+	// ¶
 	if (KeyInput( Keys::Left, Keys::A ))
 	{
 		speed.x += Movement;
 		is_move = true;
 		ang = -AdjRadY;
 	}
+	// ‰E
 	else if (KeyInput( Keys::Right, Keys::D ))
 	{
 		speed.x -= Movement;
 		is_move = true;
 		ang = AdjRadY;
 	}
+	// ã
 	else if (KeyInput( Keys::Up, Keys::W ))
 	{
 		speed.z -= Movement;
 		is_move = true;
 		ang = 0.f;
 	}
+	// ‰º
 	else if (KeyInput( Keys::Down, Keys::S ))
 	{
 		speed.z += Movement;
@@ -105,7 +109,10 @@ void Player::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
+
+	Draw(model);
 }
 
 bool Player::isMoveObjectCheck()
@@ -146,8 +153,9 @@ bool Player::isMoveObjectCheck()
 
 Start::Start()
 {
-	scale = Fill3(0.005f);
-	color = { BLUE, 1.f };
+	scale = Fill3(0.166f);
+	angle.y = 3.1415f;
+	color = { WHITE, 1.f };
 }
 
 void Start::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -180,7 +188,10 @@ void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
+
+	Draw(model);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -190,13 +201,15 @@ void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Goal::Goal(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = Fill3(0.005f);
+	scale = Fill3(0.166f);
+	angle.y = 3.1415f;
 }
 
 Goal::Goal()
 	: is_back_world(false)
 {
-	scale = Fill3(0.005f);
+	scale = Fill3(0.166f);
+	angle.y = 3.1415f;
 }
 
 void Goal::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -231,5 +244,8 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color,
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
+
+	Draw(model);
 }

@@ -33,11 +33,11 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 	const auto* input{ p_window->GetInput() };
 
 	// ˆÚ“®
-	if (file_names.size() - 1 > select_num && input->IsTrgKey(Keys::Down))
+	if (file_names.size() - 1 > select_num && (input->IsTrgKey(Keys::Down) || input->IsTrgKey(Keys::S)))
 	{
 		select_num++;
 	}
-	else if (select_num > 0 && input->IsTrgKey(Keys::Up))
+	else if (select_num > 0 && (input->IsTrgKey(Keys::Up) || input->IsTrgKey(Keys::W)))
 	{
 		select_num--;
 	}
@@ -88,16 +88,46 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			{
 				static VF2 adj{ -300.f, -200.f };
 
-				sprites.at("Stage")->AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+				sprites.at("stage")->AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
 					Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 			}
 
+			if (select_num < 10)
 			{
 				static VF2 adj{ 100.f, -200.f };
 
 				sprites.at(std::to_string(select_num))->
 					AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
 						Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
+			}
+			else
+			{
+
+				// \‚ÌˆÊ
+				{
+					auto temp{ std::to_string(select_num) };
+
+					static VF2 adj{ 100.f, -200.f };
+
+					temp.pop_back();
+
+					sprites.at(temp)->
+						AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+							Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
+				}
+
+				// ˆê‚ÌˆÊ
+				{
+					static VF2 adj{ 150.f, -200.f };
+
+					auto temp{ std::to_string(select_num) };
+
+					temp.erase(temp.begin());
+
+					sprites.at(temp)->
+						AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+							Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
+				}
 			}
 		}
 	}

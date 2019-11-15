@@ -70,7 +70,11 @@ private:
 	const Deque<Key>& keys;
 
 public:
+	uint16_t key_num;
+
+public:
 	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
+	static inline bool is_move{ false };
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -153,6 +157,7 @@ public:
 public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
+	bool GetIsBackWorld() const noexcept { return is_back_world; }
 
 private:
 	bool is_back_world;

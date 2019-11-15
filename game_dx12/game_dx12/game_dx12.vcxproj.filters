@@ -67,7 +67,7 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\SceneSelect.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,7 +150,7 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\SceneSelect.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

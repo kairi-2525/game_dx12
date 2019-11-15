@@ -272,6 +272,8 @@ private:
 	//std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
 	std::unique_ptr<KDL::DX12::Geometric_Board_S> snow_boad;
 	std::unique_ptr<KDL::DX12::Geometric_Board_S> sand_boad;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial1_boad;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial2_boad;
 
 
 	FileDataFlg file_flg;
@@ -284,7 +286,9 @@ public:
 	static inline Path open_file_path;
 	static inline bool is_save;
 	static inline bool back_world_mode{ false };
-	static inline bool execution_quick_exit{ false }; // 実行モードを直ちに終了するか
+	static inline bool execution_quick_exit{ false }; // 直ちに終了するか
+	static inline bool init_scene{ false };  // シーンを読み直すか
+
 	static inline std::atomic<size_t> load_count{ 0 };
 	static inline std::unique_ptr<KDL::TOOL::Camera> camera;
 };

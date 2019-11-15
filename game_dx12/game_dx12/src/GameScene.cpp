@@ -3,6 +3,7 @@
 #include "Math.h"
 #include "KDL.h"
 #include "ImVecHelper.h"
+#include "SceneSelect.h"
 
 //todo KDL_USE_IMGUI USE_IMGUIの代わり
 
@@ -16,11 +17,13 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	camera_angle = { Math::ToRadian(-80.f), 0.f, 0.f };
 	camera_dis = 50.f;
 
+	execution_quick_exit = false;
 	masu_pos = Fill3(0.f);
 	edit_mode = false;
 	enm_edit_mode = false;
 	is_save = false;
 	back_world_mode = false;
+	init_scene = false;
 
 	// 構築
 	{
@@ -63,6 +66,12 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	Enemy::walls = &object_manager->GetObjectData<Wall>();
 
 	Input(open_file_path);
+
+	// スタート地点にセットする
+	if (auto& player{ object_manager->GetObjectData().GetChangeObjects<Player>() }; player)
+	{
+		player->pos = object_manager->GetObjectData<Start>()->pos;
+	}
 }
 
 void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -222,19 +231,19 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	object_manager->Draw(p_window, p_app);
 
-	static VF3 Scale{ 100.f, 1.f, 100.f };
+	static VF3 Scale{ 107.f, 1.f, 100.f };
 
 #ifdef KDL_USE_IMGUI
 	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
 
-	ImguiHeler::SliderFloat(u8"角度", &Scale, 0.f, 100.f, "%.0f");
+	ImguiHeler::SliderFloat(u8"大きさ", &Scale, 0.f, 200.f, "%.0f");
 
 	ImGui::End();
 #endif
 
 	// 背景
 	{
-		constexpr VF3 Pos{ 0.f, -50.f, 0.f };
+		const VF3 Pos{ camera->GetTarget() };
 		constexpr VF4 Color{ WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
 		//constexpr auto Mode{ Geometric_Primitive::SamplerState::Mirror };
@@ -244,15 +253,24 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
 			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 3.1415f, 0.f);
-			T = DirectX::XMMatrixTranslation(Pos.x, Pos.y, 1.f);
+			T = DirectX::XMMatrixTranslation(Pos.x, -50.f, Pos.z);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;
 		DirectX::XMStoreFloat4x4(&w, W);
 		camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-		snow_boad->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f },
-			{ 1.,1. });
+		if (back_world_mode)
+			sand_boad->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f },
+				{ 1.f, 1.f });
+		else
+			snow_boad->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f },
+			{ 1.f, 1.f });
+	}
+
+	// チュートリアルメッセージボックス
+	{
+
 	}
 
 	// 選択グリット
@@ -330,10 +348,18 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	//}
 
 	// リトライ機能
-	if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Enter))
+	if (const auto* input{ p_window->GetInput() };
+		input->IsTrgKey(Keys::Enter) || init_scene)
 	{
 		Initialize(p_scene_mgr, p_window, p_app);
 
+		return;
+	}
+
+	// 選択画面へ
+	if (execution_quick_exit)
+	{
+		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
 		return;
 	}
 
@@ -607,11 +633,16 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	load_count++;
 #endif
-	if (!snow_boad)
-		snow_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Snow.png", 1);
+	auto Load{ [&](auto& board, const Path& path)
+	{ board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, path, 100); } };
 
-	if (!sand_boad)
-		sand_boad = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\Sand.png", 1);
+	if (!snow_boad) Load(snow_boad, "data\\images\\Snow.png");
+
+	if (!sand_boad) Load(sand_boad, "data\\images\\Sand.png");
+
+	if (!tutorial1_boad) Load(tutorial1_boad, "data\\images\\tutorial1.png");
+
+	if (!tutorial2_boad) Load(tutorial2_boad, "data\\images\\tutorial2.png");
 
 	load_count++;
 

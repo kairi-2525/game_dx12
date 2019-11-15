@@ -490,6 +490,7 @@ void ObjectManager::EnmEditModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_a
 void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
+	using Keys = KDL::KEY_INPUTS;
 
 	// 裏世界モード設定
 	{
@@ -522,28 +523,125 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 
 	edit_mode_first = true;
 
-	// プレーヤーと敵の判定
 	if (auto& player{ objects.GetChangeObjects<Player>() }; player)
 	{
-		constexpr float AdjstDistance{ 1.f };
-
-		auto& enemies{ objects.GetObjects<Enemy>() };
-
-		for (auto& enm : enemies)
+		// プレーヤーと敵の判定
 		{
-			const float dis{ Math::Distance(enm.pos, player->pos) };
+			constexpr float AdjstDistance{ 1.f };
 
-			// 一定距離まで近づいたらゲームオーバー
-			if (dis < AdjstDistance)
+			auto& enemies{ objects.GetObjects<Enemy>() };
+
+			for (auto& enm : enemies)
 			{
-				//todo 仮処理
+				const float dis{ Math::Distance(enm.pos, player->pos) };
+
+				// 一定距離まで近づいたらゲームオーバー
+				if (dis < AdjstDistance)
+				{
+					SceneGame::init_scene = true;
+				}
+			}
+		}
+
+		// ゴールと自機の判定
+		if (auto& goal{ objects.GetObjects<Goal>() }; goal)
+		{
+			// 同じ世界線で同じ座標になったらシーン切り替え処理に入る
+			if ((goal->GetIsBackWorld() == SceneGame::back_world_mode) && (goal->pos == player->pos))
 				SceneGame::execution_quick_exit = true;
+		}
+
+		// 鍵と自機の判定
+		{
+			auto& keys{ objects.GetChangeObjects<Key>() };
+
+			for (auto& key : keys)
+			{
+				if (key.GetBackWorld() != SceneGame::back_world_mode)	continue;
+
+				if (key.pos == player->pos)
+				{
+					player->key_num++;
+					key.EndExist();
+
+					break;
+				}
+			}
+		}
+
+		// ドアと自機の判定
+		if (auto input{ p_window->GetInput() }; input->IsHitAnyKey())
+		{
+			using Vec2sub::MakeVector2;
+			using Math::AdjEqual;
+
+			constexpr float AdjstDistance{ 1.4f };
+			constexpr float AdjRadY{ Math::PAI<float> / 2.f };
+
+			auto& doors{ objects.GetChangeObjects<Door>() };
+
+			for (auto& door : doors)
+			{
+				//if (door.GetBackWorld() != SceneGame::back_world_mode)	continue;
+
+				const float dis{ Math::Distance(door.pos, player->pos) };
+
+				// プレーヤーがドアに接触し、鍵を持っている
+				if (door.pos == player->pos && player->key_num > 0)
+				{
+					player->key_num--;
+					door.EndExist();
+
+					break;
+				}
+				// プレーヤーがドアに接触し、鍵を持っていない
+				else if (door.pos == player->pos && player->key_num == 0)
+				{
+					const float ang_y{ player->angle.y };
+					VF3& p_pos{ player->pos };
+
+					// 向いている方向と逆向きに戻す
+
+					// 左
+					if (AdjEqual(ang_y, -AdjRadY))
+					{
+						p_pos.x -= 1.f;
+					}
+					// 右
+					else if (AdjEqual(ang_y, AdjRadY))
+					{
+						p_pos.x += 1.f;
+					}
+					// 上
+					else if (AdjEqual(ang_y, 0.f))
+					{
+						p_pos.z += 1.f;
+					}
+					// 下
+					else if (AdjEqual(ang_y, AdjRadY * 2.f))
+					{
+						p_pos.z -= 1.f;
+					}
+				}
 			}
 		}
 	}
+
 	// 地面にプレーヤー座標をセット
 	if (const auto& player{ objects.GetObjects<Player>() }; player)
 		Plane::SetPlPosition(player->pos);
+
+	// オブジェクト削除
+	{
+		auto EraseObject{ [](auto& data) { data.erase(std::remove_if(
+			data.begin(), data.end(), [](const auto& dt) { return (!dt); }), data.end()); } };
+
+		// 複数オブジェクト
+		objects.MultiObjVisit(EraseObject);
+
+		// 単一オブジェクト
+		objects.SingleObjVisit([](auto& object) { if (object && !(*object)) object = nullptr; });
+	}
 }
 
 // オブジェクトの移動
@@ -792,8 +890,8 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 			&Wall::sand_model,
 			&Wall::snow_model,
 			&Start::model,
-			&WarpHole::WarpOn,
 			&WarpHole::WarpOff,
+			&WarpHole::WarpOn,
 		};
 
 		// FBX以外のファイル名を削除
@@ -836,7 +934,7 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		{
 			assert(!(*load_textures[i]) && "既に読み込まれている");
 
-			*load_textures[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i]);
+			*load_textures[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i], 1000u);
 
 			(*load_count)++;
 		}

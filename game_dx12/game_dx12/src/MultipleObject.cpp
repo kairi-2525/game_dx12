@@ -26,42 +26,14 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
-#if false
-	if (!GS::GetEditMode())
-	{
-		// まだ生きている
-		if (hp != 0)
-		{
-			if (pl_pos == pos)
-				pl_stand = true;
-			else
-			{
-				pl_stand = false;
-				pl_stand_first = false;
-			}
-
-			// プレーヤーがいる上に初回だけ処理する
-			if (pl_stand && !pl_stand_first)
-			{
-				hp--;
-				pl_stand_first = true;
-			}
-		}
-		// 死んでいるが消えるのを防止する為、プレーヤーが離れてから消す
-		else
-		{
-			if (hp == 0u && pl_pos != pos)	is_dead = true;
-		}
-	}
-#else
 	// まだ生きている
 	if (hp != 0)
 	{
 		// 自機が上にいる
 		if (pl_pos == pos)
 			pl_stand = true;
-		// 上にいない
-		else
+
+		if (Player::is_move)
 		{
 			if (pl_stand)
 				hp--;
@@ -75,19 +47,6 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 		if (hp == 0u && pl_pos != pos)
 			is_dead = true;
 	}
-#endif
-
-	// 編集モードのみ
-#if false
-	if ((GS::GetEditMode() && !GS::GetEnmEditMode()))
-	{
-		// 色調整
-		is_dead ? color = { BLACK, 1.f } : color = { WHITE, 1.f };
-
-		// 移動中なら
-		if (is_move_select) pos = GS::GetMasuPos();  // 座標をマス座標にする
-	}
-#endif
 }
 
 void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -109,7 +68,7 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(scale.x, scale.y, 1.f);
 			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f, pos.z);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;
@@ -119,7 +78,8 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 		if (!is_dead)
 		{
 			auto Draw{ [&](auto& obj)
-			{ obj->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }); } };
+			{ obj->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 			if (hp == HpMax)
 			{
@@ -145,7 +105,7 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 Wall::Wall()
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 void Wall::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -178,7 +138,8 @@ void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	if (GS::back_world_mode)
 		Draw(sand_model);
@@ -193,13 +154,13 @@ void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 WarpHole::WarpHole(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 WarpHole::WarpHole()
 	: is_back_world(false)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 void WarpHole::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -226,8 +187,6 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	else
 		draw_obj = &WarpOff;
 
-	const VF4 color{ WHITE, (GS::back_world_mode == is_back_world ? 1.f : 0.5f) };
-
 	DirectX::XMMATRIX W;
 	{
 		DirectX::XMMATRIX S, R, T;
@@ -241,7 +200,8 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(*draw_obj);
 }
@@ -253,13 +213,13 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Key::Key(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 Key::Key()
 	: is_back_world(false)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 void Key::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -297,7 +257,8 @@ void Key::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color,
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(model);
 }
@@ -309,13 +270,13 @@ void Key::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Door::Door(const bool is_back_world)
 	: is_open(false), is_back_world(is_back_world)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 Door::Door()
 	: is_open(false), is_back_world(false)
 {
-	scale = Fill3(0.16f);
+	scale = Fill3(0.166f);
 }
 
 void Door::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -335,7 +296,9 @@ void Door::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
-	const VF4 color{ OLIVE, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
+	if (is_open)	return;
+
+	//const VF4 color{ WHITE, (SceneGame::back_world_mode == is_back_world ? 1.f : 0.5f) };
 
 	DirectX::XMMATRIX W;
 	{
@@ -351,7 +314,8 @@ void Door::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color,
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(model);
 }
