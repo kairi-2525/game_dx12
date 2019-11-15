@@ -4,6 +4,7 @@
 #include "KDL.h"
 #include "ImVecHelper.h"
 #include "SceneSelect.h"
+#include <string>
 
 //todo KDL_USE_IMGUI USE_IMGUIの代わり
 
@@ -72,6 +73,11 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	{
 		player->pos = object_manager->GetObjectData<Start>()->pos;
 	}
+
+	auto* audio = p_window->GetAudio();
+	audio->Stop(bgm_handle, bgm_handle_p, 1.0f);
+	bgm_handle_p = audio->CreatePlayHandle(bgm_handle, 0.f, true, false, 0.f, 0.f, 0, false, false);
+	audio->Play(bgm_handle, bgm_handle_p, 0.01f, 0.2f, false);
 }
 
 void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -85,11 +91,22 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	//if (fs::exists(TempFileDir) && !std::filesystem::remove(TempFileDir))
 	//	assert(!"一時ファイルの削除に失敗");
 
+	auto* audio = p_window->GetAudio();
+	audio->Delete(bgm_handle);
+	audio->Delete(se_break);
+	audio->Delete(se_crack);
+	audio->Delete(se_door);
+	audio->Delete(se_waap);
+	audio->Delete(se_whistle);
+	audio = nullptr;
+
 	ObjectManager::UnInitialize();
 }
 
 void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	using Keys = KDL::KEY_INPUTS;
+
 	// モード変更処理
 #if false
 	{
@@ -202,6 +219,7 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 #endif
 #endif
 
+	audio = p_window->GetAudio();
 	object_manager->Update(p_window, p_app);
 
 #if false
@@ -214,6 +232,13 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 #else
 
 	NormalModeUpdate(p_scene_mgr, p_window, p_app);
+
+	const auto* input{ p_window->GetInput() };
+
+	if (input->IsTrgKey(Keys::Back))
+	{
+		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
+	}
 
 #endif
 #ifdef KDL_USE_IMGUI
@@ -231,29 +256,21 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	object_manager->Draw(p_window, p_app);
 
-	static VF3 Scale{ 107.f, 1.f, 100.f };
-
-#ifdef KDL_USE_IMGUI
-	ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
-
-	ImguiHeler::SliderFloat(u8"大きさ", &Scale, 0.f, 200.f, "%.0f");
-
-	ImGui::End();
-#endif
-
 	// 背景
 	{
-		const VF3 Pos{ camera->GetTarget() };
+		constexpr VF3 Scale{ 107.f, 1.f, 100.f };
 		constexpr VF4 Color{ WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
-		//constexpr auto Mode{ Geometric_Primitive::SamplerState::Mirror };
+		constexpr VF2 TexScale{ 1.f, 1.f };
+
+		const VF3 pos{ camera->GetTarget() };
 
 		DirectX::XMMATRIX W;
 		{
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
 			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 3.1415f, 0.f);
-			T = DirectX::XMMatrixTranslation(Pos.x, -50.f, Pos.z);
+			T = DirectX::XMMatrixTranslation(pos.x, -50.f, pos.z);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;
@@ -261,16 +278,59 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 		if (back_world_mode)
-			sand_boad->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f },
-				{ 1.f, 1.f });
+			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
 		else
-			snow_boad->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, { WHITE, 1.f }, { 0.f, 0.f },
-			{ 1.f, 1.f });
+			snow_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
 	}
 
 	// チュートリアルメッセージボックス
+	if (SceneSelect::GetIsTutrialMode())  // チュートリアルステージなら
 	{
+		using Math::ToRadian;
 
+		constexpr VF4 Color{ WHITE, 1.f };
+		constexpr VF2 TexPos{ 0.f, 0.f };
+		constexpr VF2 TexScale{ 1.f, 1.f };
+		constexpr VF3 Scale{ 5.f, 5.f, 5.f };
+		constexpr VF3 Angle{ ToRadian(-40.f), ToRadian(180.f), 0.f };
+		constexpr std::array<VF3, 2> pos{ { { 5.5f, 3.f, -3.f}, { 0.f, 3.0f, -3.f } } };
+
+		const std::array<decltype(tutorial1_board)*, 2> boards{ &tutorial1_board, &tutorial2_board };
+
+		for (size_t i = 0; i < 2u; i++)
+		{
+
+#ifdef KDL_USE_IMGUI
+			//ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
+
+			//ImguiHeler::InputFloat((u8"座標 " + std::to_string(i)).data(), &pos[i], "%.0f");
+
+			//ImguiHeler::Text(u8"自機座標", camera->GetTarget(), "%.0f");
+
+			//ImGui::SliderAngle(u8"メッセージ角度X", &angle.x);
+			//ImGui::SliderAngle(u8"メッセージ角度Y", &angle.y);
+			//ImGui::SliderAngle(u8"メッセージ角度Z", &angle.z);
+
+			//ImGui::End();
+#endif // KDL_USE_IMGUI
+
+			//DirectX::XMMATRIX W;
+			//{
+			//	DirectX::XMMATRIX S, R, T;
+
+			//	S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+			//	//R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+			//	T = DirectX::XMMatrixTranslation(pos[i].x, pos[i].y, pos[i].z);
+
+			//	W = S * R * T;
+			//}
+
+			//DirectX::XMFLOAT4X4 wvp, w;
+			//DirectX::XMStoreFloat4x4(&w, W);
+			//camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+			//(*boards[i])->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
+		}
 	}
 
 	// 選択グリット
@@ -341,12 +401,6 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	ImGui::Text(u8"F1 で 編集モードじゃぁ～");
 #endif
 #endif
-	//if (const auto* input{ p_window->GetInput() }; input->IsTrgKey(Keys::Space))
-	//{
-	//	SetNextScene<SceneLoad>();
-	//	return;
-	//}
-
 	// リトライ機能
 	if (const auto* input{ p_window->GetInput() };
 		input->IsTrgKey(Keys::Enter) || init_scene)
@@ -636,13 +690,22 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	auto Load{ [&](auto& board, const Path& path)
 	{ board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, path, 100); } };
 
-	if (!snow_boad) Load(snow_boad, "data\\images\\Snow.png");
+	if (!snow_board) Load(snow_board, "data\\images\\Snow.png");
 
-	if (!sand_boad) Load(sand_boad, "data\\images\\Sand.png");
+	if (!sand_board) Load(sand_board, "data\\images\\Sand.png");
 
-	if (!tutorial1_boad) Load(tutorial1_boad, "data\\images\\tutorial1.png");
+	if (!tutorial1_board) Load(tutorial1_board, "data\\images\\tutorial1.png");
 
-	if (!tutorial2_boad) Load(tutorial2_boad, "data\\images\\tutorial2.png");
+	if (!tutorial2_board) Load(tutorial2_board, "data\\images\\tutorial2.png");
+
+	audio = p_window->GetAudio();
+	bgm_handle = audio->Load("./data/sounds/BGM.wav");
+	bgm_handle_p = 0;
+	se_break = audio->Load("./data/sounds/break.wav");
+	se_crack = audio->Load("./data/sounds/crack.wav");
+	se_door = audio->Load("./data/sounds/door.wav");
+	se_waap = audio->Load("./data/sounds/warp.wav");
+	se_whistle = audio->Load("./data/sounds/whistle.wav");
 
 	load_count++;
 

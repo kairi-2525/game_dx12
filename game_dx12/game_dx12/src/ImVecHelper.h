@@ -422,6 +422,7 @@ static inline auto ToImVec(const DirectX::XMFLOAT2& vec)
 
 struct [[maybe_unused]] ImguiHeler
 {
+private:
 	using VF2 = DirectX::XMFLOAT2;
 	using VF3 = DirectX::XMFLOAT3;
 	using VF4 = DirectX::XMFLOAT4;
@@ -429,6 +430,7 @@ struct [[maybe_unused]] ImguiHeler
 	using VI3 = DirectX::XMINT3;
 	using VI4 = DirectX::XMINT4;
 
+public:
 	// SliderFloat -------------------------------------------------------------------------------------------
 
 #if true
@@ -700,7 +702,7 @@ struct [[maybe_unused]] ImguiHeler
 	{
 		using namespace std::string_literals;
 
-		std::string print_string{ label + "(XYZ) : "s };
+		std::string print_string{ label + "(XYZW) : "s };
 
 		for (size_t i = 0, length = 4u; i < length; i++)
 		{

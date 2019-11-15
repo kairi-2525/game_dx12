@@ -4,6 +4,7 @@
 #include "XMFLOAT_Hlper.h"
 #include "ImGuiSeting.h"
 #include "ImVecHelper.h"
+#include "TitleScene.h"
 
 void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
@@ -24,6 +25,7 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 void SceneSelect::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	select_num = 0;
+	is_tutrial_mode = false;
 }
 
 void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -42,11 +44,22 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 		select_num--;
 	}
 
+	if (input->IsTrgKey(Keys::Back))
+	{
+		SetNextScene<SceneTitle>();	//別スレッドでシーン切り替え
+
+		if (select_num == 0)
+			is_tutrial_mode = true;
+	}
+
 	if (input->IsTrgKey(Keys::Enter))
 	{
 		SceneGame::open_file_path = file_names.at(select_num);
 
 		SetNextScene<SceneLoad>();	//別スレッドでシーン切り替え
+
+		if (select_num == 0)
+			is_tutrial_mode = true;
 	}
 }
 

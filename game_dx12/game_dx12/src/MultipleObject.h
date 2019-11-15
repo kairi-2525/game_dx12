@@ -12,7 +12,7 @@ class Plane final
 public:
 	Plane();
 	Plane(const uint32_t hp);
-	~Plane() noexcept = default;
+	~Plane() noexcept;
 
 	Plane(const Plane& _rt)
 	{
@@ -112,10 +112,10 @@ private:
 	static inline VF3 pl_pos;
 
 public:
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_boad;
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_broken_boad;
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_boad;
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_broken_boad;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_board;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_broken_board;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_board;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_broken_board;
 };
 
 //------------------------------------------------------------------------------------------------------
@@ -342,7 +342,7 @@ class Door final
 public:
 	Door(const bool is_back_world);
 	Door();
-	~Door() noexcept = default;
+	~Door() noexcept;
 
 	Door(const Door& _rt)
 	{

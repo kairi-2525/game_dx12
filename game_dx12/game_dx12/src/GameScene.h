@@ -270,11 +270,13 @@ private:
 	std::optional<ObjectManager> object_manager;
 
 	//std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> snow_boad;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> sand_boad;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial1_boad;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial2_boad;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> snow_board;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> sand_board;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial1_board;
+	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial2_board;
 
+	int bgm_handle;
+	int bgm_handle_p;
 
 	FileDataFlg file_flg;
 
@@ -288,6 +290,12 @@ public:
 	static inline bool back_world_mode{ false };
 	static inline bool execution_quick_exit{ false }; // ’¼‚¿‚ÉI—¹‚·‚é‚©
 	static inline bool init_scene{ false };  // ƒV[ƒ“‚ğ“Ç‚İ’¼‚·‚©
+	static inline int se_whistle;
+	static inline KDL::Audio* audio;
+	static inline int se_break;
+	static inline int se_crack;
+	static inline int se_door;
+	static inline int se_waap;
 
 	static inline std::atomic<size_t> load_count{ 0 };
 	static inline std::unique_ptr<KDL::TOOL::Camera> camera;

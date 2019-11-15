@@ -89,7 +89,12 @@ void Player::Move(KDL::Window* p_window, KDL::DX12::App* p_app)
 	}
 
 	// ìÆÇ¢ÇΩè„Ç≈êiÇﬂÇÈÇ©ÇÃîªíË
-	if (is_move && isMoveObjectCheck())		pos += speed;
+	if (is_move && isMoveObjectCheck())
+	{
+		pos += speed;
+	}
+	else
+		is_move = false;
 }
 
 void Player::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)

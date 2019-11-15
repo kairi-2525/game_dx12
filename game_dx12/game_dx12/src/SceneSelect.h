@@ -31,11 +31,13 @@ public:
 	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+	static bool GetIsTutrialMode() noexcept { return is_tutrial_mode; }
 
 private:
 	std::vector<Path> file_names;
 	std::unordered_map<std::string, std::unique_ptr<KDL::DX12::Sprite_Image>> sprites;
 	std::unique_ptr<KDL::DX12::Sprite_Image> bg_sprite;
 	int select_num;
+	static inline bool is_tutrial_mode;
 };
 

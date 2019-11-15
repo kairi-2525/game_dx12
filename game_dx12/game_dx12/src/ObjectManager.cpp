@@ -511,6 +511,11 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 			first = false;
 			back_world_mode ^= true;
 
+			using SG = SceneGame;
+
+			int handle = SG::audio->CreatePlayHandle(SG::se_waap, 0.f, false, false, 0.f, 0.f, 0, false, false);
+			SG::audio->Play(SG::se_waap, handle, 0.01f, 0.2f, false);
+
 			auto& plane{ objects.GetChangeObjects<Plane>() };
 
 			std::for_each(plane.begin(), plane.end(), [](auto& data) { data.InversionProc(); });
@@ -916,11 +921,11 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		auto png_paths{ GetAllFileName("data\\images\\Game") };
 
 		// ファイル走査で読み込むので（アルファベット順）
-		const std::vector<decltype(&Plane::sand_boad)> load_textures{
-			&Plane::sand_boad,
-			&Plane::sand_broken_boad,
-			&Plane::snow_boad,
-			&Plane::snow_broken_boad,
+		const std::vector<decltype(&Plane::sand_board)> load_textures{
+			&Plane::sand_board,
+			&Plane::sand_broken_board,
+			&Plane::snow_board,
+			&Plane::snow_broken_board,
 		};
 
 		// FBX以外のファイル名を削除
@@ -956,11 +961,11 @@ void ObjectManager::UnInitialize()
 		&WarpHole::WarpOff,
 	};
 
-	const std::vector<decltype(&Plane::sand_boad)> release_textures{
-		&Plane::sand_boad,
-		&Plane::sand_broken_boad,
-		&Plane::snow_boad,
-		&Plane::snow_broken_boad,
+	const std::vector<decltype(&Plane::sand_board)> release_textures{
+		&Plane::sand_board,
+		&Plane::sand_broken_board,
+		&Plane::snow_board,
+		&Plane::snow_broken_board,
 	};
 
 	auto Clear{ [](auto& load_data) { std::for_each(load_data.begin(), load_data.end(), [](auto& data)

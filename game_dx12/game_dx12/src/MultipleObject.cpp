@@ -22,6 +22,14 @@ Plane::Plane(const uint32_t hp)
 	pl_pos = Fill3((std::numeric_limits<float>::max)());
 }
 
+Plane::~Plane() noexcept
+{
+	using SG = SceneGame;
+
+	int handle = SG::audio->CreatePlayHandle(SG::se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	SG::audio->Play(SG::se_break, handle, 0.01f, 0.2f, false);
+}
+
 void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
@@ -36,7 +44,13 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 		if (Player::is_move)
 		{
 			if (pl_stand)
+			{
 				hp--;
+				using SG = SceneGame;
+
+				int handle = SG::audio->CreatePlayHandle(SG::se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
+				SG::audio->Play(SG::se_crack, handle, 0.01f, 0.2f, false);
+			}
 
 			pl_stand = false;
 		}
@@ -84,16 +98,16 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 			if (hp == HpMax)
 			{
 				if (GS::back_world_mode)
-					Draw(sand_boad);
+					Draw(sand_board);
 				else
-					Draw(snow_boad);
+					Draw(snow_board);
 			}
 			else
 			{
 				if (GS::back_world_mode)
-					Draw(sand_broken_boad);
+					Draw(sand_broken_board);
 				else
-					Draw(snow_broken_boad);
+					Draw(snow_broken_board);
 			}
 		}
 	}
@@ -277,6 +291,14 @@ Door::Door()
 	: is_open(false), is_back_world(false)
 {
 	scale = Fill3(0.166f);
+}
+
+Door::~Door() noexcept
+{
+	using SG = SceneGame;
+
+	int handle = SG::audio->CreatePlayHandle(SG::se_door, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	SG::audio->Play(SG::se_door, handle, 0.01f, 0.2f, false);
 }
 
 void Door::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
