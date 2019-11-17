@@ -152,6 +152,7 @@
     <ClInclude Include="src\AI_Manager.h" />
     <ClInclude Include="src\AttackAI.h" />
     <ClInclude Include="src\ColorDef.h" />
+    <ClInclude Include="src\Easing.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\FileStreamHelpter.h" />
     <ClInclude Include="src\GameScene.h" />

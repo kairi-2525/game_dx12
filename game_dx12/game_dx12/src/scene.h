@@ -7,6 +7,10 @@
 
 #include "KDL_Dx12/App.h"
 #include "KDL_Dx12/Mesh.h"
+#include "KDL_Dx12/Sprite.h"
+#include "Easing.h"
+#include "ColorDef.h"
+#include "XMFLOAT_Hlper.h"
 
 class SceneManager;
 
@@ -30,6 +34,10 @@ protected:
 	{
 		if (p_scene) m_next_scene.reset(p_scene);
 	}
+
+protected:
+	static constexpr double BaseFadeTimeMax{ 2.f };
+
 public:
 	bool IsLoaded()
 	{
@@ -68,7 +76,8 @@ public:
 	virtual ~SceneBase() = default;
 public:
 	//読み込み
-	virtual void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {};
+	virtual void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+	{}
 	//読み込み後の初期化
 	virtual void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) = 0;
 	//更新
@@ -80,7 +89,62 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(m_loaded_mutex);
 		m_loaded = false;
+		fade_box = nullptr;
 	};
+
+public:
+	void FadeBoxInit(KDL::DX12::App* p_app)
+	{
+		fade_box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 100u);
+	}
+
+protected:
+	void FadeTimeInit()
+	{
+		fadein_timer = 0.0;
+		fadeout_timer = 0.0;
+	}
+
+	// フェードイン用
+	void FadeInDraw(KDL::DX12::App* p_app, const double* const change_time = nullptr)
+	{
+		using VF2 = DirectX::XMFLOAT2;
+
+		constexpr int BM{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
+
+		static auto vp{ p_app->GetViewport() };
+		static VF2 s_size{ vp.Width, vp.Height };
+
+		KDL::DX12::COLOR4F color{ WHITE, static_cast<float>(change_time ? *change_time : fadein_timer) };
+
+		color.w = 1.f - color.w;
+
+		fade_box->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), VF2(vp.Width, vp.Width), Fill2(0.f),
+			Fill2(1.f), 0.f, color, color, color, color, BM);
+	}
+
+	// フェードアウト用
+	void FadeOutDraw(KDL::DX12::App* p_app, const double* const change_time = nullptr)
+	{
+		using VF2 = DirectX::XMFLOAT2;
+
+		constexpr int BM{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
+
+		static auto vp{ p_app->GetViewport() };
+		static VF2 s_size{ vp.Width, vp.Height };
+
+		const KDL::DX12::COLOR4F color{ WHITE, static_cast<float>(change_time ? *change_time : fadeout_timer)  };
+
+		fade_box->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), VF2{ vp.Width, vp.Width }, Fill2(0.f),
+			Fill2(1.f), 0.f, color, color, color, color, BM);
+	}
+
+protected:
+	double fadein_timer;
+	double fadeout_timer;
+
+private:
+	std::unique_ptr<KDL::DX12::Sprite_Box> fade_box;
 };
 
 class SceneManager

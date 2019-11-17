@@ -6,7 +6,6 @@
 #include <filesystem>
 
 #include "ObjectManager.h"
-#include "ColorDef.h"
 #include "scene.h"
 #include "KDL_Dx12/Primitive.h"
 #include "KDL_Dx12/Sprite.h"
@@ -304,10 +303,11 @@ public:
 class SceneLoad
 	: public SceneBase
 {
-public:
+private:
 	std::unique_ptr<KDL::DX12::Sprite_Box> box;
 	KDL::FLOAT2 size;
 
+public:
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 	{
 		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 10u);
@@ -317,6 +317,7 @@ public:
 	{
 		SceneGame::load_count = 0u;
 		SetNextScene<SceneGame>();	//別スレッドでシーン切り替え
+		FadeTimeInit();
 	}
 	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
 	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

@@ -35,9 +35,14 @@ public:
 
 private:
 	std::vector<Path> file_names;
-	std::unordered_map<std::string, std::unique_ptr<KDL::DX12::Sprite_Image>> sprites;
-	std::unique_ptr<KDL::DX12::Sprite_Image> bg_sprite;
+	std::unordered_map<std::string, std::unique_ptr<KDL::DX12::Sprite_Image>> font_sprites;
+	std::vector<std::unique_ptr<KDL::DX12::Sprite_Image>> bg_sprite;
+	std::unique_ptr<KDL::DX12::Sprite_Image> arrow_sprite;
+
 	int select_num;
+	double bg_timer;
+	double arrow_timer;
+
 	static inline bool is_tutrial_mode;
 };
 

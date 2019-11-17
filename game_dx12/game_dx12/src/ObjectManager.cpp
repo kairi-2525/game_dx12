@@ -595,7 +595,7 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 				if (door.pos == player->pos && player->key_num > 0)
 				{
 					player->key_num--;
-					door.EndExist();
+					door.OpenDoor();
 
 					break;
 				}

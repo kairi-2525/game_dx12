@@ -152,6 +152,9 @@
     <ClInclude Include="src\SceneSelect.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Easing.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

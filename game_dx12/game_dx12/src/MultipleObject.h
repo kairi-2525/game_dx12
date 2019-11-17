@@ -399,6 +399,7 @@ public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	bool GetBackWorld() const noexcept { return is_back_world; }
+	void OpenDoor() noexcept { is_open = true; }
 
 private:
 	bool is_back_world;

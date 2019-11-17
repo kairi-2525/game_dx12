@@ -1,10 +1,10 @@
 #include "SceneSelect.h"
 #include "GameScene.h"
 #include "LoadAllFileName.h"
-#include "XMFLOAT_Hlper.h"
 #include "ImGuiSeting.h"
 #include "ImVecHelper.h"
 #include "TitleScene.h"
+#include "Easing.h"
 
 void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
@@ -13,18 +13,26 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	const auto fonts{ GetAllFileName("data\\images\\Select") };
 
 	// 背景読み込み
-	bg_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Snow.png", 1u);
+	bg_sprite.emplace_back(std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Snow.png", 100u));
+	bg_sprite.emplace_back(std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Sand.png", 100u));
+
+	arrow_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Arrow.png", 2u);
+
+	FadeBoxInit(p_app);
 
 	// 画像読み込み
 	for (auto& name : fonts)
 	{
-		sprites.emplace(name.stem().string(), std::make_unique<KDL::DX12::Sprite_Image>(p_app, name, 10u));
+		font_sprites.emplace(name.stem().string(), std::make_unique<KDL::DX12::Sprite_Image>(p_app, name, 10u));
 	}
 }
 
 void SceneSelect::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	bg_timer = 0.0;
+	arrow_timer = 0.0;
 	select_num = 0;
+	FadeTimeInit();
 	is_tutrial_mode = false;
 }
 
@@ -32,35 +40,69 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 {
 	using Keys = KDL::KEY_INPUTS;
 
+	static std::optional<bool> is_enter;
+
 	const auto* input{ p_window->GetInput() };
+
 
 	// 移動
 	if (file_names.size() - 1 > select_num && (input->IsTrgKey(Keys::Down) || input->IsTrgKey(Keys::S)))
 	{
 		select_num++;
+		arrow_timer = 0.f;
 	}
 	else if (select_num > 0 && (input->IsTrgKey(Keys::Up) || input->IsTrgKey(Keys::W)))
 	{
 		select_num--;
+		arrow_timer = 0.f;
 	}
 
 	if (input->IsTrgKey(Keys::Back))
 	{
-		SetNextScene<SceneTitle>();	//別スレッドでシーン切り替え
+		is_enter.emplace(false);
 
-		if (select_num == 0)
-			is_tutrial_mode = true;
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
 
 	if (input->IsTrgKey(Keys::Enter))
 	{
-		SceneGame::open_file_path = file_names.at(select_num);
+		is_enter.emplace(true);
 
-		SetNextScene<SceneLoad>();	//別スレッドでシーン切り替え
-
-		if (select_num == 0)
-			is_tutrial_mode = true;
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
+
+	// 決定か戻るが押された
+	if (is_enter)
+	{
+		constexpr double AlphaRate{ 2.0 };
+
+		if (fadeout_timer >= BaseFadeTimeMax)
+		{
+			if (*is_enter)
+			{
+				SceneGame::open_file_path = file_names.at(select_num);
+
+				SetNextScene<SceneLoad>();	//別スレッドでシーン切り替え
+
+				is_enter = std::nullopt;
+			}
+			else
+			{
+				SetNextScene<SceneTitle>();	//別スレッドでシーン切り替え
+
+				is_enter = std::nullopt;
+			}
+
+			if (select_num == 0)
+				is_tutrial_mode = true;
+		}
+
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime()) * AlphaRate;
+	}
+
+	bg_timer += static_cast<double>(p_window->GetElapsedTime());
+	arrow_timer += static_cast<double>(p_window->GetElapsedTime());
+	fadein_timer += static_cast<double>(p_window->GetElapsedTime());
 }
 
 void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -73,22 +115,71 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	static auto vp{ p_app->GetViewport() };
 	static VF2 s_size{ vp.Width, vp.Height };
 
-	const VF2 Pos{ s_size / 2.f };
+	const VF2 DivSize{ s_size / 2.f };
 
-	//ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
+	// 背景
+	{
+		constexpr double Alpha_Rate{ 0.5 };
 
-	//ImguiHeler::InputFloat(u8"座標", &adj);
+		{
+			const VF4 color{ WHITE, ((std::sinf(bg_timer * Alpha_Rate) + 1.f) / 2.f) };
 
-	//ImGui::End();
+			bg_sprite.front()->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), s_size, Fill2(0.f),
+				Fill2(1.f), 0.f, color, color, color, color, BM);
+		}
 
-	//bg_sprite->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), s_size, Fill2(0.f),
-	//	Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
+		{
+			const VF4 color{ WHITE, 1.f - ((std::sinf(bg_timer * Alpha_Rate) + 1.f) / 2.f) };
+
+			bg_sprite.back()->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), s_size, Fill2(0.f),
+				Fill2(1.f), 0.f, color, color, color, color, BM);
+		}
+	}
+
+	// 矢印
+	{
+		constexpr double AlphaRate{ 2.0 };
+		constexpr float MoveRate{ 20.f };
+		constexpr VF4 Color{ WHITE, 1.f };
+
+#ifdef KDL_USE_IMGUI
+		//ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
+
+		//ImguiHeler::SliderFloat(u8"座標", &base_pos, 0.f, 1920.f, "%.0f");
+
+		//ImGui::End();
+#endif
+
+		// 上
+		if (select_num != 0)
+		{
+			const VF2 pos
+			{ DivSize.x - 55.f, (DivSize.y - 250.f) + (1.f - std::sinf(arrow_timer * AlphaRate) * MoveRate) };
+
+			arrow_sprite->AddCommand(p_app->GetCommandList(), p_app, pos, { 200.f, 100.f }, Fill2(0.f),
+				Fill2(1.f), 0.f, Color, Color, Color, Color, BM);
+		}
+
+		// 下
+		if (select_num != file_names.size() - 1u)
+		{
+			const auto spr_size{ arrow_sprite->GetSize() };
+			const VF2 pos{ DivSize.x, (vp.Height - 350.f) + (std::sinf(arrow_timer * AlphaRate) * MoveRate) };
+
+			arrow_sprite->AddCommand(p_app->GetCommandList(), p_app, pos, { 200.f, 100.f }, spr_size / 2.f,
+				Fill2(1.f), Math::PAI<float>, Color, Color, Color, Color, BM);
+		}
+	}
+
+	//todo エンターキーで決定、バックスペースキーでタイトルへ
+	{
+	}
 
 	if (select_num == 0)
 	{
 		static VF2 adj{ -200.f, -200.f };
 
-		sprites.at("tutorial")->AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+		font_sprites.at("tutorial")->AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
 			Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 	}
 	else if (select_num < file_names.size())
@@ -101,7 +192,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			{
 				static VF2 adj{ -300.f, -200.f };
 
-				sprites.at("stage")->AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+				font_sprites.at("stage")->AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
 					Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 			}
 
@@ -109,8 +200,8 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			{
 				static VF2 adj{ 100.f, -200.f };
 
-				sprites.at(std::to_string(select_num))->
-					AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+				font_sprites.at(std::to_string(select_num))->
+					AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
 						Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 			}
 			else
@@ -124,8 +215,8 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 					temp.pop_back();
 
-					sprites.at(temp)->
-						AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+					font_sprites.at(temp)->
+						AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
 							Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 				}
 
@@ -137,15 +228,32 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 					temp.erase(temp.begin());
 
-					sprites.at(temp)->
-						AddCommand(p_app->GetCommandList(), p_app, Pos + adj, Fill2(500.f), Fill2(0.f),
+					font_sprites.at(temp)->
+						AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
 							Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 				}
 			}
 		}
 	}
+
+	// フェードアウト
+	if (fadeout_timer > 0.0)
+	{
+		const double timer{ Easing::InBounce(fadeout_timer, BaseFadeTimeMax) };
+
+		FadeOutDraw(p_app, &timer);
+	}
+
+	// フェードイン
+	if (fadein_timer > 0.0 && fadein_timer < BaseFadeTimeMax)
+	{
+		const double timer{ Easing::InBounce(fadein_timer, BaseFadeTimeMax) };
+
+		FadeInDraw(p_app, &timer);
+	}
 }
 
 void SceneSelect::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	FadeBoxUnInit();
 }

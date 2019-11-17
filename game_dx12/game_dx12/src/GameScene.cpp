@@ -17,6 +17,7 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	file_flg = false;
 	camera_angle = { Math::ToRadian(-80.f), 0.f, 0.f };
 	camera_dis = 50.f;
+	FadeTimeInit();
 
 	execution_quick_exit = false;
 	masu_pos = Fill3(0.f);
@@ -697,6 +698,8 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	if (!tutorial1_board) Load(tutorial1_board, "data\\images\\tutorial1.png");
 
 	if (!tutorial2_board) Load(tutorial2_board, "data\\images\\tutorial2.png");
+
+	FadeBoxInit(p_app);
 
 	audio = p_window->GetAudio();
 	bgm_handle = audio->Load("./data/sounds/BGM.wav");
