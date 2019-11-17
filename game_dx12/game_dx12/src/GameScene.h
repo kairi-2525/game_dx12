@@ -310,6 +310,7 @@ private:
 public:
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 	{
+		FadeBoxInit(p_app);
 		box = std::make_unique<KDL::DX12::Sprite_Box>(p_app, 10u);
 		size = 0.f;
 	}
@@ -342,6 +343,16 @@ public:
 
 		box->AddCommand(p_app->GetCommandList(), p_app, { 0.f, 0.f }, size, { 0.f, 0.f }, { 1.f, 1.f },
 			0.f, color, color, color, color);
+
+		// フェードイン
+		if (fadein_timer < BaseFadeTimeMax)
+		{
+			const double timer{ Easing::InBounce(fadein_timer, BaseFadeTimeMax) };
+
+			FadeInDraw(p_app, &timer);
+
+			fadein_timer += static_cast<double>(p_window->GetElapsedTime());
+		}
 	}
 	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app) {}
 };

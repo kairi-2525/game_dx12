@@ -238,6 +238,11 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 	if (input->IsTrgKey(Keys::Back))
 	{
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
+
+	if (fadeout_timer >= BaseFadeTimeMax)
+	{
 		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
 	}
 
@@ -334,6 +339,27 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		}
 	}
 
+
+	// フェードアウト
+	if (fadeout_timer > 0.0)
+	{
+		const double timer{ Easing::InBounce(fadeout_timer, BaseFadeTimeMax) };
+
+		FadeOutDraw(p_app, &timer);
+
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
+
+	// フェードイン
+	if (fadein_timer < BaseFadeTimeMax)
+	{
+		const double timer{ Easing::InBounce(fadein_timer, BaseFadeTimeMax) };
+
+		FadeInDraw(p_app, &timer);
+
+		fadein_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
+
 	// 選択グリット
 #if false
 	if (edit_mode)
@@ -414,8 +440,12 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	// 選択画面へ
 	if (execution_quick_exit)
 	{
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
+
+	if (fadeout_timer >= BaseFadeTimeMax)
+	{
 		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
-		return;
 	}
 
 	// カメラの更新

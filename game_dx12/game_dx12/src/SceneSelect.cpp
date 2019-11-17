@@ -192,7 +192,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			{
 				static VF2 adj{ -300.f, -200.f };
 
-				font_sprites.at("stage")->AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
+				font_sprites.at("Stage")->AddCommand(p_app->GetCommandList(), p_app, DivSize + adj, Fill2(500.f), Fill2(0.f),
 					Fill2(1.f), 0.f, Fill4(1.f), Fill4(1.f), Fill4(1.f), Fill4(1.f), BM);
 			}
 
@@ -245,15 +245,16 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	}
 
 	// フェードイン
-	if (fadein_timer > 0.0 && fadein_timer < BaseFadeTimeMax)
+	if (fadein_timer < BaseFadeTimeMax)
 	{
 		const double timer{ Easing::InBounce(fadein_timer, BaseFadeTimeMax) };
 
 		FadeInDraw(p_app, &timer);
+
+		fadein_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
 }
 
 void SceneSelect::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	FadeBoxUnInit();
 }
