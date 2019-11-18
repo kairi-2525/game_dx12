@@ -239,7 +239,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	// フェードアウト
 	if (fadeout_timer > 0.0)
 	{
-		const double timer{ Easing::InBounce(fadeout_timer, BaseFadeTimeMax) };
+		const double timer{ Easing::InQuint(fadeout_timer, BaseFadeTimeMax) };
 
 		FadeOutDraw(p_app, &timer);
 	}
@@ -247,7 +247,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	// フェードイン
 	if (fadein_timer < BaseFadeTimeMax)
 	{
-		const double timer{ Easing::InBounce(fadein_timer, BaseFadeTimeMax) };
+		const double timer{ Easing::InQuint(fadein_timer, BaseFadeTimeMax) };
 
 		FadeInDraw(p_app, &timer);
 

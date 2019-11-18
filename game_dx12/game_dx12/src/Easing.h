@@ -14,8 +14,46 @@
 //---------------------------------------------------------
 //!+++  定数
 //---------------------------------------------------------
-template<typename _Ty>
-constexpr _Ty _90 = static_cast<_Ty>(90.f);
+namespace
+{
+	template<typename _Ty>
+	constexpr _Ty _0 = static_cast<_Ty>(0.f);
+	template<typename _Ty>
+	constexpr _Ty _0_5 = static_cast<_Ty>(0.5f);
+	template<typename _Ty>
+	constexpr _Ty _0_75 = static_cast<_Ty>(0.75f);
+	template<typename _Ty>
+	constexpr _Ty _0_9375 = static_cast<_Ty>(0.9375f);
+	template<typename _Ty>
+	constexpr _Ty _0_984375 = static_cast<_Ty>(0.984375f);
+
+	template<typename _Ty>
+	constexpr _Ty _1 = static_cast<_Ty>(1.f);
+	template<typename _Ty>
+	constexpr _Ty _1_5 = static_cast<_Ty>(1.5f);
+	template<typename _Ty>
+	constexpr _Ty _1_525 = static_cast<_Ty>(1.525f);
+
+	template<typename _Ty>
+	constexpr _Ty _2 = static_cast<_Ty>(2.f);
+	template<typename _Ty>
+	constexpr _Ty _2_25 = static_cast<_Ty>(2.25f);
+	template<typename _Ty>
+	constexpr _Ty _2_5 = static_cast<_Ty>(2.5f);
+	template<typename _Ty>
+	constexpr _Ty _2_625 = static_cast<_Ty>(2.625f);
+	template<typename _Ty>
+	constexpr _Ty _2_75 = static_cast<_Ty>(2.75f);
+
+	template<typename _Ty>
+	constexpr _Ty _7_5625 = static_cast<_Ty>(7.5625f);
+
+	template<typename _Ty>
+	constexpr _Ty _10 = static_cast<_Ty>(10.f);
+
+	template<typename _Ty>
+	constexpr _Ty _90 = static_cast<_Ty>(90.f);
+}
 
 //---------------------------------------------------------
 //!+++  関数
@@ -28,7 +66,7 @@ namespace Easing
 	// https://qiita.com/hart_edsf/items/962ac03281b871dcc0df  引用サイト（2019/11/18現在、削除されている模様）
 
 	template<typename _Ty = float>
-	inline _Ty InQuad(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InQuad(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
@@ -37,30 +75,30 @@ namespace Easing
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutQuad(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutQuad(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		return -max * time * (time - 2) + min;
+		return -max * time * (time - _2<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutQuad(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutQuad(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		if (time / 2 < 1)
-			return max / 2 * time * time + min;
+		if (time / _2<_Ty> < _1<_Ty>)
+			return max / _2<_Ty> * time * time + min;
 
 		--time;
 
-		return -max * (time * (time - 2) - 1) + min;
+		return -max * (time * (time - _2<_Ty>) - _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InCubic(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InCubic(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
@@ -69,30 +107,30 @@ namespace Easing
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutCubic(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutCubic(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
-		time = time / totaltime - 1;
+		time = time / totaltime - _1<_Ty>;
 
-		return max * (time * time * time + 1) + min;
+		return max * (time * time * time + _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutCubic(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutCubic(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		if (time / 2 < 1)
-			return max / 2 * time * time * time + min;
+		if (time / _2<_Ty> < _1<_Ty>)
+			return max / _2<_Ty> * time * time * time + min;
 
-		time -= 2;
+		time -= _2<_Ty>;
 
-		return max / 2 * (time * time * time + 2) + min;
+		return max / _2<_Ty> * (time * time * time + _2<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InQuart(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InQuart(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
@@ -101,30 +139,30 @@ namespace Easing
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutQuart(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutQuart(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
-		time = time / totaltime - 1;
+		time = time / totaltime - _1<_Ty>;
 
-		return -max * (time * time * time * time - 1) + min;
+		return -max * (time * time * time * time - _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutQuart(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutQuart(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		if (time / 2 < 1)
-			return max / 2 * time * time * time * time + min;
+		if (time / _2<_Ty> < _1<_Ty>)
+			return max / _2<_Ty> * time * time * time * time + min;
 
-		time -= 2;
+		time -= _2<_Ty>;
 
-		return -max / 2 * (time * time * time * time - 2) + min;
+		return -max / _2<_Ty> * (time * time * time * time - _2<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InQuint(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InQuint(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
@@ -133,202 +171,206 @@ namespace Easing
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutQuint(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutQuint(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
-		time = time / totaltime - 1;
+		time = time / totaltime - _1<_Ty>;
 
-		return max * (time * time * time * time * time + 1) + min;
+		return max * (time * time * time * time * time + _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutQuint(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutQuint(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		if (time / 2 < 1)
-			return max / 2 * time * time * time * time * time + min;
+		if (time / _2<_Ty> < _1<_Ty>)
+			return max / _2<_Ty> * time * time * time * time * time + min;
 
-		time -= 2;
+		time -= _2<_Ty>;
 
-		return max / 2 * (time * time * time * time * time + 2) + min;
+		return max / _2<_Ty> * (time * time * time * time * time + _2<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InSine(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InSine(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 
-		return -max * std::cos<_Ty>(time * Math::ToRadian(_90<_Ty>) / totaltime) + max + min;
+		return -max * std::cos(time * Math::ToRadian(_90<_Ty>) / totaltime) + max + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutSine(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutSine(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 
-		return max * std::sin<_Ty>(time * Math::ToRadian(_90<_Ty>) / totaltime) + min;
+		return max * std::sin(time * Math::ToRadian(_90<_Ty>) / totaltime) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutSine(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutSine(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 
-		return -max / 2 * (cos(time * Math::PAI<_Ty> / totaltime) - 1) + min;
+		return -max / _2<_Ty> * (std::cos(time * Math::PAI<_Ty> / totaltime) - 1) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InExp(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InExp(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 
-		return time == 0.0 ? min : max * std::pow<_Ty>(2, 10 * (time / totaltime - 1)) + min;
+		return  Math::AdjEqual<_Ty>(time, _0<_Ty>) ?
+			min :
+			max * std::pow(_2<_Ty>, _10<_Ty> * (time / totaltime - _1<_Ty>)) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutExp(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutExp(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 
-		return time == totaltime ? max + min : max * (-pow(2, -10 * time / totaltime) + 1) + min;
+		return Math::AdjEqual<_Ty>(time, totaltime) ?
+			max + min :
+			max * (-std::pow(_2<_Ty>, -_10<_Ty> * time / totaltime) + _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutExp(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutExp(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
-		if (time == 0.0)
+		if (Math::AdjEqual<_Ty>(time, _0<_Ty>))
 			return min;
 
-		if (time == totaltime)
+		if (Math::AdjEqual<_Ty>(time, totaltime))
 			return max;
 
 		max -= min;
 		time /= totaltime;
 
-		if (time / 2 < 1)
-			return max / 2 * std::pow<_Ty>(2, 10 * (time - 1)) + min;
+		if (time / _2<_Ty> < _1<_Ty>)
+			return max / _2<_Ty> * std::pow(_2<_Ty>, _10<_Ty> * (time - _1<_Ty>)) + min;
 
 		--time;
 
-		return max / 2 * (-std::pow<_Ty>(2, -10 * time) + 2) + min;
+		return max / _2<_Ty> * (-std::pow(_2<_Ty>, -_10<_Ty> * time) + _2<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InCirc(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InCirc(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		return -max * (std::sqrt<_Ty>(1 - time * time) - 1) + min;
+		return -max * (std::sqrt(_1<_Ty> -time * time) - _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutCirc(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty OutCirc(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
-		time = time / totaltime - 1;
+		time = time / totaltime - _1<_Ty>;
 
-		return max * std::sqrt<_Ty>(1 - time * time) + min;
+		return max * std::sqrt(_1<_Ty> -time * time) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutCirc(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
-	{
-		max -= min;
-		time /= totaltime;
-
-		if (time / 2 < 1)
-			return -max / 2 * (std::sqrt<_Ty>(1 - time * time) - 1) + min;
-
-		time -= 2;
-
-		return max / 2 * (std::sqrt<_Ty>(1 - time * time) + 1) + min;
-	}
-
-	template<typename _Ty = float>
-	inline _Ty InBack(_Ty time, _Ty totaltime, _Ty back, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutCirc(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		return max * time * time *((back + 1) * time - back) + min;
+		if (time / _2<_Ty> < _1<_Ty>)
+			return -max / _2<_Ty> * (std::sqrt(_1<_Ty> -time * time) - _1<_Ty>) + min;
+
+		time -= _2<_Ty>;
+
+		return max / _2<_Ty> * (std::sqrt(_1<_Ty> -time * time) + _1<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty OutBack(_Ty time, _Ty totaltime, _Ty back, _Ty max = 1.0, _Ty min = 0.0)
-	{
-		max -= min;
-		time = time / totaltime - 1;
-
-		return max * (time * time * ((back + 1) * time * back) + 1) + min;
-	}
-
-	template<typename _Ty = float>
-	inline _Ty InOutBack(_Ty time, _Ty totaltime, _Ty back, _Ty max = 1.0, _Ty min = 0.0)
-	{
-		max -= min;
-		back *= 1.525;
-
-		if (time / 2 < 1)
-			return max * (time * time * ((back + 1) * time - back)) + min;
-
-		time -= 2;
-
-		return max / 2 * (time * time * ((back + 1) * time + back) + 2) + min;
-	}
-
-	template<typename _Ty = float>
-	inline _Ty OutBounce(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InBack(_Ty time, _Ty totaltime, _Ty back, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		max -= min;
 		time /= totaltime;
 
-		if (time < 1 / 2.75)
-			return max * (7.5625 * time * time) + min;
+		return max * time * time * ((back + _1<_Ty>) * time - back) + min;
+	}
 
-		else if (time < 2 / 2.75)
+	template<typename _Ty = float>
+	static inline _Ty OutBack(_Ty time, _Ty totaltime, _Ty back, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
+	{
+		max -= min;
+		time = time / totaltime - _1<_Ty>;
+
+		return max * (time * time * ((back + _1<_Ty>) * time * back) + _1<_Ty>) + min;
+	}
+
+	template<typename _Ty = float>
+	static inline _Ty InOutBack(_Ty time, _Ty totaltime, _Ty back, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
+	{
+		max -= min;
+		back *= _1_525<_Ty>;
+
+		if (time / _2<_Ty> < _1<_Ty>)
+			return max * (time * time * ((back + _1<_Ty>) * time - back)) + min;
+
+		time -= _2<_Ty>;
+
+		return max / _2<_Ty> * (time * time * ((back + _1<_Ty>) * time + back) + _2<_Ty>) + min;
+	}
+
+	template<typename _Ty = float>
+	static inline _Ty OutBounce(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
+	{
+		max -= min;
+		time /= totaltime;
+
+		if (time < _1<_Ty> / _2_75<_Ty>)
+			return max * (_7_5625<_Ty> * time * time) + min;
+
+		else if (time < _2<_Ty> / _2_75<_Ty>)
 		{
-			time -= 1.5 / 2.75;
+			time -= _1_5<_Ty> / _2_75<_Ty>;
 
-			return max * (7.5625 * time * time + 0.75) + min;
+			return max * (_7_5625<_Ty> * time * time + _0_75<_Ty>) + min;
 		}
-		else if (time < 2.5 / 2.75)
+		else if (time < _2_5<_Ty> / _2_75<_Ty>)
 		{
-			time -= 2.25 / 2.75;
+			time -= _2_25<_Ty> / _2_75<_Ty>;
 
-			return max * (7.5625 * time * time + 0.9375) + min;
+			return max * (_7_5625<_Ty> * time * time + _0_9375<_Ty>) + min;
 		}
 		else
 		{
-			time -= 2.625 / 2.75;
+			time -= _2_625<_Ty> / _2_75<_Ty>;
 
-			return max * (7.5625 * time * time + 0.984375) + min;
+			return max * (_7_5625<_Ty> * time * time + _0_984375<_Ty>) + min;
 		}
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InBounce(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InBounce(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
-		return max - OutBounce<_Ty>(totaltime - time, totaltime, max - min, 0) + min;
+		return max - OutBounce<_Ty>(totaltime - time, totaltime, max - min, _0<_Ty>) + min;
 	}
 
 	template<typename _Ty = float>
-	inline _Ty InOutBounce(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty InOutBounce(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
-		if (time < totaltime / 2)
+		if (time < totaltime / _2<_Ty>)
 		{
-			return InBounce<_Ty>(time * 2, totaltime, max - min, max) * 0.5 + min;
+			return InBounce<_Ty>(time * _2<_Ty>, totaltime, max - min, max) * _0_5<_Ty> +min;
 		}
 		else
 		{
-			return OutBounce<_Ty>(time * 2 - totaltime, totaltime, max - min, 0) * 0.5 + min + (max - min) * 0.5;
+			return OutBounce<_Ty>(time * _2<_Ty> -totaltime, totaltime, max - min, _0<_Ty>) * _0_5<_Ty> +min + (max - min) * _0_5<_Ty>;
 		}
 	}
 
 	template<typename _Ty = float>
-	inline _Ty Linear(_Ty time, _Ty totaltime, _Ty max = 1.0, _Ty min = 0.0)
+	static inline _Ty Linear(_Ty time, _Ty totaltime, _Ty max = _1<_Ty>, _Ty min = _0<_Ty>)
 	{
 		return (max - min) * time / totaltime + min;
 	}

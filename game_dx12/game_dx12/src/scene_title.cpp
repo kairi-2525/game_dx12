@@ -8,6 +8,8 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	title_parallel.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Tittle/parallel.fbx", 100);
 	title_labyrinth.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Tittle/labyrinth.fbx", 100);
 
+	FadeBoxInit(p_app);
+
 	for (auto& it : grounds_list)
 	{
 		switch (it.first)
@@ -37,7 +39,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 				grounds[it.first].model = std::make_unique<KDL::DX12::Geometric_Board>(p_app, ("./data/images/Game/" + it.second + ".png"), 100);
 				break;
 			}
-		}	
+		}
 	}
 
 	sand_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Sand.png", 100);
@@ -71,6 +73,9 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	player.position = KDL::FLOAT3{ 0.f, 0.8f, 0.f };
 	player.rotate = KDL::FLOAT3{ 0.f, DirectX::XMConvertToRadians(-90.f), 0.f };
 	player.scale = KDL::FLOAT3{ 0.1f, 0.1f, 0.1f };
+
+	FadeTimeInit();
+	fadein_timer += static_cast<double>(p_window->GetElapsedTime());
 
 #if 0
 	title_parallel.position = KDL::FLOAT3{ -1.f, 2.035f, 0.f };
@@ -159,6 +164,11 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 	ImGui::End();
 #endif
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
+	{
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
+
+	if (fadeout_timer > BaseFadeTimeMax)
 	{
 		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
 	}
@@ -340,7 +350,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 						snow ?
 						breaked ?
 						GROUND_TYPE::SnowBroken : GROUND_TYPE::Snow :
-						breaked ? 
+						breaked ?
 						GROUND_TYPE::SandBroken : GROUND_TYPE::Sand :
 						snow ?
 						breaked ?
@@ -436,6 +446,27 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		}
 	}
 	wall.Draw(p_app, camera.get(), light_dir);
+
+
+	// フェードアウト
+	if (fadeout_timer > 0.0)
+	{
+		const double timer{ Easing::InQuint<double>(fadeout_timer, BaseFadeTimeMax) };
+
+		FadeOutDraw(p_app, &timer);
+
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
+
+	// フェードイン
+	if (fadein_timer < BaseFadeTimeMax)
+	{
+		const double timer{ Easing::InQuint<double>(fadein_timer, BaseFadeTimeMax) };
+
+		FadeInDraw(p_app, &timer);
+
+		fadein_timer += static_cast<double>(p_window->GetElapsedTime());
+	}
 }
 
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

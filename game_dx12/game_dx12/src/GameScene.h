@@ -345,9 +345,9 @@ public:
 			0.f, color, color, color, color);
 
 		// フェードイン
-		if (fadein_timer < BaseFadeTimeMax)
+		if (fadein_timer < BaseFadeTimeMax * 2.f)
 		{
-			const double timer{ Easing::InBounce(fadein_timer, BaseFadeTimeMax) };
+			const double timer{ Easing::OutSine(fadein_timer, BaseFadeTimeMax * 2.f) };
 
 			FadeInDraw(p_app, &timer);
 
