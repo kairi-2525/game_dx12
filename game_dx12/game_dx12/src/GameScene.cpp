@@ -241,7 +241,7 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
 
-	if (fadeout_timer >= BaseFadeTimeMax)
+	if (fadeout_timer >= GoalFadeTime)
 	{
 		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
 	}
@@ -341,7 +341,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	// フェードアウト
 	if (fadeout_timer > 0.0)
 	{
-		const double timer{ Easing::OutCubic<double>(fadeout_timer, 3.0) };
+		const double timer{ Easing::InCubic<double>(fadeout_timer, GoalFadeTime) };
 
 		FadeOutDraw(p_app, &timer);
 
@@ -436,12 +436,12 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 	}
 
 	// 選択画面へ
-	if (execution_quick_exit)
+	if (execution_quick_exit && Math::AdjEqual(fadeout_timer, 0.0))
 	{
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
 
-	if (fadeout_timer >= BaseFadeTimeMax)
+	if (fadeout_timer >= GoalFadeTime)
 	{
 		SetNextScene<SceneSelect>();	//別スレッドでシーン切り替え
 	}
@@ -464,7 +464,23 @@ void SceneGame::NormalModeUpdate(SceneManager* p_scene_mgr, KDL::Window* p_windo
 #else
 	if (const auto& player{ object_manager->GetObjectData<Player>() }; player)
 	{
-		camera->SetPosition(CreateRotationPos(camera_angle, camera_dis, player->pos));
+		static double adj_dis_timer{ 0.f };
+
+		if (object_manager->GetIsGoal())
+		{
+			adj_dis_timer += p_window->GetElapsedTime();
+		}
+		else
+		{
+			adj_dis_timer = 0.f;
+		}
+
+		camera->SetPosition(CreateRotationPos(camera_angle,
+			camera_dis - (Easing::OutCirc(
+								adj_dis_timer,
+								GoalFadeTime,
+								static_cast<double>(camera_dis - 1.5))), player->pos));
+
 		camera->SetTarget(player->pos);
 	}
 #endif

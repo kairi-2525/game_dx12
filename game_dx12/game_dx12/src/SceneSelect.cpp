@@ -10,7 +10,17 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 {
 	// ファイルを読み込み
 	file_names = GetAllFileName(SceneGame::SaveFileDir);
-	const auto fonts{ GetAllFileName("data\\images\\Select") };
+
+	// チュートリアルを最初に持ってくる
+	{
+		auto tutorial{ std::find_if(file_names.begin(), file_names.end(),
+			[](const Path& name) { return name.string().find("tutorial") != std::string::npos; }) };
+
+		assert(tutorial != file_names.end() && "チュートリアルファイルが見つからない");
+
+		file_names.emplace(file_names.begin(), *tutorial);
+		file_names.pop_back();
+	}
 
 	// 背景読み込み
 	bg_sprite.emplace_back(std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Snow.png", 100u));
@@ -24,13 +34,9 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	se_select = audio->Load("./data/sounds/select.wav");
 	se_decision = audio->Load("./data/sounds/decision.wav");
 
-	FadeBoxInit(p_app);
+	font_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\fonts\\font0.png", 100u);
 
-	// 画像読み込み
-	for (auto& name : fonts)
-	{
-		font_sprites.emplace(name.stem().string(), std::make_unique<KDL::DX12::Sprite_Image>(p_app, name, 10u));
-	}
+	FadeBoxInit(p_app);
 }
 
 void SceneSelect::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -114,8 +120,10 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 				is_enter = std::nullopt;
 			}
 
-			if (select_num == 0)
+			if (const auto& name{ file_names[select_num].string() }; name.find("tutorial") != std::string::npos)
 				is_tutrial_mode = true;
+			else
+				is_tutrial_mode = false;
 		}
 
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime()) * AlphaRate;
@@ -196,6 +204,9 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	{
 	}
 
+	//font_sprite->AddTextCommands();
+
+#if false
 	if (select_num == 0)
 	{
 		static VF2 adj{ -200.f, -200.f };
@@ -256,6 +267,15 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			}
 		}
 	}
+#else
+	// フォント
+	{
+		constexpr VF4 Color{ WHITE, 1.f };
+
+		//font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, file_names[select_num].stem().string(),
+		//	DivSize, Fill2(500.f), Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f, Color, Color, Color, Color, BM);
+	}
+#endif
 
 	// フェードアウト
 	if (fadeout_timer > 0.0)

@@ -6,7 +6,7 @@
 #include "Time.h"
 
 ObjectManager::ObjectManager()
-	: select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f)
+	: select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f), is_goal(false)
 {
 	now_move_object = edit_mode_first = false;
 }
@@ -562,6 +562,7 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 					SG::audio->CreatePlayHandle(SG::se_goal, 0.f, false, false, 0.f, 0.f, 0, false, false);
 				SG::audio->Play(SG::se_goal, SG::p_se_goal, 0.01f, 0.2f, false);
 
+				is_goal = true;
 				SceneGame::execution_quick_exit = true;
 			}
 		}
