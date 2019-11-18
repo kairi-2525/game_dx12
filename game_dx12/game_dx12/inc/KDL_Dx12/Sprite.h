@@ -146,6 +146,29 @@ namespace KDL
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
 				bool z_test = false);
+			HRESULT AddTextCommands(ID3D12GraphicsCommandList* command_list, App* app,
+				const std::string& text,
+				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center,
+				const FLOAT2& space,
+				const FLOAT2& scale, float radian_angle,
+				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
+				bool wire_frame = false,
+				bool z_test = false);
+			HRESULT AddTextCommands(ID3D12GraphicsCommandList* command_list, App* app,
+				const std::string& text,
+				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center,
+				const FLOAT2& space,
+				const FLOAT2& scale, float radian_angle,
+				const COLOR4F& furst_left_top, const COLOR4F& furst_right_top, const COLOR4F& furst_left_bottom, const COLOR4F& furst_right_bottom,
+				const COLOR4F& last_left_top, const COLOR4F& last_right_top, const COLOR4F& last_left_bottom, const COLOR4F& last_right_bottom,
+				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
+				bool wire_frame = false,
+				bool z_test = false);
+			static size_t GetTextWidth(const std::string& text, float size_w, float scale_w, float space)
+			{
+				return text.size() * (size_w + space) * scale_w;
+			}
 			template <class T = FLOAT>
 			Number2<T> GetSize() { return { static_cast<T>(m_tex_desc.Width), static_cast<T>(m_tex_desc.Height) }; }
 		};
