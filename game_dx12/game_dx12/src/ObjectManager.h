@@ -278,6 +278,17 @@ public:
 	auto& operator=(const ObjectManager&) = delete;
 	auto& operator=(ObjectManager&&) noexcept = delete;
 
+private:
+	struct Effect
+	{
+		Effect(const VF3& pos, const VF3& angle)
+			: pos(pos), angle(angle)
+		{}
+
+		VF3 pos;
+		VF3 angle;
+	};
+
 public:
 	// オブジェクト数のゲッター
 	constexpr size_t GetObjectKindsNum() const noexcept
@@ -301,7 +312,7 @@ public:
 		select_enm = nullptr;
 		select_waypoint = nullptr;
 	}
-	static void UnInitialize();
+	void UnInitialize();
 	// 書き出し
 	void Output(std::ofstream& ofs);
 	// 読み込み
@@ -369,8 +380,13 @@ private:
 	Object objects;
 	Node node;
 
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> crystal_board;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_board;
+	std::deque<Effect> effects;
+
 	bool now_move_object, edit_mode_first, is_goal;
 	Enemy* select_enm;
 	WayPoint* select_waypoint;
 	VF3 masu_pos;
+	double timer;
 };

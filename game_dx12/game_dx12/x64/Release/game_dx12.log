@@ -1,155 +1,102 @@
-﻿  SceneSelect.cpp
-C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SceneSelect.cpp(97,46): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SceneSelect.cpp(104,52): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SceneSelect.cpp(119,53): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\src\SceneSelect.cpp(128,67): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-  コード生成しています。
-  1 of 7794 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
-  コード生成が終了しました。
-KDL.lib(Mesh.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Mesh.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(App.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(App.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Primitive.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Primitive.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Audio.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Audio.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Window.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Window.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Sprite.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Sprite.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Pipeline_State_Manager.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Pipeline_State_Manager.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(KDL.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(KDL.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Tool.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Tool.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Input.obj) : warning LNK4099: PDB 'KDL.pdb' が 'KDL.lib(Input.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\KDL.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(pch.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(pch.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Mouse.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(Mouse.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(Keyboard.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(Keyboard.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-KDL.lib(WAVFileReader.obj) : warning LNK4099: PDB 'DirectXTK.pdb' が 'KDL.lib(WAVFileReader.obj)' で、または 'C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\DirectXTK.pdb' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-  game_dx12.vcxproj -> C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\game_dx12.exe
+﻿SceneSelect.obj : error LNK2001: 外部シンボル ""public: long __cdecl KDL::DX12::Sprite_Image::AddTextCommands(struct ID3D12GraphicsCommandList *,class KDL::DX12::App *,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class KDL::MATH::Number2<float> const &,class KDL::MATH::Number2<float> const &,class KDL::MATH::Number2<float> const &,class KDL::MATH::Number2<float> const &,class KDL::MATH::Number2<float> const &,float,class KDL::MATH::Number4<float> const &,class KDL::MATH::Number4<float> const &,class KDL::MATH::Number4<float> const &,class KDL::MATH::Number4<float> const &,int,bool,bool)" (?AddTextCommands@Sprite_Image@DX12@KDL@@QEAAJPEAUID3D12GraphicsCommandList@@PEAVApp@23@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV?$Number2@M@MATH@3@3333MAEBV?$Number4@M@93@444H_N5@Z)" は未解決です。
+C:\Users\2180008\Desktop\後期チーム制作\game_dx12\x64\Release\game_dx12.exe : fatal error LNK1120: 1 件の未解決の外部参照
 
 プロジェクト パフォーマンスの概要:
-     7726 ミリ秒  C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\game_dx12.vcxproj   1 回呼び出し
-               7726 ミリ秒  Build                                      1 回呼び出し
+     1655 ミリ秒  C:\Users\2180008\Desktop\後期チーム制作\game_dx12\game_dx12\game_dx12.vcxproj   1 回呼び出し
+               1655 ミリ秒  Build                                      1 回呼び出し
 
 ターゲット パフォーマンスの概要:
-        0 ミリ秒  MakeDirsForResourceCompile                 1 回呼び出し
-        0 ミリ秒  PreLinkEvent                               1 回呼び出し
+        0 ミリ秒  AfterBuildGenerateSourcesEvent             1 回呼び出し
+        0 ミリ秒  AssignTargetPaths                          1 回呼び出し
+        0 ミリ秒  _Midl                                      1 回呼び出し
+        0 ミリ秒  AfterBuildGenerateSources                  1 回呼び出し
+        0 ミリ秒  _BuildGenerateSourcesAction                1 回呼び出し
+        0 ミリ秒  BuildGenerateSources                       1 回呼び出し
+        0 ミリ秒  BuildCompileTraverse                       1 回呼び出し
+        0 ミリ秒  BeforeClCompile                            1 回呼び出し
+        0 ミリ秒  ComputeCLInputPDBName                      1 回呼び出し
+        0 ミリ秒  ComputeReferenceCLInput                    1 回呼び出し
         0 ミリ秒  PrepareResourceNames                       1 回呼び出し
-        0 ミリ秒  CreateCustomManifestResourceNames          1 回呼び出し
-        0 ミリ秒  SplitResourcesByCulture                    1 回呼び出し
-        0 ミリ秒  ComputeManifestInputsTargets               1 回呼び出し
-        0 ミリ秒  ComputeLinkInputsFromProject               1 回呼び出し
-        0 ミリ秒  ComputeCLGeneratedLinkInputs               1 回呼び出し
-        0 ミリ秒  ComputeManifestGeneratedLinkerInputs       1 回呼び出し
-        0 ミリ秒  ComputeRCGeneratedLinkInputs               1 回呼び出し
-        0 ミリ秒  ComputeLinkSwitches                        1 回呼び出し
-        0 ミリ秒  ComputeRCOutputs                           1 回呼び出し
-        0 ミリ秒  ComputeLegacyManifestEmbedding             1 回呼び出し
-        0 ミリ秒  BuildLinkTraverse                          1 回呼び出し
-        0 ミリ秒  BuildCompile                               1 回呼び出し
-        0 ミリ秒  _BuildCompileAction                        1 回呼び出し
-        0 ミリ秒  AfterBuildCompileEvent                     1 回呼び出し
-        0 ミリ秒  _ResourceCompile                           1 回呼び出し
-        0 ミリ秒  AfterResourceCompile                       1 回呼び出し
-        0 ミリ秒  BeforeResourceCompile                      1 回呼び出し
-        0 ミリ秒  _ClCompile                                 1 回呼び出し
-        0 ミリ秒  BeforeLink                                 1 回呼び出し
-        0 ミリ秒  AfterClCompile                             1 回呼び出し
-        0 ミリ秒  AfterLink                                  1 回呼び出し
-        0 ミリ秒  _ALink                                     1 回呼び出し
-        0 ミリ秒  AfterBuild                                 1 回呼び出し
-        0 ミリ秒  BuildLink                                  1 回呼び出し
-        0 ミリ秒  _BuildLinkAction                           1 回呼び出し
-        0 ミリ秒  PostBuildEvent                             1 回呼び出し
-        0 ミリ秒  PrepareForRun                              1 回呼び出し
-        0 ミリ秒  CopyFilesToOutputDirectory                 1 回呼び出し
-        0 ミリ秒  _CheckForCompileOutputs                    1 回呼び出し
-        0 ミリ秒  _CopySourceItemsToOutputDirectory          1 回呼び出し
-        0 ミリ秒  GetCopyToOutputDirectoryXamlAppDefs        1 回呼び出し
-        0 ミリ秒  _Link                                      1 回呼び出し
-        0 ミリ秒  _Deploy                                    1 回呼び出し
-        0 ミリ秒  CreateSatelliteAssemblies                  1 回呼び出し
-        0 ミリ秒  _GenerateSatelliteAssemblyInputs           1 回呼び出し
-        0 ミリ秒  _BscMake                                   1 回呼び出し
-        0 ミリ秒  MakeDirsForBscMake                         1 回呼び出し
-        0 ミリ秒  ComputeCLCompileGeneratedSbrFiles          1 回呼び出し
-        0 ミリ秒  MakeDirsForXdcMake                         1 回呼び出し
-        0 ミリ秒  ComputeCLCompileGeneratedXDCFiles          1 回呼び出し
-        0 ミリ秒  ResolvedXDCMake                            1 回呼び出し
-        0 ミリ秒  _Manifest                                  1 回呼び出し
-        0 ミリ秒  _Appverifier                               1 回呼び出し
         0 ミリ秒  SelectClCompile                            1 回呼び出し
-        0 ミリ秒  Build                                      1 回呼び出し
-        0 ミリ秒  _SelectedFiles                             1 回呼び出し
-        0 ミリ秒  GetReferenceAssemblyPaths                  1 回呼び出し
+        0 ミリ秒  CreateCustomManifestResourceNames          1 回呼び出し
+        0 ミリ秒  AfterClCompile                             1 回呼び出し
+        0 ミリ秒  MakeDirsForMidl                            1 回呼び出し
+        0 ミリ秒  _ClCompile                                 1 回呼び出し
+        0 ミリ秒  AfterResourceCompile                       1 回呼び出し
+        0 ミリ秒  _ResourceCompile                           1 回呼び出し
+        0 ミリ秒  AfterBuildCompileEvent                     1 回呼び出し
+        0 ミリ秒  _BuildCompileAction                        1 回呼び出し
+        0 ミリ秒  BuildCompile                               1 回呼び出し
+        0 ミリ秒  BuildLinkTraverse                          1 回呼び出し
+        0 ミリ秒  ComputeLegacyManifestEmbedding             1 回呼び出し
+        0 ミリ秒  BeforeLink                                 1 回呼び出し
+        0 ミリ秒  ComputeRCOutputs                           1 回呼び出し
+        0 ミリ秒  ComputeRCGeneratedLinkInputs               1 回呼び出し
+        0 ミリ秒  ComputeManifestGeneratedLinkerInputs       1 回呼び出し
+        0 ミリ秒  ComputeCLGeneratedLinkInputs               1 回呼び出し
+        0 ミリ秒  ComputeLinkInputsFromProject               1 回呼び出し
+        0 ミリ秒  BeforeResourceCompile                      1 回呼び出し
+        0 ミリ秒  _Xsd                                       1 回呼び出し
+        0 ミリ秒  AfterMidl                                  1 回呼び出し
+        0 ミリ秒  SetCABuildNativeEnvironmentVariables       1 回呼び出し
+        0 ミリ秒  _PrepareForReferenceResolution             1 回呼び出し
         0 ミリ秒  BeforeResolveReferences                    1 回呼び出し
-        0 ミリ秒  BeforeBuildGenerateSources                 1 回呼び出し
-        0 ミリ秒  BuildGenerateSourcesTraverse               1 回呼び出し
-        0 ミリ秒  MakeDirsForCl                              1 回呼び出し
+        0 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
         0 ミリ秒  _SplitProjectReferencesByFileExistence     1 回呼び出し
         0 ミリ秒  PrepareProjectReferences                   1 回呼び出し
-        0 ミリ秒  ResolveReferences                          1 回呼び出し
+        0 ミリ秒  ResolveProjectReferences                   1 回呼び出し
+        0 ミリ秒  GetReferenceAssemblyPaths                  1 回呼び出し
+        0 ミリ秒  SetBuildDefaultEnvironmentVariables        1 回呼び出し
+        0 ミリ秒  GetResolvedWinMD                           1 回呼び出し
+        0 ミリ秒  _CheckWindowsSDKInstalled                  1 回呼び出し
+        0 ミリ秒  CopyFileToFolders                          1 回呼び出し
+        0 ミリ秒  EnsureNuGetPackageBuildImports             1 回呼び出し
+        0 ミリ秒  PreLinkEvent                               1 回呼び出し
+        0 ミリ秒  BeforeBuildGenerateSources                 1 回呼び出し
+        0 ミリ秒  ComputeCustomBuildOutput                   1 回呼び出し
+        0 ミリ秒  SelectCustomBuild                          1 回呼び出し
+        0 ミリ秒  _SelectedFiles                             1 回呼び出し
+        0 ミリ秒  ExpandSDKReferences                        1 回呼び出し
+        0 ミリ秒  DoLinkOutputFilesMatch                     1 回呼び出し
+        0 ミリ秒  SetTelemetryEnvironmentVariables           1 回呼び出し
         0 ミリ秒  AfterResolveReferences                     1 回呼び出し
         0 ミリ秒  ResolveAssemblyReferences                  1 回呼び出し
-        0 ミリ秒  ExpandSDKReferences                        1 回呼び出し
-        0 ミリ秒  ResolveSDKReferences                       1 回呼び出し
-        0 ミリ秒  EnsureNuGetPackageBuildImports             1 回呼び出し
-        0 ミリ秒  SetCABuildNativeEnvironmentVariables       1 回呼び出し
-        0 ミリ秒  _CheckWindowsSDKInstalled                  1 回呼び出し
-        0 ミリ秒  ResolveProjectReferences                   1 回呼び出し
-        0 ミリ秒  SetBuildDefaultEnvironmentVariables        1 回呼び出し
-        0 ミリ秒  SelectCustomBuild                          1 回呼び出し
-        0 ミリ秒  ComputeCustomBuildOutput                   1 回呼び出し
-        0 ミリ秒  GetFrameworkPaths                          1 回呼び出し
-        0 ミリ秒  _BuildGenerateSourcesAction                1 回呼び出し
-        0 ミリ秒  BeforeClCompile                            1 回呼び出し
-        0 ミリ秒  BuildCompileTraverse                       1 回呼び出し
-        0 ミリ秒  BuildGenerateSources                       1 回呼び出し
-        0 ミリ秒  AfterBuildGenerateSourcesEvent             1 回呼び出し
-        0 ミリ秒  AfterBuildGenerateSources                  1 回呼び出し
-        0 ミリ秒  ComputeCLInputPDBName                      1 回呼び出し
-        0 ミリ秒  AfterMidl                                  1 回呼び出し
-        0 ミリ秒  _Midl                                      1 回呼び出し
-        0 ミリ秒  MakeDirsForMidl                            1 回呼び出し
-        0 ミリ秒  ComputeReferenceCLInput                    1 回呼び出し
-        0 ミリ秒  _PrepareForBuild                           1 回呼び出し
-        0 ミリ秒  _Xsd                                       1 回呼び出し
-        0 ミリ秒  CopyFileToFolders                          1 回呼び出し
-        0 ミリ秒  ComputeMIDLGeneratedCompileInputs          1 回呼び出し
-        0 ミリ秒  _PrepareForReferenceResolution             1 回呼び出し
-        1 ミリ秒  RegisterOutput                             1 回呼び出し
-        1 ミリ秒  SetTelemetryEnvironmentVariables           1 回呼び出し
-        1 ミリ秒  CustomBuild                                1 回呼び出し
-        1 ミリ秒  GetCopyToOutputDirectoryItems              1 回呼び出し
-        1 ミリ秒  FixupCLCompileOptions                      1 回呼び出し
+        0 ミリ秒  ResolveReferences                          1 回呼び出し
+        1 ミリ秒  ResolveSDKReferences                       1 回呼び出し
+        1 ミリ秒  _PrepareForBuild                           1 回呼び出し
+        1 ミリ秒  MakeDirsForResourceCompile                 1 回呼び出し
         1 ミリ秒  MakeDirsForLink                            1 回呼び出し
+        1 ミリ秒  ComputeMIDLGeneratedCompileInputs          1 回呼び出し
+        1 ミリ秒  PreBuildEvent                              1 回呼び出し
         1 ミリ秒  ComputeCLOutputs                           1 回呼び出し
-        1 ミリ秒  _XdcMake                                   1 回呼び出し
-        1 ミリ秒  AssignTargetPaths                          1 回呼び出し
-        1 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
-        1 ミリ秒  _CheckForInvalidConfigurationAndPlatform   1 回呼び出し
-        1 ミリ秒  GetResolvedWinMD                           1 回呼び出し
+        1 ミリ秒  ComputeManifestInputsTargets               1 回呼び出し
         1 ミリ秒  _GetProjectReferenceTargetFrameworkProperties   1 回呼び出し
-        1 ミリ秒  DoLinkOutputFilesMatch                     1 回呼び出し
-        2 ミリ秒  ComputeLinkImportLibraryOutputsForClean    1 回呼び出し
+        1 ミリ秒  GetFrameworkPaths                          1 回呼び出し
+        1 ミリ秒  FixupCLCompileOptions                      1 回呼び出し
+        1 ミリ秒  MakeDirsForCl                              1 回呼び出し
+        1 ミリ秒  CustomBuild                                1 回呼び出し
+        1 ミリ秒  ComputeLinkSwitches                        1 回呼び出し
+        1 ミリ秒  SplitResourcesByCulture                    1 回呼び出し
+        2 ミリ秒  _CheckForInvalidConfigurationAndPlatform   1 回呼び出し
+        3 ミリ秒  WarnCompileDuplicatedFilename              1 回呼び出し
+        3 ミリ秒  BuildGenerateSourcesTraverse               1 回呼び出し
+        3 ミリ秒  InitializeBuildStatus                      1 回呼び出し
         3 ミリ秒  PrepareForBuild                            1 回呼び出し
-        3 ミリ秒  PreBuildEvent                              1 回呼び出し
-        3 ミリ秒  FinalizeBuildStatus                        1 回呼び出し
-        4 ミリ秒  WarnCompileDuplicatedFilename              1 回呼び出し
-        4 ミリ秒  InitializeBuildStatus                      1 回呼び出し
-     3738 ミリ秒  ClCompile                                  1 回呼び出し
-     3950 ミリ秒  Link                                       1 回呼び出し
+       28 ミリ秒  ClCompile                                  1 回呼び出し
+     1597 ミリ秒  Link                                       1 回呼び出し
 
 タスク パフォーマンスの概要:
-        0 ミリ秒  Message                                    3 回呼び出し
+        0 ミリ秒  Message                                    2 回呼び出し
         0 ミリ秒  SetEnv                                     8 回呼び出し
-        0 ミリ秒  MSBuild                                    1 回呼び出し
-        0 ミリ秒  MakeDir                                    9 回呼び出し
+        0 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
         0 ミリ秒  CheckVCToolsetVersion                      1 回呼び出し
+        0 ミリ秒  ReadLinesFromFile                          1 回呼び出し
+        0 ミリ秒  GetOutOfDateItems                          3 回呼び出し
+        0 ミリ秒  AssignTargetPath                           4 回呼び出し
         0 ミリ秒  AssignCulture                              1 回呼び出し
-        0 ミリ秒  Delete                                     1 回呼び出し
-        1 ミリ秒  GetOutOfDateItems                          3 回呼び出し
-        1 ミリ秒  ReadLinesFromFile                          1 回呼び出し
-        1 ミリ秒  AssignProjectConfiguration                 1 回呼び出し
-        2 ミリ秒  AssignTargetPath                           6 回呼び出し
-        2 ミリ秒  WriteLinesToFile                           2 回呼び出し
-        4 ミリ秒  Touch                                      2 回呼び出し
-     3736 ミリ秒  CL                                         1 回呼び出し
-     3949 ミリ秒  Link                                       1 回呼び出し
+        1 ミリ秒  Touch                                      1 回呼び出し
+        1 ミリ秒  MSBuild                                    1 回呼び出し
+        1 ミリ秒  WriteLinesToFile                           1 回呼び出し
+        2 ミリ秒  MakeDir                                    7 回呼び出し
+       25 ミリ秒  CL                                         1 回呼び出し
+     1595 ミリ秒  Link                                       1 回呼び出し

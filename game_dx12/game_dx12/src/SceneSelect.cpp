@@ -28,13 +28,13 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 	arrow_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Arrow.png", 2u);
 
-  	auto audio = p_window->GetAudio();
+	auto audio = p_window->GetAudio();
 	bgm_handle = audio->Load("./data/sounds/BGM.wav");
 	bgm_handle_p = 0;
 	se_select = audio->Load("./data/sounds/select.wav");
 	se_decision = audio->Load("./data/sounds/decision.wav");
 
-	font_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\fonts\\font0.png", 100u);
+	font_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\fonts\\font3.png", 100u);
 
 	FadeBoxInit(p_app);
 }
@@ -126,7 +126,7 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 				is_tutrial_mode = false;
 		}
 
-		fadeout_timer += static_cast<double>(p_window->GetElapsedTime()) * AlphaRate;
+		fadeout_timer += static_cast<double>(p_window->GetElapsedTime())* AlphaRate;
 	}
 
 	bg_timer += static_cast<double>(p_window->GetElapsedTime());
@@ -183,7 +183,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 		if (select_num != 0)
 		{
 			const VF2 pos
-			{ DivSize.x - 55.f, (DivSize.y - 250.f) + (1.f - std::sinf(arrow_timer * AlphaRate) * MoveRate) };
+			{ DivSize.x - 55.f, (DivSize.y - 350.f) + (1.f - std::sinf(arrow_timer * AlphaRate) * MoveRate) };
 
 			arrow_sprite->AddCommand(p_app->GetCommandList(), p_app, pos, { 200.f, 100.f }, Fill2(0.f),
 				Fill2(1.f), 0.f, Color, Color, Color, Color, BM);
@@ -193,7 +193,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 		if (select_num != file_names.size() - 1u)
 		{
 			const auto spr_size{ arrow_sprite->GetSize() };
-			const VF2 pos{ DivSize.x, (vp.Height - 350.f) + (std::sinf(arrow_timer * AlphaRate) * MoveRate) };
+			const VF2 pos{ DivSize.x, (vp.Height - 450.f) + (std::sinf(arrow_timer * AlphaRate) * MoveRate) };
 
 			arrow_sprite->AddCommand(p_app->GetCommandList(), p_app, pos, { 200.f, 100.f }, spr_size / 2.f,
 				Fill2(1.f), Math::PAI<float>, Color, Color, Color, Color, BM);
@@ -202,9 +202,17 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 	//todo エンターキーで決定、バックスペースキーでタイトルへ
 	{
-	}
+		constexpr VF4 Color{ BLACK, 1.f };
+		static const VF2 Size{ 25.f, 50.f };
 
-	//font_sprite->AddTextCommands();
+		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, "Press Enter...",
+			{ DivSize.x - 100.f, s_size.y - Size.y - 50.f }, Size, Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f,
+			Color, Color, Color, Color, BM);
+
+		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, "Title : Back Space",
+			Fill2(25.f), Size, Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f,
+			Color, Color, Color, Color, BM);
+	}
 
 #if false
 	if (select_num == 0)
@@ -238,7 +246,6 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 			}
 			else
 			{
-
 				// 十の位
 				{
 					auto temp{ std::to_string(select_num) };
@@ -270,11 +277,15 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 #else
 	// フォント
 	{
-		constexpr VF4 Color{ WHITE, 1.f };
+		constexpr VF4 Color{ BLACK, 1.f };
 
-		//font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, file_names[select_num].stem().string(),
-		//	DivSize, Fill2(500.f), Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f, Color, Color, Color, Color, BM);
-	}
+		auto f_size{ font_sprite->GetSize() };
+		VF2 f_div_size{ f_size.x + 400.f, f_size.y };
+
+		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, file_names[select_num].stem().string(),
+			DivSize - (f_div_size / 2.f), Fill2(100.f), Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f,
+			Color, Color, Color, Color, BM);
+}
 #endif
 
 	// フェードアウト
@@ -302,5 +313,4 @@ void SceneSelect::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window,
 	audio->Delete(bgm_handle);
 	audio->Delete(se_decision);
 	audio->Delete(se_select);
-
 }

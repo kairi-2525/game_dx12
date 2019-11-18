@@ -85,6 +85,8 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 {
 	namespace fs = std::filesystem;
 
+	object_manager->UnInitialize();
+
 	object_manager = std::nullopt;
 	camera = nullptr;
 
@@ -100,8 +102,6 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	audio->Delete(se_waap);
 	audio->Delete(se_whistle);
 	audio = nullptr;
-
-	ObjectManager::UnInitialize();
 }
 
 void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)

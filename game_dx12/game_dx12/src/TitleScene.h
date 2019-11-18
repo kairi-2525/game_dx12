@@ -89,8 +89,8 @@ private:
 	static inline const std::unordered_map<GROUND_TYPE, std::string> grounds_list =
 	{
 		{GROUND_TYPE::Air, "Air"},
-		{GROUND_TYPE::Sand, "Sand"},
-		{GROUND_TYPE::SandBroken, "SandBroken"},
+		{GROUND_TYPE::Sand, "SandPlane"},
+		{GROUND_TYPE::SandBroken, "SandBrokenPlane"},
 		{GROUND_TYPE::Snow, "Snow"},
 		{GROUND_TYPE::SnowBroken, "SnowBroken"},
 		{GROUND_TYPE::WarpHole, "Warp_on"},

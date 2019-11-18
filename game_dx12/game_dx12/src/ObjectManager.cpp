@@ -4,9 +4,10 @@
 #include "ImVecHelper.h"
 #include "LoadAllFileName.h"
 #include "Time.h"
+#include "Random.h"
 
 ObjectManager::ObjectManager()
-	: select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f), is_goal(false)
+	: select_enm(nullptr), select_waypoint(nullptr), masu_pos(0.f, 0.f, 0.f), is_goal(false), timer(0.0)
 {
 	now_move_object = edit_mode_first = false;
 }
@@ -17,6 +18,7 @@ void ObjectManager::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	using GS = SceneGame;
 
 	// 各オブジェクト更新
+	if (!is_goal)
 	{
 		// 単一オブジェクト
 		objects.SingleObjVisit([&](auto& object) { if (object) object->Update(p_window, p_app); });
@@ -55,6 +57,37 @@ void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 	// 複数オブジェクト
 	objects.MultiObjVisit([&](auto& objects) { for (auto& obj : objects) obj.Draw(p_window, p_app); });
+
+	for (auto& effect : effects)
+	{
+		using GS = SceneGame;
+
+		auto& angle{ effect.angle };
+		auto& pos{ effect.pos };
+
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(1.f, 1.f, 1.f);
+			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f, pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+		if (SceneGame::back_world_mode)
+		{
+			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA));
+		}
+		else
+		{
+			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA));
+		}
+	}
 }
 
 // 編集モード更新
@@ -526,6 +559,58 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 		}
 	}
 
+	// エフェクト用
+	{
+		// 生成
+		{
+			static RndDoubleMaker random_inc_rate{ 1.0, 0.001 };
+
+			static double set_inc_rate{ random_inc_rate.GetRnd() };
+
+			if (timer > set_inc_rate)
+			{
+				constexpr float BasePosY{ 100.f };
+
+				static RndDoubleMaker random_pos{ 250.0, -250.0 };
+				static RndDoubleMaker random_ang{ 3.14, -3.14 };
+
+				effects.emplace_back(
+					VF3{ random_pos.GetRnd<float>(), BasePosY, random_pos.GetRnd<float>() },
+					VF3{ random_ang.GetRnd<float>(), random_ang.GetRnd<float>(), random_ang.GetRnd<float>() });
+
+				set_inc_rate = random_inc_rate.GetRnd();
+			}
+
+			timer += p_window->GetElapsedTime();
+		}
+
+		// 更新
+		{
+			for (auto& effect : effects)
+			{
+				// 座標
+				{
+					constexpr float Speed{ 2.f };
+
+					effect.pos.y -= Speed * p_window->GetElapsedTime();
+				}
+
+				// 角度
+				{
+					constexpr float Speed{ Math::ToRadian(10.f) };
+
+					effect.angle.x -= Speed * p_window->GetElapsedTime();
+					effect.angle.y -= Speed * p_window->GetElapsedTime();
+					effect.angle.z -= Speed * p_window->GetElapsedTime();
+				}
+			}
+		}
+
+		// 削除
+		effects.erase(std::remove_if(effects.begin(), effects.end(), [](Effect& ef) { return ef.pos.y < 5.f; }),
+			effects.end());
+	}
+
 	edit_mode_first = true;
 
 	if (auto& player{ objects.GetChangeObjects<Player>() }; player)
@@ -557,7 +642,6 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 			if ((goal->GetIsBackWorld() == SceneGame::back_world_mode) && (goal->pos == player->pos)
 				&& !SG::audio->IsPlay(SG::se_goal, SG::p_se_goal))
 			{
-
 				SG::p_se_goal =
 					SG::audio->CreatePlayHandle(SG::se_goal, 0.f, false, false, 0.f, 0.f, 0, false, false);
 				SG::audio->Play(SG::se_goal, SG::p_se_goal, 0.01f, 0.2f, false);
@@ -933,8 +1017,10 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 
 		// ファイル走査で読み込むので（アルファベット順）
 		const std::vector<decltype(&Plane::sand_board)> load_textures{
-			&Plane::sand_board,
+			&crystal_board,
+			&sand_board,
 			&Plane::sand_broken_board,
+			&Plane::sand_board,
 			&Plane::snow_board,
 			&Plane::snow_broken_board,
 		};
@@ -950,13 +1036,14 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		{
 			assert(!(*load_textures[i]) && "既に読み込まれている");
 
-			*load_textures[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i], 1000u);
+			*load_textures[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i], 10000u);
 
 			(*load_count)++;
 		}
 	}
 }
 
+// 解放処理
 void ObjectManager::UnInitialize()
 {
 	const std::vector<decltype(&Door::model)> release_models{
@@ -973,6 +1060,8 @@ void ObjectManager::UnInitialize()
 	};
 
 	const std::vector<decltype(&Plane::sand_board)> release_textures{
+		&crystal_board,
+		&sand_board,
 		&Plane::sand_board,
 		&Plane::sand_broken_board,
 		&Plane::snow_board,
