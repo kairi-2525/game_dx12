@@ -120,6 +120,7 @@ private:
 	int sound_se_break;
 	int sound_se_crack;
 	int sound_se_warp;
+	int se_decision;
 public:
 	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);

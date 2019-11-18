@@ -551,9 +551,19 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 		// ゴールと自機の判定
 		if (auto& goal{ objects.GetObjects<Goal>() }; goal)
 		{
+			using SG = SceneGame;
+
 			// 同じ世界線で同じ座標になったらシーン切り替え処理に入る
-			if ((goal->GetIsBackWorld() == SceneGame::back_world_mode) && (goal->pos == player->pos))
+			if ((goal->GetIsBackWorld() == SceneGame::back_world_mode) && (goal->pos == player->pos)
+				&& !SG::audio->IsPlay(SG::se_goal, SG::p_se_goal))
+			{
+
+				SG::p_se_goal =
+					SG::audio->CreatePlayHandle(SG::se_goal, 0.f, false, false, 0.f, 0.f, 0, false, false);
+				SG::audio->Play(SG::se_goal, SG::p_se_goal, 0.01f, 0.2f, false);
+
 				SceneGame::execution_quick_exit = true;
+			}
 		}
 
 		// 鍵と自機の判定

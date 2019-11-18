@@ -52,6 +52,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	sound_se_break = audio->Load("./data/sounds/break.wav");
 	sound_se_crack = audio->Load("./data/sounds/crack.wav");
 	sound_se_warp = audio->Load("./data/sounds/warp.wav");
+	se_decision = audio->Load("./data/sounds/decision.wav");
 }
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -165,6 +166,11 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 #endif
 	if (input->IsTrgKey(KDL::KEY_INPUTS::Enter))
 	{
+		auto audio = p_window->GetAudio();
+
+		int handle = audio->CreatePlayHandle(se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
+		audio->Play(se_decision, handle, 0.01f, 1.f, false);
+
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
 

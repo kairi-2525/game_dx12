@@ -42,6 +42,10 @@ private:
 	int select_num;
 	double bg_timer;
 	double arrow_timer;
+	int bgm_handle;
+	int bgm_handle_p;
+	int se_select;
+	int se_decision;
 
 	static inline bool is_tutrial_mode;
 };

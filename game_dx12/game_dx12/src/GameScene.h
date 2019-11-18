@@ -295,6 +295,8 @@ public:
 	static inline int se_crack;
 	static inline int se_door;
 	static inline int se_waap;
+	static inline int se_goal;
+	static inline int p_se_goal;
 
 	static inline std::atomic<size_t> load_count{ 0 };
 	static inline std::unique_ptr<KDL::TOOL::Camera> camera;
@@ -334,7 +336,7 @@ public:
 		static const KDL::DX12::COLOR4F color{ GRAY, 1.f };
 
 		constexpr float BoxSizeY{ 50.f };
-		constexpr float ObjectAndBGCountMax{ 15.f };
+		constexpr float ObjectAndBGCountMax{ 23.f };
 
 		const float box_size_x
 		{ s_size.x * (static_cast<float>(SceneGame::load_count) / ObjectAndBGCountMax) };

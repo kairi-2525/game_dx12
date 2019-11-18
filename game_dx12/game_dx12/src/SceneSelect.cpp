@@ -18,6 +18,12 @@ void SceneSelect::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 	arrow_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\images\\Arrow.png", 2u);
 
+  	auto audio = p_window->GetAudio();
+	bgm_handle = audio->Load("./data/sounds/BGM.wav");
+	bgm_handle_p = 0;
+	se_select = audio->Load("./data/sounds/select.wav");
+	se_decision = audio->Load("./data/sounds/decision.wav");
+
 	FadeBoxInit(p_app);
 
 	// ‰æ‘œ“Ç‚Ýž‚Ý
@@ -34,6 +40,11 @@ void SceneSelect::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	select_num = 0;
 	FadeTimeInit();
 	is_tutrial_mode = false;
+
+	auto* audio = p_window->GetAudio();
+	audio->Stop(bgm_handle, bgm_handle_p, 1.0f);
+	bgm_handle_p = audio->CreatePlayHandle(bgm_handle, 0.f, true, false, 0.f, 0.f, 0, false, false);
+	audio->Play(bgm_handle, bgm_handle_p, 0.01f, 0.2f, false);
 }
 
 void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -43,23 +54,30 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 	static std::optional<bool> is_enter;
 
 	const auto* input{ p_window->GetInput() };
-
+	auto audio = p_window->GetAudio();
 
 	// ˆÚ“®
 	if (file_names.size() - 1 > select_num && (input->IsTrgKey(Keys::Down) || input->IsTrgKey(Keys::S)))
 	{
 		select_num++;
 		arrow_timer = 0.f;
+		int handle = audio->CreatePlayHandle(se_select, 0.f, false, false, 0.f, 0.f, 0, false, false);
+		audio->Play(se_select, handle, 0.01f, 0.2f, false);
 	}
 	else if (select_num > 0 && (input->IsTrgKey(Keys::Up) || input->IsTrgKey(Keys::W)))
 	{
 		select_num--;
 		arrow_timer = 0.f;
+		int handle = audio->CreatePlayHandle(se_select, 0.f, false, false, 0.f, 0.f, 0, false, false);
+		audio->Play(se_select, handle, 0.01f, 0.2f, false);
 	}
 
 	if (input->IsTrgKey(Keys::Back))
 	{
 		is_enter.emplace(false);
+
+		int handle = audio->CreatePlayHandle(se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
+		audio->Play(se_decision, handle, 0.01f, 1.f, false);
 
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
@@ -67,6 +85,9 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 	if (input->IsTrgKey(Keys::Enter))
 	{
 		is_enter.emplace(true);
+
+		int handle = audio->CreatePlayHandle(se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
+		audio->Play(se_decision, handle, 0.01f, 1.f, false);
 
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
@@ -257,4 +278,9 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 void SceneSelect::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	auto* audio = p_window->GetAudio();
+	audio->Delete(bgm_handle);
+	audio->Delete(se_decision);
+	audio->Delete(se_select);
+
 }

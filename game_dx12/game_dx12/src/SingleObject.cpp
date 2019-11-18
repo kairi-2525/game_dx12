@@ -249,8 +249,7 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color,
-				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
 
 	Draw(model);
 }

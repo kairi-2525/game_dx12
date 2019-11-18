@@ -24,10 +24,6 @@ Plane::Plane(const uint32_t hp)
 
 Plane::~Plane() noexcept
 {
-	using SG = SceneGame;
-
-	int handle = SG::audio->CreatePlayHandle(SG::se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	SG::audio->Play(SG::se_break, handle, 0.01f, 0.2f, false);
 }
 
 void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -45,11 +41,21 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 		{
 			if (pl_stand)
 			{
-				hp--;
 				using SG = SceneGame;
 
-				int handle = SG::audio->CreatePlayHandle(SG::se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
-				SG::audio->Play(SG::se_crack, handle, 0.01f, 0.2f, false);
+				hp--;
+
+				if (hp == 0)
+				{
+					int handle = SG::audio->CreatePlayHandle(SG::se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
+					SG::audio->Play(SG::se_break, handle, 0.01f, 0.2f, false);
+				}
+				else
+				{
+
+					int handle = SG::audio->CreatePlayHandle(SG::se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
+					SG::audio->Play(SG::se_crack, handle, 0.01f, 0.2f, false);
+				}
 			}
 
 			pl_stand = false;
@@ -59,7 +65,9 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	else
 	{
 		if (hp == 0u && pl_pos != pos)
+		{
 			is_dead = true;
+		}
 	}
 }
 
@@ -196,10 +204,10 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 	decltype(WarpOn)* draw_obj{ nullptr };
 
-	if (GS::back_world_mode == is_back_world)
-		draw_obj = &WarpOn;
-	else
+	if (is_back_world)
 		draw_obj = &WarpOff;
+	else
+		draw_obj = &WarpOn;
 
 	DirectX::XMMATRIX W;
 	{

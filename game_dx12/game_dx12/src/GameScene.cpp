@@ -305,7 +305,6 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 		for (size_t i = 0; i < 2u; i++)
 		{
-
 #ifdef KDL_USE_IMGUI
 			//ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
 
@@ -339,11 +338,10 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		}
 	}
 
-
 	// フェードアウト
 	if (fadeout_timer > 0.0)
 	{
-		const double timer{ Easing::OutCubic<double>(fadeout_timer, BaseFadeTimeMax) };
+		const double timer{ Easing::OutCubic<double>(fadeout_timer, 3.0) };
 
 		FadeOutDraw(p_app, &timer);
 
@@ -351,9 +349,9 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	}
 
 	// フェードイン
-	if (fadein_timer < BaseFadeTimeMax / 2.f)
+	if (fadein_timer < BaseFadeTimeMax)
 	{
-		const double timer{ Easing::OutCubic<double>(fadein_timer, BaseFadeTimeMax / 2.f) };
+		const double timer{ Easing::OutCubic<double>(fadein_timer, BaseFadeTimeMax) };
 
 		FadeInDraw(p_app, &timer);
 
@@ -711,36 +709,50 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	// https://social.msdn.microsoft.com/Forums/ja-JP/4ea73ec0-e90d-4759-8517-260f03621362/createinstance123910x800401f0123981245612521125401236430330299831237712?forum=vcgeneralja
 	//if (FAILED(CoInitializeEx(nullptr, COINIT_MULTITHREADED))) assert(!"COMライブラリは、このスレッドで既に初期化されている");
 
-#if false
-	if (!grit_board)
-		grit_board =
-			std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, "data\\images\\GritLine.png", 1);
+	// 板ポリ画像
+	{
+		auto Load{ [&](auto& board, const Path& path)
+		{ board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, path, 100); } };
 
-	load_count++;
-#endif
-	auto Load{ [&](auto& board, const Path& path)
-	{ board = std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, path, 100); } };
+		std::vector<std::pair<decltype(snow_board)*, std::string>> load_board{
+			{ &snow_board, "data\\images\\Snow.png" },
+			{ &sand_board, "data\\images\\Sand.png" },
+			{ &tutorial1_board, "data\\images\\tutorial1.png" },
+			{ &tutorial2_board, "data\\images\\tutorial2.png" },
+		};
 
-	if (!snow_board) Load(snow_board, "data\\images\\Snow.png");
+		for (auto& board : load_board)
+		{
+			Load(*board.first, board.second);
 
-	if (!sand_board) Load(sand_board, "data\\images\\Sand.png");
+			load_count++;
+		}
+	}
 
-	if (!tutorial1_board) Load(tutorial1_board, "data\\images\\tutorial1.png");
+	// 音楽
+	{
+		auto audio = p_window->GetAudio();
 
-	if (!tutorial2_board) Load(tutorial2_board, "data\\images\\tutorial2.png");
+		bgm_handle_p = 0;
+
+		std::vector<std::pair<int*, std::string>> load_music{
+			{ &bgm_handle, "./data/sounds/BGM.wav" },
+			{ &se_break, "./data/sounds/break.wav" },
+			{ &se_crack, "./data/sounds/crack.wav" },
+			{ &se_door, "./data/sounds/door.wav" },
+			{ &se_waap, "./data/sounds/warp.wav" },
+			{ &se_whistle, "./data/sounds/whistle.wav" },
+			{ &se_goal, "./data/sounds/goal.wav" },
+		};
+
+		for (auto& music : load_music)
+		{
+			*music.first = audio->Load(music.second);
+			load_count++;
+		}
+	}
 
 	FadeBoxInit(p_app);
-
-	audio = p_window->GetAudio();
-	bgm_handle = audio->Load("./data/sounds/BGM.wav");
-	bgm_handle_p = 0;
-	se_break = audio->Load("./data/sounds/break.wav");
-	se_crack = audio->Load("./data/sounds/crack.wav");
-	se_door = audio->Load("./data/sounds/door.wav");
-	se_waap = audio->Load("./data/sounds/warp.wav");
-	se_whistle = audio->Load("./data/sounds/whistle.wav");
-
-	load_count++;
 
 	object_manager->Load(&load_count, p_window, p_app);
 
@@ -829,7 +841,7 @@ bool SceneGame::Output(const Path& output_path, const bool temp_file)
 			}
 			else
 				return false;
-		}
+}
 	}
 #endif
 
