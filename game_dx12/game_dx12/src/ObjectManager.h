@@ -290,6 +290,8 @@ public:
 
 	auto& GetObjectData() noexcept { return objects; }
 
+	bool GetIsGoal() const noexcept { return is_goal; }
+
 public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app);
@@ -367,7 +369,7 @@ private:
 	Object objects;
 	Node node;
 
-	bool now_move_object, edit_mode_first;
+	bool now_move_object, edit_mode_first, is_goal;
 	Enemy* select_enm;
 	WayPoint* select_waypoint;
 	VF3 masu_pos;

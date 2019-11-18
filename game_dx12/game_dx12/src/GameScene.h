@@ -63,13 +63,12 @@ private:
 
 public:
 	static constexpr VF4 LightDir{ 0.f, -1.f, 0.f, 1.f };
+	static constexpr double GoalFadeTime{ 3.0 };
+
 	static inline const Path FileDir{ "data\\File" };
 	static inline const Path FileExtension{ ".bin" };
 	static inline const Path SaveFileDir{ FileDir / "Stage" };
 	static inline const Path CameraFileDir{ FileDir / "Camera" += FileExtension };
-	//static constexpr std::string_view LabelName{ "GameEdit" };
-	//static inline const Path PlanePathFileDir{ FileDir / "PathData" };
-	//static inline const Path TempFileDir{ FileDir / "Temp" += FileExtension };
 
 public:
 	static const VF3& GetMasuPos() noexcept { return masu_pos; }
