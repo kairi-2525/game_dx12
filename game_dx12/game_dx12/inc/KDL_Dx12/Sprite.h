@@ -167,7 +167,7 @@ namespace KDL
 				bool z_test = false);
 			static size_t GetTextWidth(const std::string& text, float size_w, float scale_w, float space)
 			{
-				return text.size() * (size_w + space) * scale_w;
+				return static_cast<size_t>(text.size() * (size_w + space) * scale_w);
 			}
 			template <class T = FLOAT>
 			Number2<T> GetSize() { return { static_cast<T>(m_tex_desc.Width), static_cast<T>(m_tex_desc.Height) }; }

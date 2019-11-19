@@ -10,7 +10,7 @@ namespace KDL
 	class Window;
 	using namespace MATH;
 
-	enum MOUSE_INPUTS
+	enum class MOUSE_INPUTS : WORD
 	{
 		leftButton,
 		middleButton,
@@ -19,7 +19,7 @@ namespace KDL
 		xButton2,
 	};
 
-	enum GAMEPAD_INPUT
+	enum class GAMEPAD_INPUT : WORD
 	{
 		PAD_UP = 0b0000000000000001,
 		PAD_DOWN = 0b0000000000000010,
@@ -91,6 +91,9 @@ namespace KDL
 		const XINPUT_STATE* GetXPad(size_t num) const { if (num < XUSER_MAX_COUNT) if (x_pads[num].connect) return &x_pads[num].state; return nullptr; }
 		const XINPUT_STATE* GetXPadLog(size_t num) const { if (num < XUSER_MAX_COUNT) if (x_pads[num].connect) return &x_pads[num].state; return nullptr; }
 		void SetMouseMode(MOUSE_MODE mode) { mouse->SetMode(mode); mouse_state.positionMode = mode; }
+		void SetMouseVisible(bool visible) { mouse->SetVisible(visible); }
+		bool IsMouseVisible() const { return mouse->IsVisible(); }
+		//void SetWindow(HWND hwnd) { mouse->SetWindow(hwnd); }
 		//void SetWindow(HWND hwnd) { mouse->SetWindow(hwnd); }
 		//const DIJOYSTATE* GetDPad();
 
@@ -186,7 +189,7 @@ namespace KDL
 					case GAMEPAD_INPUT::PAD_RT:
 						return state->Gamepad.bRightTrigger > 0;
 					default:
-						return (state->Gamepad.wButtons & button) != 0;
+						return (state->Gamepad.wButtons & static_cast<WORD>(button)) != 0;
 				}
 			}
 			return false;
@@ -204,7 +207,7 @@ namespace KDL
 					case GAMEPAD_INPUT::PAD_RT:
 						return state->Gamepad.bRightTrigger > 0 && log_state->Gamepad.bRightTrigger == 0;
 					default:
-						return (state->Gamepad.wButtons & button) != 0 && (log_state->Gamepad.wButtons & button) == 0;
+						return (state->Gamepad.wButtons & static_cast<WORD>(button)) != 0 && (log_state->Gamepad.wButtons & static_cast<WORD>(button)) == 0;
 				}
 			}
 			return false;
