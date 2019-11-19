@@ -62,13 +62,19 @@ void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	{
 		using GS = SceneGame;
 
+		constexpr int BS{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
+
 		auto& angle{ effect.angle };
 		auto& pos{ effect.pos };
 
 		DirectX::XMMATRIX W;
 		{
 			DirectX::XMMATRIX S, R, T;
-			S = DirectX::XMMatrixScaling(1.f, 1.f, 1.f);
+			if (SceneGame::back_world_mode)
+				S = DirectX::XMMatrixScaling(0.2f, 0.2f, 0.2f);
+			else
+				S = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
+
 			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
 			T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f, pos.z);
 			W = S * R * T;
@@ -79,13 +85,11 @@ void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 		if (SceneGame::back_world_mode)
 		{
-			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
-				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA));
+			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS);
 		}
 		else
 		{
-			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
-				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA));
+			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS);
 		}
 	}
 }
@@ -569,14 +573,16 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 
 			if (timer > set_inc_rate)
 			{
-				constexpr float BasePosY{ 100.f };
+				constexpr float BasePosY{ 20.f };
 
-				static RndDoubleMaker random_pos{ 250.0, -250.0 };
-				static RndDoubleMaker random_ang{ 3.14, -3.14 };
+				static RndDoubleMaker rand_pos{ 80.0, -80.0 };
+				static RndDoubleMaker rand_ang{ 3.14, -3.14 };
+
+				auto& c_pos{ SceneGame::camera->GetPosition() };
 
 				effects.emplace_back(
-					VF3{ random_pos.GetRnd<float>(), BasePosY, random_pos.GetRnd<float>() },
-					VF3{ random_ang.GetRnd<float>(), random_ang.GetRnd<float>(), random_ang.GetRnd<float>() });
+					VF3{ rand_pos.GetRnd<float>() + c_pos.x, c_pos.y + 5.f, rand_pos.GetRnd<float>() + c_pos.z },
+					VF3{ rand_ang.GetRnd<float>(), rand_ang.GetRnd<float>(), rand_ang.GetRnd<float>() });
 
 				set_inc_rate = random_inc_rate.GetRnd();
 			}
@@ -607,7 +613,7 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 		}
 
 		// 削除
-		effects.erase(std::remove_if(effects.begin(), effects.end(), [](Effect& ef) { return ef.pos.y < 5.f; }),
+		effects.erase(std::remove_if(effects.begin(), effects.end(), [](Effect& ef) { return ef.pos.y < -50.f; }),
 			effects.end());
 	}
 
@@ -990,8 +996,8 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 			&Wall::sand_model,
 			&Wall::snow_model,
 			&Start::model,
-			&WarpHole::WarpOff,
-			&WarpHole::WarpOn,
+			&WarpHole::warp_snow,
+			&WarpHole::warp_sand,
 		};
 
 		// FBX以外のファイル名を削除
@@ -1016,8 +1022,9 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		auto png_paths{ GetAllFileName("data\\images\\Game") };
 
 		// ファイル走査で読み込むので（アルファベット順）
-		const std::vector<decltype(&Plane::sand_board)> load_textures{
+		std::vector<decltype(&Plane::sand_board)> load_textures{
 			&crystal_board,
+			&Goal::board,
 			&sand_board,
 			&Plane::sand_broken_board,
 			&Plane::sand_board,
@@ -1025,17 +1032,15 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 			&Plane::snow_broken_board,
 		};
 
-		// FBX以外のファイル名を削除
+		// 画像以外のファイル名を削除
 		png_paths.erase(std::remove_if(png_paths.begin(), png_paths.end(),
 			[](const auto& path) { return path.extension().string() != ".png"; }), png_paths.end());
 
 		assert(png_paths.size() == load_textures.size() && "読み込み数or設定数が不正");
 
-		// FBX読み込み
-		for (size_t i = 0, length = png_paths.size(); i < length; i++)
+		// 画像読み込み
+		for (size_t i = 0, length = load_textures.size(); i < length; i++)
 		{
-			assert(!(*load_textures[i]) && "既に読み込まれている");
-
 			*load_textures[i] = std::make_unique<KDL::DX12::Geometric_Board>(p_app, png_paths[i], 10000u);
 
 			(*load_count)++;
@@ -1046,7 +1051,7 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 // 解放処理
 void ObjectManager::UnInitialize()
 {
-	const std::vector<decltype(&Door::model)> release_models{
+	const std::vector<decltype(Door::model)*> release_models{
 		&Door::model,
 		&Enemy::model,
 		&Goal::model,
@@ -1055,24 +1060,25 @@ void ObjectManager::UnInitialize()
 		&Wall::sand_model,
 		&Wall::snow_model,
 		&Start::model,
-		&WarpHole::WarpOn,
-		&WarpHole::WarpOff,
+		&WarpHole::warp_sand,
+		&WarpHole::warp_snow,
 	};
 
-	const std::vector<decltype(&Plane::sand_board)> release_textures{
-		&crystal_board,
-		&sand_board,
+	const std::vector<decltype(Plane::sand_board)*> release_textures{
 		&Plane::sand_board,
 		&Plane::sand_broken_board,
 		&Plane::snow_board,
 		&Plane::snow_broken_board,
+		&Goal::board,
+		&crystal_board,
+		&sand_board,
 	};
 
 	auto Clear{ [](auto& load_data) { std::for_each(load_data.begin(), load_data.end(), [](auto& data)
 		{ *data = nullptr; }); } };
 
 	Clear(release_models);
-	Clear(release_textures);
+	//Clear(release_textures);
 }
 
 // 書き出し---------------------------------------------------------------------------------------------------

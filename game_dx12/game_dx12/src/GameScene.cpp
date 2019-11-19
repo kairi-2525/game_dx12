@@ -4,6 +4,7 @@
 #include "KDL.h"
 #include "ImVecHelper.h"
 #include "SceneSelect.h"
+#include "LoadAllFileName.h"
 #include <string>
 
 //todo KDL_USE_IMGUI USE_IMGUIの代わり
@@ -260,8 +261,6 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	const KDL::COLOR4F clear_color = { AQUA, 1.f };
 	p_app->ClearBackBuffer(clear_color);
 
-	object_manager->Draw(p_window, p_app);
-
 	// 背景
 	{
 		constexpr VF3 Scale{ 107.f, 1.f, 100.f };
@@ -289,6 +288,8 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			snow_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
 	}
 
+	object_manager->Draw(p_window, p_app);
+
 	// チュートリアルメッセージボックス
 	if (SceneSelect::GetIsTutrialMode())  // チュートリアルステージなら
 	{
@@ -299,43 +300,52 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		constexpr VF2 TexScale{ 1.f, 1.f };
 		constexpr VF3 Scale{ 5.f, 5.f, 5.f };
 		constexpr VF3 Angle{ ToRadian(-40.f), ToRadian(180.f), 0.f };
-		constexpr std::array<VF3, 2> pos{ { { 5.5f, 3.f, -3.f}, { 0.f, 3.0f, -3.f } } };
+		constexpr std::array<VF3, 4> pos{ {
+			{ 5.5f, 3.f, -3.f},
+			{ 0.f, 3.f, -3.f },
+			{ -10.5f, 3.f, -3.f },
+			{ -8.f, 3.f, 2.f } } };
 
-		const std::array<decltype(tutorial1_board)*, 2> boards{ &tutorial1_board, &tutorial2_board };
-
-		for (size_t i = 0; i < 2u; i++)
+		for (size_t i = 0, length = tutorial_board.size(); i < length; i++)
 		{
-#ifdef KDL_USE_IMGUI
-			//ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
+			DirectX::XMMATRIX W;
+			{
+				DirectX::XMMATRIX S, R, T;
 
-			//ImguiHeler::InputFloat((u8"座標 " + std::to_string(i)).data(), &pos[i], "%.0f");
+				S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+				R = DirectX::XMMatrixRotationRollPitchYaw(Angle.x, Angle.y, Angle.z);
+				T = DirectX::XMMatrixTranslation(pos[i].x, pos[i].y, pos[i].z);
 
-			//ImguiHeler::Text(u8"自機座標", camera->GetTarget(), "%.0f");
+				W = S * R * T;
+			}
 
-			//ImGui::SliderAngle(u8"メッセージ角度X", &angle.x);
-			//ImGui::SliderAngle(u8"メッセージ角度Y", &angle.y);
-			//ImGui::SliderAngle(u8"メッセージ角度Z", &angle.z);
+			DirectX::XMFLOAT4X4 wvp, w;
+			DirectX::XMStoreFloat4x4(&w, W);
+			camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-			//ImGui::End();
-#endif // KDL_USE_IMGUI
-
-			//DirectX::XMMATRIX W;
-			//{
-			//	DirectX::XMMATRIX S, R, T;
-
-			//	S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
-			//	//R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-			//	T = DirectX::XMMatrixTranslation(pos[i].x, pos[i].y, pos[i].z);
-
-			//	W = S * R * T;
-			//}
-
-			//DirectX::XMFLOAT4X4 wvp, w;
-			//DirectX::XMStoreFloat4x4(&w, W);
-			//camera->CreateUpdateWorldViewProjection(&wvp, W);
-
-			//(*boards[i])->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
+			tutorial_board[i]->AddCommand(
+				p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
 		}
+	}
+
+	// エンターキーで決定、バックスペースキーでタイトルへ
+	{
+		constexpr DirectX::XMFLOAT4 Color{ BLACK, 1.f };
+		constexpr int BM{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
+		constexpr float BaseY{ 25.f };
+
+		static const VF2 Size{ 25.f, 50.f };
+
+		static auto vp{ p_app->GetViewport() };
+		static VF2 s_size{ vp.Width, vp.Height };
+
+		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, "Retry : Enter",
+			Fill2(BaseY), Size, Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f,
+			Color, Color, Color, Color, BM);
+
+		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, "Select : Back Space",
+			{ s_size.x - 500.f, BaseY }, Size, Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f,
+			Color, Color, Color, Color, BM);
 	}
 
 	// フェードアウト
@@ -733,8 +743,6 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 		std::vector<std::pair<decltype(snow_board)*, std::string>> load_board{
 			{ &snow_board, "data\\images\\Snow.png" },
 			{ &sand_board, "data\\images\\Sand.png" },
-			{ &tutorial1_board, "data\\images\\tutorial1.png" },
-			{ &tutorial2_board, "data\\images\\tutorial2.png" },
 		};
 
 		for (auto& board : load_board)
@@ -742,6 +750,14 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			Load(*board.first, board.second);
 
 			load_count++;
+		}
+
+		const auto tutorial_name{ GetAllFileName("data\\images\\Tutorial") };
+
+		for (auto& name : tutorial_name)
+		{
+			tutorial_board.emplace_back(
+				std::make_unique<KDL::DX12::Geometric_Board_S>(p_app, name, 100u));
 		}
 	}
 
@@ -767,6 +783,8 @@ void SceneGame::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			load_count++;
 		}
 	}
+
+	font_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\fonts\\font3.png", 100u);
 
 	FadeBoxInit(p_app);
 

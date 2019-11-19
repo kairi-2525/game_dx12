@@ -270,8 +270,8 @@ private:
 	//std::unique_ptr<KDL::DX12::Geometric_Board_S> grit_board;
 	std::unique_ptr<KDL::DX12::Geometric_Board_S> snow_board;
 	std::unique_ptr<KDL::DX12::Geometric_Board_S> sand_board;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial1_board;
-	std::unique_ptr<KDL::DX12::Geometric_Board_S> tutorial2_board;
+	std::vector<std::unique_ptr<KDL::DX12::Geometric_Board_S>> tutorial_board;
+	std::unique_ptr<KDL::DX12::Sprite_Image> font_sprite;
 
 	int bgm_handle;
 	int bgm_handle_p;

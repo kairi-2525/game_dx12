@@ -7,6 +7,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 
 	title_parallel.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Tittle/parallel.fbx", 100);
 	title_labyrinth.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Tittle/labyrinth.fbx", 100);
+	font_sprite = std::make_unique< KDL::DX12::Sprite_Image>(p_app, "data\\fonts\\font3.png", 100u);
 
 	FadeBoxInit(p_app);
 
@@ -44,7 +45,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 
 	sand_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Sand.png", 100);
 	snow_bg = std::make_unique<KDL::DX12::Sprite_Image>(p_app, "./data/images/Snow.png", 100);
-	warp_hole_off = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Game/Warp_off.fbx", 100);
+	warp_hole_off = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Game/WarpYuki.fbx", 100);
 
 	auto* audio = p_window->GetAudio();
 	sound_bgm = audio->Load("./data/sounds/BGM.wav");
@@ -203,7 +204,9 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			else i++;
 		}
 	}
-	{	//ワープホールのフリップ
+
+	//ワープホールのフリップ
+	{
 		auto& data = warp_hole.data;
 		const bool snow_log = snow;
 		for (size_t i = 0; i < data.size();)
@@ -249,6 +252,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			clear_break_data.clear();
 		}
 	}
+
 	{	//各ブロックのブレイク
 		const float break_line = -0.5f;
 		{
@@ -453,6 +457,23 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	}
 	wall.Draw(p_app, camera.get(), light_dir);
 
+	// エンターキーで決定、バックスペースキーでタイトルへ
+	{
+		using VF2 = DirectX::XMFLOAT2;
+
+		constexpr DirectX::XMFLOAT4 Color{ BLACK, 1.f };
+		constexpr int BM{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
+
+		static const VF2 Size{ 25.f, 50.f };
+
+		static auto vp{ p_app->GetViewport() };
+		static VF2 s_size{ vp.Width, vp.Height };
+		const VF2 DivSize{ s_size / 2.f };
+
+		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, "Press Enter...",
+			{ DivSize.x - 100.f, s_size.y - Size.y - 50.f }, Size, Fill2(0.f), Fill2(0.f), Fill2(1.f), 0.f,
+			Color, Color, Color, Color, BM);
+	}
 
 	// フェードアウト
 	if (fadeout_timer > 0.0)

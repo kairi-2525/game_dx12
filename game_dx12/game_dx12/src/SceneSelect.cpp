@@ -200,7 +200,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 		}
 	}
 
-	//todo エンターキーで決定、バックスペースキーでタイトルへ
+	// エンターキーで決定、バックスペースキーでタイトルへ
 	{
 		constexpr VF4 Color{ BLACK, 1.f };
 		static const VF2 Size{ 25.f, 50.f };

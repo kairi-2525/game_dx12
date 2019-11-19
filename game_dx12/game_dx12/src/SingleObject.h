@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Obj3d.h"
+#include "KDL_Dx12/Sprite.h"
 
 //------------------------------------------------------------------------------------------------------
 // Ž©‹@
@@ -164,4 +165,5 @@ private:
 
 public:
 	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;
+	static inline std::unique_ptr<KDL::DX12::Geometric_Board> board;
 };

@@ -93,7 +93,7 @@ private:
 		{GROUND_TYPE::SandBroken, "SandBrokenPlane"},
 		{GROUND_TYPE::Snow, "Snow"},
 		{GROUND_TYPE::SnowBroken, "SnowBroken"},
-		{GROUND_TYPE::WarpHole, "Warp_on"},
+		{GROUND_TYPE::WarpHole, "WarpSuna"},
 		{GROUND_TYPE::SandWall, "SandWall"},
 		{GROUND_TYPE::SnowWall, "SnowWall"}
 	};
@@ -114,6 +114,7 @@ private:
 	std::unique_ptr<KDL::DX12::Sprite_Image> sand_bg;
 	Model<KDL::DX12::Mesh_FBX> title_parallel;
 	Model<KDL::DX12::Mesh_FBX> title_labyrinth;
+	std::unique_ptr<KDL::DX12::Sprite_Image> font_sprite;
 	bool snow;
 	int sound_bgm;
 	int sound_bgm_p;

@@ -206,14 +206,14 @@ void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 Goal::Goal(const bool is_back_world)
 	: is_back_world(is_back_world)
 {
-	scale = Fill3(0.166f);
+	scale = Fill3(0.15f);
 	angle.y = 3.1415f;
 }
 
 Goal::Goal()
 	: is_back_world(false)
 {
-	scale = Fill3(0.166f);
+	scale = Fill3(0.15f);
 	angle.y = 3.1415f;
 }
 
@@ -234,22 +234,46 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
-	const VF4 color{ WHITE, (GS::back_world_mode == is_back_world ? 1.f : 0.5f) };
+	const VF4 color{ WHITE, 1.f };
 
-	DirectX::XMMATRIX W;
+	// ƒ‚ƒfƒ‹
+	if (GS::back_world_mode == is_back_world)
 	{
-		DirectX::XMMATRIX S, R, T;
-		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
-		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
-		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-		W = S * R * T;
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+		auto Draw{ [&](auto& obj)
+		{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+
+		Draw(model);
 	}
-	DirectX::XMFLOAT4X4 wvp, w;
-	DirectX::XMStoreFloat4x4(&w, W);
-	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+	// ”Âƒ|ƒŠ
+	{
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(1.f, 1.f, 1.f);
+			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 0.f, 0.f);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-	Draw(model);
+		auto Draw{ [&](auto& obj)
+		{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+
+		Draw(board);
+	}
 }

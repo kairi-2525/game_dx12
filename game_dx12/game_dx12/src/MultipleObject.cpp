@@ -202,12 +202,12 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
-	decltype(WarpOn)* draw_obj{ nullptr };
+	decltype(warp_sand)* draw_obj{ nullptr };
 
 	if (is_back_world)
-		draw_obj = &WarpOff;
+		draw_obj = &warp_sand;
 	else
-		draw_obj = &WarpOn;
+		draw_obj = &warp_snow;
 
 	DirectX::XMMATRIX W;
 	{

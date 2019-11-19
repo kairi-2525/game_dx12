@@ -253,8 +253,8 @@ private:
 	bool is_back_world;
 
 public:
-	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> WarpOn;
-	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> WarpOff;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> warp_sand;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> warp_snow;
 };
 
 //------------------------------------------------------------------------------------------------------
