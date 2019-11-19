@@ -2,3 +2,5 @@
 *.fbm
 /game_dx12/game_dx12/lib/Debug/KDL.lib
 /game_dx12/game_dx12/lib/Release/KDL.lib
+game_dx12/game_dx12/x64/
+game_dx12/game_dx12/game_dx12/x64/
