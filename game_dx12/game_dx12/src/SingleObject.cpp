@@ -264,7 +264,7 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(1.f, 1.f, 1.f);
 			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, 0.f, 0.f);
-			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			T = DirectX::XMMatrixTranslation(pos.x, -0.5f, pos.z);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;

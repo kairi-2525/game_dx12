@@ -306,25 +306,53 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			{ -10.5f, 3.f, -3.f },
 			{ -8.f, 3.f, 2.f } } };
 
-		for (size_t i = 0, length = tutorial_board.size(); i < length; i++)
+		auto& pl_pos{ object_manager->GetObjectData<Player>()->pos };
+
+		if (pl_pos.x >= 1.f)
 		{
-			DirectX::XMMATRIX W;
+			for (size_t i = 0, length = tutorial_board.size() - 2u; i < length; i++)
 			{
-				DirectX::XMMATRIX S, R, T;
+				DirectX::XMMATRIX W;
+				{
+					DirectX::XMMATRIX S, R, T;
 
-				S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
-				R = DirectX::XMMatrixRotationRollPitchYaw(Angle.x, Angle.y, Angle.z);
-				T = DirectX::XMMatrixTranslation(pos[i].x, pos[i].y, pos[i].z);
+					S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+					R = DirectX::XMMatrixRotationRollPitchYaw(Angle.x, Angle.y, Angle.z);
+					T = DirectX::XMMatrixTranslation(pos[i].x, pos[i].y, pos[i].z);
 
-				W = S * R * T;
+					W = S * R * T;
+				}
+
+				DirectX::XMFLOAT4X4 wvp, w;
+				DirectX::XMStoreFloat4x4(&w, W);
+				camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+				tutorial_board[i]->AddCommand(
+					p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale, 0, false, false);
 			}
+		}
+		else
+		{
+			for (size_t i = 2, length = tutorial_board.size(); i < length; i++)
+			{
+				DirectX::XMMATRIX W;
+				{
+					DirectX::XMMATRIX S, R, T;
 
-			DirectX::XMFLOAT4X4 wvp, w;
-			DirectX::XMStoreFloat4x4(&w, W);
-			camera->CreateUpdateWorldViewProjection(&wvp, W);
+					S = DirectX::XMMatrixScaling(Scale.x, Scale.y, Scale.z);
+					R = DirectX::XMMatrixRotationRollPitchYaw(Angle.x, Angle.y, Angle.z);
+					T = DirectX::XMMatrixTranslation(pos[i].x, pos[i].y, pos[i].z);
 
-			tutorial_board[i]->AddCommand(
-				p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
+					W = S * R * T;
+				}
+
+				DirectX::XMFLOAT4X4 wvp, w;
+				DirectX::XMStoreFloat4x4(&w, W);
+				camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+				tutorial_board[i]->AddCommand(
+					p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale, 0, false, false);
+			}
 		}
 	}
 
