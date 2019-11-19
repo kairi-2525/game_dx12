@@ -15,6 +15,7 @@ int WINAPI WinMain(
 	{
 #ifdef NDEBUG
 		KDL::Window main_window("parallel labyrinth", KDL::Window::STYLE_FULLSCREEN);
+		main_window.GetInput()->SetMouseVisible(false);
 #else
 		KDL::Window main_window("game", { 1888, 1062 });
 #endif

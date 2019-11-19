@@ -69,8 +69,7 @@ namespace KDL
 		bool IsFullScreen() const { return IsFullScreen(m_hwnd); }
 		template<class T = float>
 		T GetElapsedTime() const { return m_fps_mgr.GetElpasedTime<T>(); }
-		const Input* GetInput() const { return m_input.get(); }
+		Input* GetInput() { return m_input.get(); }
 		Audio* GetAudio() { return m_audio.get(); }
-		void SetInputMouseMode(MOUSE_MODE mode) { m_input->SetMouseMode(mode); }
 	};
 }

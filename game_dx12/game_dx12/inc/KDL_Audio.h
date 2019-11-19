@@ -40,7 +40,7 @@ namespace KDL
 	private:
 		IXAudio2* x_audio2 = nullptr;
 		IXAudio2MasteringVoice* mastering_voice = nullptr;
-		XAUDIO2_VOICE_DETAILS mastering_details;
+		XAUDIO2_VOICE_DETAILS mastering_details{};
 		std::unordered_map<int, XAudio2SoundPackage> files;
 	private:
 		HRESULT LoadWave(const std::filesystem::path& file_name);
