@@ -401,9 +401,11 @@ public:
 	bool GetBackWorld() const noexcept { return is_back_world; }
 	void OpenDoor() noexcept { is_open = true; }
 
+public:
+	bool is_open;
+
 private:
 	bool is_back_world;
-	bool is_open;
 
 public:
 	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> model;

@@ -701,7 +701,7 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 					break;
 				}
 				// プレーヤーがドアに接触し、鍵を持っていない
-				else if (door.pos == player->pos && player->key_num == 0)
+				else if (door.pos == player->pos && (player->key_num == 0 || door.is_open))
 				{
 					const float ang_y{ player->angle.y };
 					VF3& p_pos{ player->pos };
@@ -1078,7 +1078,7 @@ void ObjectManager::UnInitialize()
 		{ *data = nullptr; }); } };
 
 	Clear(release_models);
-	//Clear(release_textures);
+	Clear(release_textures);
 }
 
 // 書き出し---------------------------------------------------------------------------------------------------

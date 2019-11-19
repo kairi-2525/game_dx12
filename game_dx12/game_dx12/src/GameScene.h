@@ -23,7 +23,7 @@ public:
 	SceneGame()
 		: camera_angle(Math::ToRadian(-80.f), 0.f, 0.f), camera_dis(50.f), mouse_pos(0.f, 0.f)
 	{}
-	~SceneGame() noexcept = default;
+	~SceneGame() noexcept;
 	SceneGame(const SceneGame&) = delete;
 	SceneGame(SceneGame&&) noexcept = delete;
 	auto& operator=(const SceneGame&) = delete;

@@ -86,7 +86,6 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 {
 	namespace fs = std::filesystem;
 
-	object_manager->UnInitialize();
 
 	object_manager = std::nullopt;
 	camera = nullptr;
@@ -749,6 +748,12 @@ DirectX::XMFLOAT3 SceneGame::MouseToLocalPos(const VF2& mouse_pos, KDL::DX12::Ap
 
 	// Œ^‚ğ•ÏŠ·‚µ‚Ä•Ô‚·
 	return TransformMouseToPlanePos(s_size, mouse_pos, Points[0], Points[1], Points[2]);
+}
+
+SceneGame::~SceneGame() noexcept
+{
+	object_manager->UnInitialize();
+
 }
 
 // “Ç‚İ‚İ
