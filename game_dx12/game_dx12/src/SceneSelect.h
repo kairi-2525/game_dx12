@@ -16,9 +16,7 @@ private:
 	using VF2 = DirectX::XMFLOAT2;
 
 public:
-	SceneSelect()
-		: select_num(0)
-	{}
+	SceneSelect() = default;
 	~SceneSelect() noexcept = default;
 	SceneSelect(const SceneSelect&) = delete;
 	SceneSelect(SceneSelect&&) noexcept = delete;
@@ -39,7 +37,7 @@ private:
 	std::unique_ptr<KDL::DX12::Sprite_Image> arrow_sprite;
 	std::unique_ptr<KDL::DX12::Sprite_Image> font_sprite;
 
-	int select_num;
+	static inline int select_num;
 	double bg_timer;
 	double arrow_timer;
 	int bgm_handle;

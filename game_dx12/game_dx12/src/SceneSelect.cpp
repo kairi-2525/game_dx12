@@ -43,7 +43,6 @@ void SceneSelect::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 {
 	bg_timer = 0.0;
 	arrow_timer = 0.0;
-	select_num = 0;
 	FadeTimeInit();
 	is_tutrial_mode = false;
 

@@ -239,7 +239,7 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 	if (input->IsTrgKey(Keys::Back))
 	{
-		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
+		fadeout_timer += 2.f;
 	}
 
 	if (fadeout_timer >= GoalFadeTime)
