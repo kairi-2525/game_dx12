@@ -134,7 +134,7 @@ namespace KDL
 				const DirectX::XMFLOAT4& material_color,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = true
+				bool z_test = true, bool z_write = true
 			);
 		};
 	}

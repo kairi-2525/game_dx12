@@ -101,7 +101,7 @@ namespace KDL
 				const DirectX::XMFLOAT4& material_color,
 				int blend_mode = static_cast<int>(BLEND_STATE::ALPHA),
 				bool wire_frame = false,
-				bool z_test = true
+				bool z_test = true, bool z_write = true
 			);
 		};
 
@@ -135,7 +135,7 @@ namespace KDL
 				const FLOAT2& tex_scale,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = true
+				bool z_test = true, bool z_write = true
 			);
 		};
 	}

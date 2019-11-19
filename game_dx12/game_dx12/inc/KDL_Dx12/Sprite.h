@@ -87,7 +87,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = false);
+				bool z_test = false, bool z_write = false);
 		};
 
 		class Sprite_Image : public Sprite_Box
@@ -135,7 +135,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = false) override {
+				bool z_test = false, bool z_write = true) override {
 				return AddCommand(command_list, app, pos, size, center, { 0, 0 }, GetSize(), scale, radian_angle,
 					left_top, right_top, left_bottom, right_bottom, blend_mode, wire_frame, z_test);
 			}
@@ -145,7 +145,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = false);
+				bool z_test = false, bool z_write = true);
 			HRESULT AddTextCommands(ID3D12GraphicsCommandList* command_list, App* app,
 				const std::string& text,
 				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center,
@@ -154,7 +154,7 @@ namespace KDL
 				const COLOR4F& left_top, const COLOR4F& right_top, const COLOR4F& left_bottom, const COLOR4F& right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = false);
+				bool z_test = false, bool z_write = true);
 			HRESULT AddTextCommands(ID3D12GraphicsCommandList* command_list, App* app,
 				const std::string& text,
 				const FLOAT2& pos, const FLOAT2& size, const FLOAT2& center,
@@ -164,7 +164,7 @@ namespace KDL
 				const COLOR4F& last_left_top, const COLOR4F& last_right_top, const COLOR4F& last_left_bottom, const COLOR4F& last_right_bottom,
 				int blend_mode = static_cast<int>(BLEND_STATE::LAST),
 				bool wire_frame = false,
-				bool z_test = false);
+				bool z_test = false, bool z_write = true);
 			static size_t GetTextWidth(const std::string& text, float size_w, float scale_w, float space)
 			{
 				return static_cast<size_t>(text.size() * (size_w + space) * scale_w);

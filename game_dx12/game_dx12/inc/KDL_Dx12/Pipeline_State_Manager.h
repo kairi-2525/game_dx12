@@ -28,12 +28,17 @@ namespace KDL
 			int m_blend_mode;
 			bool m_wire_frame;
 			bool m_z_test;
+			bool m_z_write;
 			bool operator==(const Pipeline_Desc_State& state) const 
 			{
 				return
 					m_blend_mode == state.m_blend_mode
 					&&
 					m_wire_frame == state.m_wire_frame
+					&&
+					m_z_test == state.m_z_test
+					&&
+					m_z_write == state.m_z_write
 					;
 			}
 			bool operator!=(const Pipeline_Desc_State& state) const 
@@ -42,6 +47,10 @@ namespace KDL
 					m_blend_mode != state.m_blend_mode
 					||
 					m_wire_frame != state.m_wire_frame
+					||
+					m_z_test != state.m_z_test
+					||
+					m_z_write != state.m_z_write
 					;
 			}
 
@@ -70,17 +79,18 @@ namespace KDL
 			bool SetBlendMode(BLEND_STATE mode);
 			bool SetWireFrameToggle(bool wire_frame);
 			bool SetZTestToggle(bool z_test);
+			bool SetZWriteToggle(bool z_write);
 		public:
-			ID3D12PipelineState* GetPipelineState(ID3D12Device* device, BLEND_STATE mode, bool wire_frame, bool z_test)
+			ID3D12PipelineState* GetPipelineState(ID3D12Device* device, BLEND_STATE mode, bool wire_frame, bool z_test, bool z_write)
 			{
-				return GetPipelineState(device, static_cast<int>(mode), wire_frame, z_test);
+				return GetPipelineState(device, static_cast<int>(mode), wire_frame, z_test, z_write);
 			}
-			ID3D12PipelineState* GetPipelineState(ID3D12Device* device, int mode, bool wire_frame, bool z_test);
-			HRESULT SetPipelineState(ID3D12Device* device, BLEND_STATE mode, bool wire_frame, bool z_test)
+			ID3D12PipelineState* GetPipelineState(ID3D12Device* device, int mode, bool wire_frame, bool z_test, bool z_write);
+			HRESULT SetPipelineState(ID3D12Device* device, BLEND_STATE mode, bool wire_frame, bool z_test, bool z_write)
 			{
-				return SetPipelineState(device, static_cast<int>(mode), wire_frame, z_test);
+				return SetPipelineState(device, static_cast<int>(mode), wire_frame, z_test, z_write);
 			}
-			HRESULT SetPipelineState(ID3D12Device* device, int mode, bool wire_frame, bool z_test)
+			HRESULT SetPipelineState(ID3D12Device* device, int mode, bool wire_frame, bool z_test, bool z__write)
 			{
 				Pipeline_Desc_State state;
 				state.m_blend_mode = mode;
