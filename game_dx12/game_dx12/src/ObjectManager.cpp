@@ -85,11 +85,11 @@ void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 		if (SceneGame::back_world_mode)
 		{
-			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS);
+			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS, false, true, false);
 		}
 		else
 		{
-			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS);
+			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS, false, true, false);
 		}
 	}
 }
@@ -551,7 +551,7 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 			using SG = SceneGame;
 
 			int handle = SG::audio->CreatePlayHandle(SG::se_waap, 0.f, false, false, 0.f, 0.f, 0, false, false);
-			SG::audio->Play(SG::se_waap, handle, 0.01f, 0.2f, false);
+			SG::audio->Play(SG::se_waap, handle, 0.01f, Volume / 2.f, false);
 
 			auto& plane{ objects.GetChangeObjects<Plane>() };
 
@@ -650,7 +650,7 @@ void ObjectManager::NormalModeUpdate(KDL::Window* p_window, KDL::DX12::App* p_ap
 			{
 				SG::p_se_goal =
 					SG::audio->CreatePlayHandle(SG::se_goal, 0.f, false, false, 0.f, 0.f, 0, false, false);
-				SG::audio->Play(SG::se_goal, SG::p_se_goal, 0.01f, 0.2f, false);
+				SG::audio->Play(SG::se_goal, SG::p_se_goal, 0.01f, Volume, false);
 
 				is_goal = true;
 				SceneGame::execution_quick_exit = true;

@@ -12,6 +12,8 @@
 #include "ColorDef.h"
 #include "XMFLOAT_Hlper.h"
 
+static constexpr float Volume{ 1.f };
+
 class SceneManager;
 
 class SceneBase

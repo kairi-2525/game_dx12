@@ -48,13 +48,13 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 				if (hp == 0)
 				{
 					int handle = SG::audio->CreatePlayHandle(SG::se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
-					SG::audio->Play(SG::se_break, handle, 0.01f, 0.2f, false);
+					SG::audio->Play(SG::se_break, handle, 0.01f, Volume, false);
 				}
 				else
 				{
 
 					int handle = SG::audio->CreatePlayHandle(SG::se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
-					SG::audio->Play(SG::se_crack, handle, 0.01f, 0.2f, false);
+					SG::audio->Play(SG::se_crack, handle, 0.01f, Volume, false);
 				}
 			}
 
@@ -306,7 +306,7 @@ Door::~Door() noexcept
 	using SG = SceneGame;
 
 	int handle = SG::audio->CreatePlayHandle(SG::se_door, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	SG::audio->Play(SG::se_door, handle, 0.01f, 0.2f, false);
+	SG::audio->Play(SG::se_door, handle, 0.01f, Volume, false);
 }
 
 void Door::Update(KDL::Window* p_window, KDL::DX12::App* p_app)

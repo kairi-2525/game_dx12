@@ -79,7 +79,7 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	auto* audio = p_window->GetAudio();
 	audio->Stop(bgm_handle, bgm_handle_p, 1.0f);
 	bgm_handle_p = audio->CreatePlayHandle(bgm_handle, 0.f, true, false, 0.f, 0.f, 0, false, false);
-	audio->Play(bgm_handle, bgm_handle_p, 0.01f, 0.2f, false);
+	audio->Play(bgm_handle, bgm_handle_p, 0.01f, Volume, false);
 }
 
 void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -263,7 +263,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	// ”wŒi
 	{
-		constexpr VF3 Scale{ 107.f, 1.f, 100.f };
+		constexpr VF3 Scale{ 107.f, 1.f, 120.f };
 		constexpr VF4 Color{ WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
 		constexpr VF2 TexScale{ 1.f, 1.f };
@@ -304,7 +304,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			{ 5.5f, 3.f, -3.f},
 			{ 0.f, 3.f, -3.f },
 			{ -10.5f, 3.f, -3.f },
-			{ -8.f, 3.f, 2.f } } };
+			{ -8.f, 3.f, 4.f } } };
 
 		auto& pl_pos{ object_manager->GetObjectData<Player>()->pos };
 

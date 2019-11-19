@@ -482,7 +482,7 @@ void FindAI::Update(VF3& enemy_pos, float elapsed_time, Node* node)
 		using SG = SceneGame;
 
 		int handle = SG::audio->CreatePlayHandle(SG::se_whistle, 0.f, false, false, 0.f, 0.f, 0, false, false);
-		SG::audio->Play(SG::se_whistle, handle, 0.01f, 0.2f, false);
+		SG::audio->Play(SG::se_whistle, handle, 0.01f, Volume, false);
 	}
 
 	// ˆê’èŠÔŒã

@@ -49,7 +49,7 @@ void SceneSelect::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 	auto* audio = p_window->GetAudio();
 	audio->Stop(bgm_handle, bgm_handle_p, 1.0f);
 	bgm_handle_p = audio->CreatePlayHandle(bgm_handle, 0.f, true, false, 0.f, 0.f, 0, false, false);
-	audio->Play(bgm_handle, bgm_handle_p, 0.01f, 0.2f, false);
+	audio->Play(bgm_handle, bgm_handle_p, 0.01f, Volume, false);
 }
 
 void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -67,14 +67,14 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 		select_num++;
 		arrow_timer = 0.f;
 		int handle = audio->CreatePlayHandle(se_select, 0.f, false, false, 0.f, 0.f, 0, false, false);
-		audio->Play(se_select, handle, 0.01f, 0.2f, false);
+		audio->Play(se_select, handle, 0.01f, Volume, false);
 	}
 	else if (select_num > 0 && (input->IsTrgKey(Keys::Up) || input->IsTrgKey(Keys::W)))
 	{
 		select_num--;
 		arrow_timer = 0.f;
 		int handle = audio->CreatePlayHandle(se_select, 0.f, false, false, 0.f, 0.f, 0, false, false);
-		audio->Play(se_select, handle, 0.01f, 0.2f, false);
+		audio->Play(se_select, handle, 0.01f, Volume, false);
 	}
 
 	if (input->IsTrgKey(Keys::Back))
@@ -82,7 +82,7 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 		is_enter.emplace(false);
 
 		int handle = audio->CreatePlayHandle(se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
-		audio->Play(se_decision, handle, 0.01f, 1.f, false);
+		audio->Play(se_decision, handle, 0.01f, Volume, false);
 
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
@@ -92,7 +92,7 @@ void SceneSelect::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::
 		is_enter.emplace(true);
 
 		int handle = audio->CreatePlayHandle(se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
-		audio->Play(se_decision, handle, 0.01f, 1.f, false);
+		audio->Play(se_decision, handle, 0.01f, Volume, false);
 
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
