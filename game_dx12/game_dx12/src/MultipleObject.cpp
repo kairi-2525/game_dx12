@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------------------------------
 
 Plane::Plane()
-	: hp(HpMax), pl_stand(false), is_dead(false)
+	: hp(HpMax), pl_stand(false), is_dead(false), drop_scale(1.f)
 {
 	//angle.x = 3.14f * 0.5f;
 
@@ -64,11 +64,28 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	// Ž€‚ñ‚Å‚¢‚é‚ªÁ‚¦‚é‚Ì‚ð–hŽ~‚·‚éˆ×AƒvƒŒ[ƒ„[‚ª—£‚ê‚Ä‚©‚çÁ‚·
 	else
 	{
-		if (hp == 0u && pl_pos != pos)
+		if (is_dead)
+			DropUpdate(p_window->GetElapsedTime());
+		else if (hp == 0u && pl_pos != pos)
 		{
+			StartDrop();
 			is_dead = true;
 		}
 	}
+}
+
+void Plane::StartDrop()
+{
+	drop_scale = 0.f;
+}
+void Plane::DropUpdate(float elapsed_time)
+{
+	/*constexpr float DropSecSize =  DeathDropLength / DeathDropTime;
+	const float drop_size = DropSecSize * elapsed_time;
+	pos.y += drop_size;
+	const float dist = pos.y - DefPosY;
+	drop_scale = dist / DeathDropLength;*/
+	drop_scale += (1.f / DeathDropTime) * elapsed_time;
 }
 
 void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -90,18 +107,27 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(scale.x, scale.y, 1.f);
 			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-			T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f, pos.z);
+			const float drop_set_y = drop_scale < 1.f ? drop_scale * DeathDropLength : 0.f;
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f + drop_set_y, pos.z);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;
 		DirectX::XMStoreFloat4x4(&w, W);
 		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
-		if (!is_dead)
+		KDL::COLOR4F white = { 1.f, 1.f, 1.f, 1.f };
+		if (drop_scale < 1.f)
 		{
-			auto Draw{ [&](auto& obj)
-			{ obj->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+			white *= DeathDropColorScale;
+			white.a = 1.f - drop_scale;
+		}
+
+		auto Draw{ [&](auto& obj)
+			{ obj->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, white.DCast<DirectX::XMFLOAT4, float>() ,
 				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
+
+		if (!is_dead || drop_scale < 1.f)
+		{
 
 			if (hp == HpMax)
 			{

@@ -21,6 +21,7 @@ public:
 		hp = _rt.hp;
 		pl_stand = _rt.pl_stand;
 		is_dead = _rt.is_dead;
+		drop_scale = _rt.drop_scale;
 
 	}
 	auto& operator=(const Plane& _rt)
@@ -30,12 +31,13 @@ public:
 		hp = _rt.hp;
 		pl_stand = _rt.pl_stand;
 		is_dead = _rt.is_dead;
+		drop_scale = _rt.drop_scale;
 
 		return (*this);
 	}
 
 	Plane(Plane&& _rt) noexcept
-		: Obj3D(std::move(_rt)), hp(_rt.hp), pl_stand(_rt.pl_stand), is_dead(_rt.is_dead)
+		: Obj3D(std::move(_rt)), hp(_rt.hp), pl_stand(_rt.pl_stand), is_dead(_rt.is_dead), drop_scale(_rt.drop_scale)
 	{}
 	auto& operator=(Plane&& _rt) noexcept
 	{
@@ -48,6 +50,7 @@ public:
 			hp = _rt.hp;
 			pl_stand = _rt.pl_stand;
 			is_dead = _rt.is_dead;
+			drop_scale = _rt.drop_scale;
 		}
 
 		return (*this);
@@ -55,7 +58,9 @@ public:
 
 public:
 	static constexpr size_t IndexNumber{ 1u };
-
+	static constexpr float DeathDropColorScale{ 0.8f };	//å≥ÇÃêFÇÃ  80%Å@Ç≈èoóÕ
+	static constexpr float DeathDropTime{ 0.5f };		//0.5ïbÇ≈è¡Ç¶ÇÈ
+	static constexpr float DeathDropLength{ -0.5f };	//DeathDropTimeïbÇ≈ y Ç™ -0.5 óéâ∫Ç∑ÇÈ
 private:
 	static constexpr size_t HpMax{ 2u };
 
@@ -76,7 +81,9 @@ public:
 
 		return ifs;
 	}
-
+private:
+	void StartDrop();
+	void DropUpdate(float elapsed_time);
 public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app) override;
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app) override;
@@ -89,26 +96,27 @@ public:
 		{
 			hp = HpMax;
 			is_dead = false;
+			drop_scale = 1.f;
 		}
 		else if (hp == HpMax)
 		{
 			hp = 0u;
 			is_dead = true;
+			drop_scale = 1.f;
 		}
 	}
 	void CheckHP() { if (hp == 0u) is_dead = true; }
-
 public:
 	static void SetPlPosition(const VF3& pos) noexcept { pl_pos = pos; }
 	uint16_t GetHP() const noexcept { return hp; }
 	bool GetIsDead() const noexcept { return is_dead; }
 	void InitHP() noexcept { pl_stand = false; }
-
+	float GetDropScale() const noexcept { return is_dead ? drop_scale : 0.f; }
 private:
 	uint16_t hp;
 	bool pl_stand;
 	bool is_dead;
-
+	float drop_scale;
 	static inline VF3 pl_pos;
 
 public:
