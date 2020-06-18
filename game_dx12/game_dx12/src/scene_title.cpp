@@ -72,7 +72,7 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	light_dir = KDL::FLOAT3{ 0.f, -1.f, 1.f };
 	light_dir /= light_dir.Length();
 
-	player.position = KDL::FLOAT3{ 0.f, 0.8f, 0.f };
+	player.position = KDL::FLOAT3{ 0.f, 0.f, 0.f };
 	player.rotate = KDL::FLOAT3{ 0.f, DirectX::XMConvertToRadians(-90.f), 0.f };
 	player.scale = KDL::FLOAT3{ 0.1f, 0.1f, 0.1f };
 
@@ -109,7 +109,7 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	}
 	warp_hole.data.clear();
 	auto& it = warp_hole.data.emplace_back();
-	it.position = KDL::FLOAT3{ set_pos, 0, 0 };
+	it.position = KDL::FLOAT3{ set_pos, -0.25f, 0 };
 	it.rotate = KDL::FLOAT3{ 0, 0, 0 };
 	it.scale = KDL::FLOAT3{ WARP_HOLE_SCALE, WARP_HOLE_SCALE, WARP_HOLE_SCALE };
 
@@ -336,7 +336,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 				case GROUND_TYPE::WarpHole:
 				{
 					auto& it = warp_hole.data.emplace_back();
-					it.position = KDL::FLOAT3{ top_x, 0, 0 };
+					it.position = KDL::FLOAT3{ top_x, -0.25f, 0 };
 					it.rotate = KDL::FLOAT3{ 0, 0, 0 };
 					it.scale = KDL::FLOAT3{ WARP_HOLE_SCALE, WARP_HOLE_SCALE, WARP_HOLE_SCALE };
 					top_x += BLOCK_SIZE;

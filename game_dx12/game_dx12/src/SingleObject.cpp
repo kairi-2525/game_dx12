@@ -106,7 +106,7 @@ void Player::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 		DirectX::XMMATRIX S, R, T;
 		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
-		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y + 0.5f, pos.z);
 		W = S * R * T;
 	}
 	DirectX::XMFLOAT4X4 wvp, w;
@@ -185,7 +185,7 @@ void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 		DirectX::XMMATRIX S, R, T;
 		S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 		R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
-		T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+		T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f, pos.z);
 		W = S * R * T;
 	}
 	DirectX::XMFLOAT4X4 wvp, w;
