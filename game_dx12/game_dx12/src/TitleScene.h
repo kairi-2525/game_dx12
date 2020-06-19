@@ -1,9 +1,22 @@
 #pragma once
 
+//#define REFACTED_TITLE
+
 #include "scene.h"
+
+#include <KDL_Math.h>
+
 #include <unordered_map>
 #include <string>
 
+#ifdef REFACTED_TITLE
+#include <optional>
+#include <atomic>
+
+#include "ObjectManager.h"
+#endif
+
+#ifndef REFACTED_TITLE
 class SceneTitle : public SceneBase
 {
 private:
@@ -133,3 +146,29 @@ public:
 	void RemoveGrounds(KDL::Window* p_window);
 	void FlipGrounds(KDL::Window* p_window);
 };
+
+#else
+
+class SceneTitle : public SceneBase
+{
+private:
+	std::optional<ObjectManager> object_manager;
+
+	struct Sounds
+	{
+		int bgm, bgm_p;
+		int se_break;
+		int se_crack;
+		int se_warp;
+		int se_decision;
+	} sounds;
+public:
+	~SceneTitle();
+	void Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+	void Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+	void Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+	void Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+	void UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app);
+};
+
+#endif

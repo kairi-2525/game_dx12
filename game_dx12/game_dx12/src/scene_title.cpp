@@ -1,6 +1,8 @@
 #include "TitleScene.h"
 #include "SceneSelect.h"
 
+
+#ifndef REFACTED_TITLE
 void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	player.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/player.fbx", 100);
@@ -528,3 +530,76 @@ void SceneTitle::FlipGrounds(KDL::Window* p_window)
 	int handle = audio->CreatePlayHandle(sound_se_warp, 0.f, false, false, 0.f, 0.f, 0, false, false);
 	audio->Play(sound_se_warp, handle, 0.01f, Volume / 2.f, false);
 }
+#else
+
+// 読み込み
+void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+{
+	auto* audio = p_window->GetAudio();
+	sounds.bgm = audio->Load("./data/sounds/BGM.wav");
+	sounds.bgm_p = 0;
+	sounds.se_break = audio->Load("./data/sounds/break.wav");
+	sounds.se_crack = audio->Load("./data/sounds/crack.wav");
+	sounds.se_warp = audio->Load("./data/sounds/warp.wav");
+	sounds.se_decision = audio->Load("./data/sounds/decision.wav");
+}
+
+void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+{
+	// 初期化
+	object_manager.emplace();
+
+	// 構築
+	{
+		// variantオブジェクト構築
+		{
+			// SingleObjets構築
+			object_manager->GetObjectData().BuildVariant<Player>();
+
+			// multiple_objects構築
+			object_manager->GetObjectData().BuildVariant<Plane>();
+			object_manager->GetObjectData().BuildVariant<Wall>();
+			object_manager->GetObjectData().BuildVariant<WarpHole>();
+		}
+	}
+
+	// スタート地点にセットする
+	if (auto& player{ object_manager->GetObjectData().GetChangeObjects<Player>() }; player)
+	{
+		player->pos = { 0.f, 0.f, 0.f };
+		player->angle = { 0.f, DirectX::XMConvertToRadians(-90.f), 0.f };
+	}
+
+	auto* audio = p_window->GetAudio();
+	audio->Stop(sounds.bgm, sounds.bgm_p, 1.0f);
+	sounds.bgm_p = audio->CreatePlayHandle(sounds.bgm, 0.f, true, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sounds.bgm, sounds.bgm_p, 0.01f, Volume, false);
+}
+
+void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+{
+	object_manager = std::nullopt;
+
+	auto* audio = p_window->GetAudio();
+	audio->Delete(sounds.bgm);
+	audio->Delete(sounds.se_break);
+	audio->Delete(sounds.se_crack);
+	audio->Delete(sounds.se_warp);
+}
+
+void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+{
+	object_manager->Update(p_window, p_app);
+}
+
+// 描画
+void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
+{
+	object_manager->Draw(p_window, p_app);
+}
+
+SceneTitle::~SceneTitle() noexcept
+{
+	object_manager->UnInitialize();
+}
+#endif
