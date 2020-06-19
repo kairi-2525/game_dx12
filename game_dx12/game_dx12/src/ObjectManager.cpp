@@ -993,11 +993,15 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 			&Goal::model,
 			&Key::model,
 			&Player::model,
+			&Plane::sand_broken_model,
+			&Plane::sand_model,
 			&Wall::sand_model,
+			&Plane::snow_model,
+			&Plane::snow_broken_model,
 			&Wall::snow_model,
 			&Start::model,
-			&WarpHole::warp_snow,
 			&WarpHole::warp_sand,
+			&WarpHole::warp_snow,
 		};
 
 		// FBX以外のファイル名を削除
@@ -1022,14 +1026,10 @@ void ObjectManager::Load(std::atomic<size_t>* load_count, KDL::Window* p_window,
 		auto png_paths{ GetAllFileName("data\\images\\Game") };
 
 		// ファイル走査で読み込むので（アルファベット順）
-		std::vector<decltype(&Plane::sand_board)> load_textures{
+		std::vector<decltype(&crystal_board)> load_textures{
 			&crystal_board,
 			&Goal::board,
 			&sand_board,
-			&Plane::sand_broken_board,
-			&Plane::sand_board,
-			&Plane::snow_board,
-			&Plane::snow_broken_board,
 		};
 
 		// 画像以外のファイル名を削除
@@ -1057,18 +1057,18 @@ void ObjectManager::UnInitialize()
 		&Goal::model,
 		&Key::model,
 		&Player::model,
+		&Plane::sand_broken_model,
+		&Plane::sand_model,
 		&Wall::sand_model,
+		&Plane::snow_model,
+		&Plane::snow_broken_model,
 		&Wall::snow_model,
 		&Start::model,
 		&WarpHole::warp_sand,
 		&WarpHole::warp_snow,
 	};
 
-	const std::vector<decltype(Plane::sand_board)*> release_textures{
-		&Plane::sand_board,
-		&Plane::sand_broken_board,
-		&Plane::snow_board,
-		&Plane::snow_broken_board,
+	const std::vector<decltype(crystal_board)*> release_textures{
 		&Goal::board,
 		&crystal_board,
 		&sand_board,

@@ -39,7 +39,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 			}
 			default:
 			{
-				grounds[it.first].model = std::make_unique<KDL::DX12::Geometric_Board>(p_app, ("./data/images/Game/" + it.second + ".png"), 100);
+				grounds[it.first].model = std::make_unique<KDL::DX12::Geometric_Board>(p_app, ("./data/images/Title/" + it.second + ".png"), 100);
 				break;
 			}
 		}
