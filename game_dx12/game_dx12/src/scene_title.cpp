@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 #include "SceneSelect.h"
+#include "MultipleObject.h"
 
 
 #ifndef REFACTED_TITLE
@@ -19,27 +20,30 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		{
 			case  GROUND_TYPE::WarpHole:
 			{
-				warp_hole.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
+				warp_hole.model = std::make_shared<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
 				continue;
 			}
 			case GROUND_TYPE::SandWall:
 			{
-				sands.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
+				sands.model = std::make_shared<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
 				continue;
 			}
 			case GROUND_TYPE::SnowWall:
 			{
-				snows.model = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
+				snows.model = std::make_shared<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
 				continue;
 			}
 			case GROUND_TYPE::Air:
 			{
 				grounds[it.first];
+				drop_grounds[it.first];
 				continue;
 			}
 			default:
 			{
-				grounds[it.first].model = std::make_unique<KDL::DX12::Geometric_Board>(p_app, ("./data/images/Game/" + it.second + ".png"), 100);
+				grounds[it.first].model = 
+					drop_grounds[it.first].model =
+						std::make_unique<KDL::DX12::Geometric_Board>(p_app, ("./data/images/Game/" + it.second + ".png"), 100);
 				break;
 			}
 		}
@@ -50,12 +54,12 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	warp_hole_off = std::make_unique<KDL::DX12::Mesh_FBX>(p_app, "./data/models/Game/WarpYuki.fbx", 100);
 
 	auto* audio = p_window->GetAudio();
-	sound_bgm = audio->Load("./data/sounds/BGM.wav");
-	sound_bgm_p = 0;
-	sound_se_break = audio->Load("./data/sounds/break.wav");
-	sound_se_crack = audio->Load("./data/sounds/crack.wav");
-	sound_se_warp = audio->Load("./data/sounds/warp.wav");
-	se_decision = audio->Load("./data/sounds/decision.wav");
+	sounds.bgm = audio->Load("./data/sounds/BGM.wav");
+	sounds.bgm_p = 0;
+	sounds.se_break = audio->Load("./data/sounds/break.wav");
+	sounds.se_crack = audio->Load("./data/sounds/crack.wav");
+	sounds.se_warp = audio->Load("./data/sounds/warp.wav");
+	sounds.se_decision = audio->Load("./data/sounds/decision.wav");
 }
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -116,9 +120,9 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	it.scale = KDL::FLOAT3{ WARP_HOLE_SCALE, WARP_HOLE_SCALE, WARP_HOLE_SCALE };
 
 	auto* audio = p_window->GetAudio();
-	audio->Stop(sound_bgm, sound_bgm_p, 1.0f);
-	sound_bgm_p = audio->CreatePlayHandle(sound_bgm, 0.f, true, false, 0.f, 0.f, 0, false, false);
-	audio->Play(sound_bgm, sound_bgm_p, 0.01f, Volume, false);
+	audio->Stop(sounds.bgm, sounds.bgm_p, 1.0f);
+	sounds.bgm_p = audio->CreatePlayHandle(sounds.bgm, 0.f, true, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sounds.bgm, sounds.bgm_p, 0.01f, Volume, false);
 }
 
 void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -171,8 +175,8 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 	{
 		auto audio = p_window->GetAudio();
 
-		int handle = audio->CreatePlayHandle(se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
-		audio->Play(se_decision, handle, 0.01f, Volume, false);
+		int handle = audio->CreatePlayHandle(sounds.se_decision, 0.f, false, false, 0.f, 0.f, 0, false, false);
+		audio->Play(sounds.se_decision, handle, 0.01f, Volume, false);
 
 		fadeout_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
@@ -197,6 +201,22 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 		for (size_t i = 0; i < data.size();)
 		{
 			data[i].position.x -= speed * elpased_time;
+			if (data[i].position.x < end_line)
+			{
+				data[i] = data.back();
+				data.pop_back();
+				deleted_type.emplace_back(g.first);
+			}
+			else i++;
+		}
+	}
+	for (auto& g : drop_grounds)
+	{
+		auto& data = g.second.data;
+		for (size_t i = 0; i < data.size();)
+		{
+			data[i].position.x -= speed * elpased_time;
+			data[i].position.y += (Plane::DeathDropTime / Plane::DeathDropLength) * elpased_time;
 			if (data[i].position.x < end_line)
 			{
 				data[i] = data.back();
@@ -252,6 +272,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 				set_break_data.emplace_back(it);
 			}
 			clear_break_data.clear();
+
 		}
 	}
 
@@ -293,6 +314,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			{
 				if (!data[i].changed && data[i].position.x < break_line)
 				{
+					drop_grounds[GROUND_TYPE::SandBroken].data.emplace_back(data[i]);
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SandBroken);
@@ -307,6 +329,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			{
 				if (!data[i].changed && data[i].position.x < break_line)
 				{
+					drop_grounds[GROUND_TYPE::SnowBroken].data.emplace_back(data[i]);
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SnowBroken);
@@ -424,6 +447,23 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 			return;
 		}
 	}
+	const auto white = KDL::COLOR4F{ 1.f, 1.f, 1.f, 1.f };
+	
+	{
+		const auto& ground = drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken];
+		for (auto& it : drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken].data)
+		{
+			auto color = white * Plane::DeathDropColorScale;
+			color.a = 1.f - (it.position.y / Plane::DeathDropLength);
+			HRESULT hr = it.Draw<KDL::DX12::Geometric_Board>(
+				p_app, camera.get(), light_dir, ground.model.get(), color);
+			if (FAILED(hr))
+			{
+				p_scene_mgr->Exit();
+				return;
+			}
+		}
+	}
 	bool fliped = false;
 	for (const auto& it : warp_hole.data)
 		fliped = it.changed ? true : fliped;
@@ -501,10 +541,10 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	auto* audio = p_window->GetAudio();
-	audio->Delete(sound_bgm);
-	audio->Delete(sound_se_break);
-	audio->Delete(sound_se_crack);
-	audio->Delete(sound_se_warp);
+	audio->Delete(sounds.bgm);
+	audio->Delete(sounds.se_break);
+	audio->Delete(sounds.se_crack);
+	audio->Delete(sounds.se_warp);
 }
 
 //ƒTƒEƒ“ƒh—p
@@ -513,22 +553,22 @@ void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, 
 void SceneTitle::BreakGrounds(KDL::Window* p_window)
 {
 	auto* audio = p_window->GetAudio();
-	int handle = audio->CreatePlayHandle(sound_se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	audio->Play(sound_se_crack, handle, 0.01f, Volume, false);
+	int handle = audio->CreatePlayHandle(sounds.se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sounds.se_crack, handle, 0.01f, Volume, false);
 }
 //Á‚¦‚½‚Æ‚«
 void SceneTitle::RemoveGrounds(KDL::Window* p_window)
 {
 	auto* audio = p_window->GetAudio();
-	int handle = audio->CreatePlayHandle(sound_se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	audio->Play(sound_se_break, handle, 0.01f, Volume, false);
+	int handle = audio->CreatePlayHandle(sounds.se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sounds.se_break, handle, 0.01f, Volume, false);
 }
 //”½“]‚µ‚½‚Æ‚«
 void SceneTitle::FlipGrounds(KDL::Window* p_window)
 {
 	auto* audio = p_window->GetAudio();
-	int handle = audio->CreatePlayHandle(sound_se_warp, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	audio->Play(sound_se_warp, handle, 0.01f, Volume / 2.f, false);
+	int handle = audio->CreatePlayHandle(sounds.se_warp, 0.f, false, false, 0.f, 0.f, 0, false, false);
+	audio->Play(sounds.se_warp, handle, 0.01f, Volume / 2.f, false);
 }
 #else
 
@@ -542,10 +582,26 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	sounds.se_crack = audio->Load("./data/sounds/crack.wav");
 	sounds.se_warp = audio->Load("./data/sounds/warp.wav");
 	sounds.se_decision = audio->Load("./data/sounds/decision.wav");
+
+	std::atomic<size_t> load_count{ 0 };
+	object_manager->Load(&load_count, p_window, p_app);
 }
 
 void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	camera =
+		std::make_unique<KDL::TOOL::Camera>(
+			KDL::TOOL::Camera(
+				{ 0.f, 1.f, -5.f },		//eye
+				{ 0.f, 1.f, 0.f },			//focus
+				{ 0.f, 1.f, 0.f },			//up
+				DirectX::XMConvertToRadians(30.f),
+				p_app->GetViewport().Width / p_app->GetViewport().Height,
+				{ 0.1f, 1000.f }
+			)
+			);
+
+
 	// ‰Šú‰»
 	object_manager.emplace();
 
@@ -589,7 +645,11 @@ void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, 
 
 void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	const KDL::COLOR4F clear_color = { 0.f, 0.f, 0.f, 1.f };
+	p_app->ClearBackBuffer(clear_color);
+
 	object_manager->Update(p_window, p_app);
+
 }
 
 // •`‰æ

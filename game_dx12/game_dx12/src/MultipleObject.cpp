@@ -107,8 +107,8 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 			DirectX::XMMATRIX S, R, T;
 			S = DirectX::XMMatrixScaling(scale.x, scale.y, 1.f);
 			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
-			const float drop_set_y = drop_scale < 1.f ? drop_scale * DeathDropLength : 0.f;
-			T = DirectX::XMMatrixTranslation(pos.x, pos.y - 0.5f + drop_set_y, pos.z);
+			const auto droped_pos = GetDropPos();
+			T = DirectX::XMMatrixTranslation(droped_pos.x, droped_pos.y - 0.5f, droped_pos.z);
 			W = S * R * T;
 		}
 		DirectX::XMFLOAT4X4 wvp, w;
