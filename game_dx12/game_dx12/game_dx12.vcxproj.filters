@@ -69,6 +69,12 @@
     <ClCompile Include="src\SceneSelect.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\ParticleManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Singleton.cpp">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main.h">
@@ -157,6 +163,15 @@
     </ClInclude>
     <ClInclude Include="src\TitleModel.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Singleton.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AlgorithmHelper.h">
+      <Filter>ヘッダー ファイル\追加データ</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,3 +1,5 @@
+#include <string>
+
 #include "GameScene.h"
 //#include "scene.h"
 #include "Math.h"
@@ -5,7 +7,7 @@
 #include "ImVecHelper.h"
 #include "SceneSelect.h"
 #include "LoadAllFileName.h"
-#include <string>
+#include "ParticleManager.h"
 
 //todo KDL_USE_IMGUI USE_IMGUIの代わり
 
@@ -27,6 +29,9 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	is_save = false;
 	back_world_mode = false;
 	init_scene = false;
+
+	if (!pParticleManager->Init(p_app))
+		assert(!"パーティクルマネージャーの初期化失敗");
 
 	// 構築
 	{
@@ -86,6 +91,7 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 {
 	namespace fs = std::filesystem;
 
+	SingletonFinalizer::Finalize();
 
 	object_manager = std::nullopt;
 	camera = nullptr;

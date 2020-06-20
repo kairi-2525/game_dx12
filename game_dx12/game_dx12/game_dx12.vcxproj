@@ -143,15 +143,18 @@
     <ClCompile Include="src\MultipleObject.cpp" />
     <ClCompile Include="src\NodeData.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
+    <ClCompile Include="src\ParticleManager.cpp" />
     <ClCompile Include="src\PatrolAI.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\SceneSelect.cpp" />
     <ClCompile Include="src\scene_main.cpp" />
     <ClCompile Include="src\scene_title.cpp" />
     <ClCompile Include="src\SingleObject.cpp" />
+    <ClCompile Include="src\Singleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AI_Manager.h" />
+    <ClInclude Include="src\AlgorithmHelper.h" />
     <ClInclude Include="src\AttackAI.h" />
     <ClInclude Include="src\ColorDef.h" />
     <ClInclude Include="src\Easing.h" />
@@ -168,12 +171,14 @@
     <ClInclude Include="src\NodeData.h" />
     <ClInclude Include="src\Obj3d.h" />
     <ClInclude Include="src\ObjectManager.h" />
+    <ClInclude Include="src\ParticleManager.h" />
     <ClInclude Include="src\PatrolAI.h" />
     <ClInclude Include="src\Random.h" />
     <ClInclude Include="src\RootBase.h" />
     <ClInclude Include="src\scene.h" />
     <ClInclude Include="src\SceneSelect.h" />
     <ClInclude Include="src\SingleObject.h" />
+    <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Time.h" />
     <ClInclude Include="src\TitleModel.h" />
     <ClInclude Include="src\TitleScene.h" />
