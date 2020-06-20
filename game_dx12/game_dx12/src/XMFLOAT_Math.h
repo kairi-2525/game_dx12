@@ -639,7 +639,7 @@ static inline void Clear(DirectX::XMFLOAT4& vf4)
 
 // 正規化-----------------------------------------------------------------------------------------------------
 
-static inline DirectX::XMFLOAT2 VectorNormalize(const DirectX::XMFLOAT2& vf2)
+_NODISCARD static inline DirectX::XMFLOAT2 VectorNormalize(const DirectX::XMFLOAT2& vf2)
 {
 	DirectX::XMFLOAT2 rv{ vf2 };
 
@@ -650,7 +650,7 @@ static inline DirectX::XMFLOAT2 VectorNormalize(const DirectX::XMFLOAT2& vf2)
 	return rv;
 }
 
-static inline DirectX::XMFLOAT3 VectorNormalize(const DirectX::XMFLOAT3& vf3)
+_NODISCARD static inline DirectX::XMFLOAT3 VectorNormalize(const DirectX::XMFLOAT3& vf3)
 {
 	DirectX::XMFLOAT3 rv{ vf3 };
 
@@ -661,7 +661,7 @@ static inline DirectX::XMFLOAT3 VectorNormalize(const DirectX::XMFLOAT3& vf3)
 	return rv;
 }
 
-static inline DirectX::XMFLOAT4 VectorNormalize(const DirectX::XMFLOAT4& vf4)
+_NODISCARD static inline DirectX::XMFLOAT4 VectorNormalize(const DirectX::XMFLOAT4& vf4)
 {
 	DirectX::XMFLOAT4 rv{ vf4 };
 
@@ -674,7 +674,7 @@ static inline DirectX::XMFLOAT4 VectorNormalize(const DirectX::XMFLOAT4& vf4)
 
 // ベクトルの長さを取得----------------------------------------------------------------------------------------------------
 
-static inline float VectorLength(const DirectX::XMFLOAT2& vf2)
+_NODISCARD static inline float VectorLength(const DirectX::XMFLOAT2& vf2)
 {
 	float len{};
 
@@ -685,7 +685,7 @@ static inline float VectorLength(const DirectX::XMFLOAT2& vf2)
 	return len;
 }
 
-static inline float VectorLength(const DirectX::XMFLOAT3& vf3)
+_NODISCARD static inline float VectorLength(const DirectX::XMFLOAT3& vf3)
 {
 	float len{};
 
@@ -696,7 +696,7 @@ static inline float VectorLength(const DirectX::XMFLOAT3& vf3)
 	return len;
 }
 
-static inline float VectorLength(const DirectX::XMFLOAT4& vf4)
+_NODISCARD static inline float VectorLength(const DirectX::XMFLOAT4& vf4)
 {
 	float len{};
 
@@ -709,7 +709,7 @@ static inline float VectorLength(const DirectX::XMFLOAT4& vf4)
 
 // ベクトル間のラジアン角度を計算-----------------------------------------------------------------------------------------
 
-static inline float AngleBetweenVectors(const DirectX::XMFLOAT2& vf2_left, const DirectX::XMFLOAT2& vf2_right)
+_NODISCARD static inline float AngleBetweenVectors(const DirectX::XMFLOAT2& vf2_left, const DirectX::XMFLOAT2& vf2_right)
 {
 	float rad{};
 
@@ -720,7 +720,7 @@ static inline float AngleBetweenVectors(const DirectX::XMFLOAT2& vf2_left, const
 	return rad;
 }
 
-static inline float AngleBetweenVectors(const DirectX::XMFLOAT3& vf3_left, const DirectX::XMFLOAT3& vf3_right)
+_NODISCARD static inline float AngleBetweenVectors(const DirectX::XMFLOAT3& vf3_left, const DirectX::XMFLOAT3& vf3_right)
 {
 	float rad{};
 
@@ -731,7 +731,7 @@ static inline float AngleBetweenVectors(const DirectX::XMFLOAT3& vf3_left, const
 	return rad;
 }
 
-static inline float AngleBetweenVectors(const DirectX::XMFLOAT4& vf4_left, const DirectX::XMFLOAT4& vf4_right)
+_NODISCARD static inline float AngleBetweenVectors(const DirectX::XMFLOAT4& vf4_left, const DirectX::XMFLOAT4& vf4_right)
 {
 	float rad{};
 
@@ -744,7 +744,7 @@ static inline float AngleBetweenVectors(const DirectX::XMFLOAT4& vf4_left, const
 
 // ベクトル間のラジアン角度を計算-----------------------------------------------------------------------------------------
 
-static inline float AngleBetweenNormals(const DirectX::XMFLOAT2& vf2_left, const DirectX::XMFLOAT2& vf2_right)
+_NODISCARD static inline float AngleBetweenNormals(const DirectX::XMFLOAT2& vf2_left, const DirectX::XMFLOAT2& vf2_right)
 {
 	float rad{};
 
@@ -755,7 +755,7 @@ static inline float AngleBetweenNormals(const DirectX::XMFLOAT2& vf2_left, const
 	return rad;
 }
 
-static inline float AngleBetweenNormals(const DirectX::XMFLOAT3& vf3_left, const DirectX::XMFLOAT3& vf3_right)
+_NODISCARD static inline float AngleBetweenNormals(const DirectX::XMFLOAT3& vf3_left, const DirectX::XMFLOAT3& vf3_right)
 {
 	float rad{};
 
@@ -766,7 +766,7 @@ static inline float AngleBetweenNormals(const DirectX::XMFLOAT3& vf3_left, const
 	return rad;
 }
 
-static inline float AngleBetweenNormals(const DirectX::XMFLOAT4& vf4_left, const DirectX::XMFLOAT4& vf4_right)
+_NODISCARD static inline float AngleBetweenNormals(const DirectX::XMFLOAT4& vf4_left, const DirectX::XMFLOAT4& vf4_right)
 {
 	float rad{};
 

@@ -91,8 +91,6 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 {
 	namespace fs = std::filesystem;
 
-	pParticleManager->Uninit();
-
 	SingletonFinalizer::Finalize();
 
 	object_manager = std::nullopt;
@@ -765,7 +763,7 @@ DirectX::XMFLOAT3 SceneGame::MouseToLocalPos(const VF2& mouse_pos, KDL::DX12::Ap
 SceneGame::~SceneGame() noexcept
 {
 	object_manager->UnInitialize();
-
+	pParticleManager->Uninit();
 }
 
 // “Ç‚İ‚İ

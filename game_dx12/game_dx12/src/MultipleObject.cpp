@@ -249,8 +249,10 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	DirectX::XMStoreFloat4x4(&w, W);
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
+	const float alpha{ (GS::back_world_mode == is_back_world) ? 1.f : 0.5f };
+
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f },
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, alpha },
 				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(*draw_obj);
