@@ -1,10 +1,29 @@
 #pragma once
 
-#include <DirectXMath.h>
+#if (!_HAS_CXX17)
+#error "「-std=c++17」をコマンドオプションに指定してください。"
+#endif
 
+#include <DirectXMath.h>
+#include <initializer_list>
+#include <array>
+
+#ifndef HAS_VECTOR3
+#define HAS_VECTOR3 (__has_include("Vector3.h"))
+#endif
+#ifndef HAS_VECTOR2
+#define HAS_VECTOR2 (__has_include("Vector2.h"))
+#endif
+
+#if HAS_VECTOR3
 #include "Vector3.h"
-#include "Math.h"
+#endif
+
+#if HAS_VECTOR2
 #include "Vector2.h"
+#endif
+
+#include "Math.h"
 
 //-------------------------------------------------------------------------------------------------------------
 //. XMFLOAT4系
@@ -50,34 +69,189 @@ static inline void operator%= (DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v
 	v1.w = fmodf(v1.w, v2.w);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
 	return DirectX::XMFLOAT4{ v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
 	return DirectX::XMFLOAT4{ v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
 	return DirectX::XMFLOAT4{ v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
 	return DirectX::XMFLOAT4{ v1.x / v2.x, v1.y / v2.y, v1.z / v2.z, v1.w / v2.w };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
 	return DirectX::XMFLOAT4{ fmodf(v1.x, v2.x), fmodf(v1.y, v2.y), fmodf(v1.z, v2.z), fmodf(v1.w, v2.w) };
+}
+
+static inline void operator+= (DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x += *itr;
+	itr++;
+	v1.y += *itr;
+	itr++;
+	v1.z += *itr;
+	itr++;
+	v1.w += *itr;
+}
+
+static inline void operator-= (DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x -= *itr;
+	itr++;
+	v1.y -= *itr;
+	itr++;
+	v1.z -= *itr;
+	itr++;
+	v1.w -= *itr;
+}
+
+static inline void operator/= (DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x /= *itr;
+	itr++;
+	v1.y /= *itr;
+	itr++;
+	v1.z /= *itr;
+	itr++;
+	v1.w /= *itr;
+}
+
+static inline void operator*= (DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x *= *itr;
+	itr++;
+	v1.y *= *itr;
+	itr++;
+	v1.z *= *itr;
+	itr++;
+	v1.w *= *itr;
+}
+
+static inline void operator%= (DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x = fmodf(v1.x, *itr);
+	itr++;
+	v1.y = fmodf(v1.y, *itr);
+	itr++;
+	v1.z = fmodf(v1.z, *itr);
+	itr++;
+	v1.w = fmodf(v1.w, *itr);
+}
+
+_NODISCARD static inline auto operator+ (const DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT4 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x += *itr;
+	itr++;
+	temp.y += *itr;
+	itr++;
+	temp.z += *itr;
+	itr++;
+	temp.w += *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator- (const DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT4 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x -= *itr;
+	itr++;
+	temp.y -= *itr;
+	itr++;
+	temp.z -= *itr;
+	itr++;
+	temp.w -= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator* (const DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT4 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x *= *itr;
+	itr++;
+	temp.y *= *itr;
+	itr++;
+	temp.z *= *itr;
+	itr++;
+	temp.w *= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator/ (const DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT4 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x /= *itr;
+	itr++;
+	temp.y /= *itr;
+	itr++;
+	temp.z /= *itr;
+	itr++;
+	temp.w /= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator% (const DirectX::XMFLOAT4& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 4u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT4 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x = fmodf(v1.x, *itr);
+	itr++;
+	temp.y = fmodf(v1.y, *itr);
+	itr++;
+	temp.z = fmodf(v1.z, *itr);
+	itr++;
+	temp.w = fmodf(v1.w, *itr);
+
+	return temp;
 }
 
 static inline void operator+= (DirectX::XMFLOAT4& v1, const float num)
@@ -120,54 +294,76 @@ static inline void operator%= (DirectX::XMFLOAT4& v1, const float num)
 	v1.w = fmodf(v1.w, num);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT4& v1, const float num)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT4& v1, const float num)
 {
 	return DirectX::XMFLOAT4{ v1.x + num, v1.y + num, v1.z + num, v1.w + num };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT4& v1, const float num)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT4& v1, const float num)
 {
 	return DirectX::XMFLOAT4{ v1.x - num, v1.y - num, v1.z - num, v1.w - num };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT4& v1, const float num)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT4& v1, const float num)
 {
 	return DirectX::XMFLOAT4{ v1.x * num, v1.y * num, v1.z * num, v1.w * num };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT4& v1, const float num)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT4& v1, const float num)
 {
 	return DirectX::XMFLOAT4{ v1.x / num, v1.y / num, v1.z / num, v1.w / num };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT4& v1, const float num)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT4& v1, const float num)
 {
 	return DirectX::XMFLOAT4{ fmodf(v1.x, num), fmodf(v1.y, num), fmodf(v1.z, num), fmodf(v1.w, num) };
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
-	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z) &&
-		Math::AdjEqual(v1.w, v2.w));
+	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z) && Math::AdjEqual(v1.w, v2.w));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
 {
-	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z) &&
-		Math::AdjEqual(v1.w, v2.w));
+	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z) && Math::AdjEqual(v1.w, v2.w));
+}
+
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT4& v1, const float num)
+{
+	return (Math::AdjEqual(v1.x, num) && Math::AdjEqual(v1.y, num) && Math::AdjEqual(v1.z, num) && Math::AdjEqual(v1.w, num));
+}
+
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT4& v1, const float num)
+{
+	return !(Math::AdjEqual(v1.x, num) && Math::AdjEqual(v1.y, num) && Math::AdjEqual(v1.z, num) && Math::AdjEqual(v1.w, num));
+}
+
+_NODISCARD static inline constexpr bool operator< (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+{
+	return ((v1.x < v2.x) && (v1.y < v2.y) && (v1.z < v2.z) && (v1.w < v2.w));
+}
+
+_NODISCARD static inline constexpr bool operator> (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+{
+	return ((v1.x > v2.x) && (v1.y > v2.y) && (v1.z > v2.z) && (v1.w > v2.w));
+}
+
+_NODISCARD static inline constexpr bool operator<= (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+{
+	return ((v1.x < v2.x) && (v1.y < v2.y) && (v1.z < v2.z) && (v1.w < v2.w)) || (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z) && Math::AdjEqual(v1.w, v2.w));
+}
+
+_NODISCARD static inline constexpr bool operator>= (const DirectX::XMFLOAT4& v1, const DirectX::XMFLOAT4& v2)
+{
+	return ((v1.x > v2.x) && (v1.y > v2.y) && (v1.z > v2.z) && (v1.w > v2.w)) || (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z) && Math::AdjEqual(v1.w, v2.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------
 //. XMFLOAT3系
 //-------------------------------------------------------------------------------------------------------------
 
+#if HAS_VECTOR3
 static inline void operator+= (DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	v1.x += v2.x;
@@ -203,36 +399,173 @@ static inline void operator%= (DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 	v1.z = fmodf(v1.z, v2.z);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x * v2.x, v1.y * v2.y, v1.z * v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x / v2.x, v1.y / v2.y, v1.z / v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return DirectX::XMFLOAT3{ fmodf(v1.x, v2.x), fmodf(v1.y, v2.y), fmodf(v1.z, v2.z) };
 }
+#endif
 
+static inline void operator+= (DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x += *itr;
+	itr++;
+	v1.y += *itr;
+	itr++;
+	v1.z += *itr;
+}
+
+static inline void operator-= (DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x -= *itr;
+	itr++;
+	v1.y -= *itr;
+	itr++;
+	v1.z -= *itr;
+}
+
+static inline void operator/= (DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x /= *itr;
+	itr++;
+	v1.y /= *itr;
+	itr++;
+	v1.z /= *itr;
+}
+
+static inline void operator*= (DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x *= *itr;
+	itr++;
+	v1.y *= *itr;
+	itr++;
+	v1.z *= *itr;
+}
+
+static inline void operator%= (DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x = fmodf(v1.x, *itr);
+	itr++;
+	v1.y = fmodf(v1.y, *itr);
+	itr++;
+	v1.z = fmodf(v1.z, *itr);
+}
+
+_NODISCARD static inline auto operator+ (const DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT3 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x += *itr;
+	itr++;
+	temp.y += *itr;
+	itr++;
+	temp.z += *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator- (const DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT3 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x -= *itr;
+	itr++;
+	temp.y -= *itr;
+	itr++;
+	temp.z -= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator* (const DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT3 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x *= *itr;
+	itr++;
+	temp.y *= *itr;
+	itr++;
+	temp.z *= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator/ (const DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT3 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x /= *itr;
+	itr++;
+	temp.y /= *itr;
+	itr++;
+	temp.z /= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator% (const DirectX::XMFLOAT3& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 3u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT3 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x = fmodf(v1.x, *itr);
+	itr++;
+	temp.y = fmodf(v1.y, *itr);
+	itr++;
+	temp.z = fmodf(v1.z, *itr);
+
+	return temp;
+}
+
+#if HAS_VECTOR3
 static inline void operator+= (Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	v1.x += v2.x;
@@ -268,35 +601,31 @@ static inline void operator%= (Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 	v1.z = fmodf(v1.z, v2.z);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator+ (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return Vector3<float>{ v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator- (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return Vector3<float>{ v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator* (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return Vector3<float>{ v1.x* v2.x, v1.y* v2.y, v1.z* v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator/ (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return Vector3<float>{ v1.x / v2.x, v1.y / v2.y, v1.z / v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator% (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return Vector3<float>{ fmodf(v1.x, v2.x), fmodf(v1.y, v2.y), fmodf(v1.z, v2.z) };
 }
+#endif
 
 static inline void operator+= (DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
@@ -333,32 +662,27 @@ static inline void operator%= (DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v
 	v1.z = fmodf(v1.z, v2.z);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x * v2.x, v1.y * v2.y, v1.z * v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return DirectX::XMFLOAT3{ v1.x / v2.x, v1.y / v2.y, v1.z / v2.z };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return DirectX::XMFLOAT3{ fmodf(v1.x, v2.x), fmodf(v1.y, v2.y), fmodf(v1.z, v2.z) };
 }
@@ -398,76 +722,98 @@ static inline void operator%= (DirectX::XMFLOAT3& v1, const float num)
 	v1.z = fmodf(v1.z, num);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT3& v1, const float num)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT3& v1, const float num)
 {
 	return DirectX::XMFLOAT3{ v1.x + num, v1.y + num, v1.z + num };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT3& v1, const float num)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT3& v1, const float num)
 {
 	return DirectX::XMFLOAT3{ v1.x - num, v1.y - num, v1.z - num };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT3& v1, const float num)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT3& v1, const float num)
 {
 	return DirectX::XMFLOAT3{ v1.x * num, v1.y * num, v1.z * num };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT3& v1, const float num)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT3& v1, const float num)
 {
 	return DirectX::XMFLOAT3{ fmodf(v1.x, num), fmodf(v1.y, num), fmodf(v1.z, num) };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT3& v1, const float num)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT3& v1, const float num)
 {
 	return DirectX::XMFLOAT3{ v1.x / num, v1.y / num, v1.z / num };
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT3& v1, const float num)
+{
+	return (Math::AdjEqual(v1.x, num) && Math::AdjEqual(v1.y, num) && Math::AdjEqual(v1.z, num));
+}
+
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
 {
 	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT3& v1, const float num)
+{
+	return !(Math::AdjEqual(v1.x, num) && Math::AdjEqual(v1.y, num) && Math::AdjEqual(v1.z, num));
+}
+
+_NODISCARD static inline constexpr bool operator< (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+{
+	return ((v1.x < v2.x) && (v1.y < v2.y) && (v1.z < v2.z));
+}
+
+_NODISCARD static inline constexpr bool operator> (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+{
+	return ((v1.x > v2.x) && (v1.y > v2.y) && (v1.z > v2.z));
+}
+
+_NODISCARD static inline constexpr bool operator<= (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+{
+	return ((v1.x < v2.x) && (v1.y < v2.y) && (v1.z < v2.z)) || (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
+}
+
+_NODISCARD static inline constexpr bool operator>= (const DirectX::XMFLOAT3& v1, const DirectX::XMFLOAT3& v2)
+{
+	return ((v1.x > v2.x) && (v1.y > v2.y) && (v1.z > v2.z)) || (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
+}
+
+#if HAS_VECTOR3
+_NODISCARD static inline constexpr bool operator== (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
+_NODISCARD static inline constexpr bool operator!= (const Vector3<float>& v1, const DirectX::XMFLOAT3& v2)
 {
 	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT3& v1, const Vector3<float>& v2)
 {
 	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y) && Math::AdjEqual(v1.z, v2.z));
 }
+#endif
 
 //-------------------------------------------------------------------------------------------------------------
 //. XMFLOAT2系
 //-------------------------------------------------------------------------------------------------------------
 
+#if HAS_VECTOR2
 static inline void operator+= (DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	v1.x += v2.x;
@@ -498,36 +844,153 @@ static inline void operator%= (DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 	v1.y = fmodf(v1.y, v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x + v2.x, v1.y + v2.y, };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x - v2.x, v1.y - v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x * v2.x, v1.y * v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x / v2.x, v1.y / v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return DirectX::XMFLOAT2{ fmodf(v1.x, v2.x), fmodf(v1.y, v2.y) };
 }
+#endif
 
+static inline void operator+= (DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x += *itr;
+	itr++;
+	v1.y += *itr;
+}
+
+static inline void operator-= (DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x -= *itr;
+	itr++;
+	v1.y -= *itr;
+}
+
+static inline void operator/= (DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x /= *itr;
+	itr++;
+	v1.y /= *itr;
+}
+
+static inline void operator*= (DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x *= *itr;
+	itr++;
+	v1.y *= *itr;
+}
+
+static inline void operator%= (DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	auto itr{ v2.begin() };
+	v1.x = fmodf(v1.x, *itr);
+	itr++;
+	v1.y = fmodf(v1.y, *itr);
+}
+
+_NODISCARD static inline auto operator+ (const DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT2 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x += *itr;
+	itr++;
+	temp.y += *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator- (const DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT2 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x -= *itr;
+	itr++;
+	temp.y -= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator* (const DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT2 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x *= *itr;
+	itr++;
+	temp.y *= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator/ (const DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT2 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x /= *itr;
+	itr++;
+	temp.y /= *itr;
+
+	return temp;
+}
+
+_NODISCARD static inline auto operator% (const DirectX::XMFLOAT2& v1, const std::initializer_list<float>& v2)
+{
+	assert(v2.size() == 2u && "不正なイニシャライザーリスト");
+
+	DirectX::XMFLOAT2 temp{ v1 };
+	auto itr{ v2.begin() };
+
+	temp.x = fmodf(v1.x, *itr);
+	itr++;
+	temp.y = fmodf(v1.y, *itr);
+
+	return temp;
+}
+
+#if HAS_VECTOR2
 static inline void operator+= (Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	v1.x += v2.x;
@@ -558,35 +1021,31 @@ static inline void operator%= (Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 	v1.y = fmodf(v1.y, v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator+ (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return Vec2sub::MakeVector2(v1.x + v2.x, v1.y + v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator- (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return Vec2sub::MakeVector2(v1.x - v2.x, v1.y - v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator* (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return Vec2sub::MakeVector2(v1.x * v2.x, v1.y * v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator/ (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return Vec2sub::MakeVector2(v1.x / v2.x, v1.y / v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator% (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return Vec2sub::MakeVector2(fmodf(v1.x, v2.x), fmodf(v1.y, v2.y));
 }
+#endif
 
 static inline void operator+= (DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
@@ -618,32 +1077,27 @@ static inline void operator%= (DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v
 	v1.y = fmodf(v1.y, v2.y);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x + v2.x, v1.y + v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x - v2.x, v1.y - v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x * v2.x, v1.y * v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return DirectX::XMFLOAT2{ v1.x / v2.x, v1.y / v2.y };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return DirectX::XMFLOAT2{ fmodf(v1.x, v2.x), fmodf(v1.y, v2.y) };
 }
@@ -678,133 +1132,167 @@ static inline void operator%= (DirectX::XMFLOAT2& v1, const float num)
 	v1.y = fmodf(v1.y, num);
 }
 
-[[nodiscard]] static inline constexpr auto operator+ (const DirectX::XMFLOAT2& v1, const float num)
+_NODISCARD static inline constexpr auto operator+ (const DirectX::XMFLOAT2& v1, const float num)
 {
 	return DirectX::XMFLOAT2{ v1.x + num, v1.y + num };
 }
 
-[[nodiscard]] static inline constexpr auto operator- (const DirectX::XMFLOAT2& v1, const float num)
+_NODISCARD static inline constexpr auto operator- (const DirectX::XMFLOAT2& v1, const float num)
 {
 	return DirectX::XMFLOAT2{ v1.x - num, v1.y - num };
 }
 
-[[nodiscard]] static inline constexpr auto operator* (const DirectX::XMFLOAT2& v1, const float num)
+_NODISCARD static inline constexpr auto operator* (const DirectX::XMFLOAT2& v1, const float num)
 {
 	return DirectX::XMFLOAT2{ v1.x * num, v1.y * num };
 }
 
-[[nodiscard]] static inline constexpr auto operator/ (const DirectX::XMFLOAT2& v1, const float num)
+_NODISCARD static inline constexpr auto operator/ (const DirectX::XMFLOAT2& v1, const float num)
 {
 	return DirectX::XMFLOAT2{ v1.x / num, v1.y / num };
 }
 
-[[nodiscard]] static inline constexpr auto operator% (const DirectX::XMFLOAT2& v1, const float num)
+_NODISCARD static inline constexpr auto operator% (const DirectX::XMFLOAT2& v1, const float num)
 {
 	return DirectX::XMFLOAT2{ fmodf(v1.x, num), fmodf(v1.y, num) };
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT2& v1, const float num)
+{
+	return (Math::AdjEqual(v1.x, num) && Math::AdjEqual(v1.y, num));
+}
+
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT2& v1, const float num)
+{
+	return !(Math::AdjEqual(v1.x, num) && Math::AdjEqual(v1.y, num));
+}
+
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
 {
 	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+#if HAS_VECTOR2
+_NODISCARD static inline constexpr bool operator== (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
+_NODISCARD static inline constexpr bool operator!= (const Vector2<float>& v1, const DirectX::XMFLOAT2& v2)
 {
 	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
 }
 
-[[nodiscard]] static inline constexpr bool operator== (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr bool operator== (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
 }
 
-[[nodiscard]] static inline constexpr bool operator!= (
-	const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
+_NODISCARD static inline constexpr bool operator!= (const DirectX::XMFLOAT2& v1, const Vector2<float>& v2)
 {
 	return !(Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
+}
+#endif
+
+_NODISCARD static inline constexpr bool operator< (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+{
+	return ((v1.x < v2.x) && (v1.y < v2.y));
+}
+
+_NODISCARD static inline constexpr bool operator> (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+{
+	return ((v1.x > v2.x) && (v1.y > v2.y));
+}
+
+_NODISCARD static inline constexpr bool operator<= (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+{
+	return ((v1.x < v2.x) && (v1.y < v2.y)) || (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
+}
+
+_NODISCARD static inline constexpr bool operator>= (const DirectX::XMFLOAT2& v1, const DirectX::XMFLOAT2& v2)
+{
+	return ((v1.x > v2.x) && (v1.y > v2.y)) || (Math::AdjEqual(v1.x, v2.x) && Math::AdjEqual(v1.y, v2.y));
 }
 
 //-------------------------------------------------------------------------------------------------------------
-// 利便関数系
+// 変換関数系
 //-------------------------------------------------------------------------------------------------------------
 
 //. XMVECTOR変換-----------------------------------------------------------------------------------------------
 
-static inline auto ToXMVECTOR(const DirectX::XMFLOAT4& vec)
+_NODISCARD static inline auto ToXMVECTOR(const DirectX::XMFLOAT4& vec)
 {
 	return DirectX::XMLoadFloat4(&vec);
 }
 
-static inline auto ToXMVECTOR(const DirectX::XMFLOAT3& vec)
+_NODISCARD static inline auto ToXMVECTOR(const DirectX::XMFLOAT3& vec)
 {
 	return DirectX::XMLoadFloat3(&vec);
 }
 
-static inline auto ToXMVECTOR(const DirectX::XMFLOAT2& vec)
+_NODISCARD static inline auto ToXMVECTOR(const DirectX::XMFLOAT2& vec)
 {
 	return DirectX::XMLoadFloat2(&vec);
 }
 
-static inline auto ToXMVECTOR(const Vector3<float>& vec)
+#if HAS_VECTOR3
+_NODISCARD static inline auto ToXMVECTOR(const Vector3<float>& vec)
 {
 	return DirectX::XMLoadFloat3(&(vec.ToXMFLOAT3()));
 }
+#endif
 
-static inline auto ToXMVECTOR(const Vector2<float>& vec)
+#if HAS_VECTOR2
+_NODISCARD static inline auto ToXMVECTOR(const Vector2<float>& vec)
 {
 	return DirectX::XMLoadFloat2(&(vec.ToXMFLOAT2()));
 }
+#endif
 
-static inline auto ToXMVECTOR(const float vec)
+_NODISCARD static inline auto ToXMVECTOR(const float vec)
 {
 	return DirectX::XMLoadFloat(&vec);
 }
 
 //. XMVECTOR変換(正規化)---------------------------------------------------------------------------------------
 
-static inline auto ToNormalizeXMVECTOR(const DirectX::XMFLOAT4& vec)
+_NODISCARD static inline auto ToNormalizeXMVECTOR(const DirectX::XMFLOAT4& vec)
 {
 	return DirectX::XMVector4Normalize(ToXMVECTOR(vec));
 }
 
-static inline auto ToNormalizeXMVECTOR(const DirectX::XMFLOAT3& vec)
+_NODISCARD static inline auto ToNormalizeXMVECTOR(const DirectX::XMFLOAT3& vec)
 {
 	return DirectX::XMVector3Normalize(ToXMVECTOR(vec));
 }
 
-static inline auto ToNormalizeXMVECTOR(const DirectX::XMFLOAT2& vec)
+_NODISCARD static inline auto ToNormalizeXMVECTOR(const DirectX::XMFLOAT2& vec)
 {
 	return DirectX::XMVector2Normalize(ToXMVECTOR(vec));
 }
 
-static inline auto ToNormalizeXMVECTOR(const Vector3<float>& vec)
+#if HAS_VECTOR3
+_NODISCARD static inline auto ToNormalizeXMVECTOR(const Vector3<float>& vec)
 {
 	return DirectX::XMVector3Normalize(ToXMVECTOR(vec));
 }
+#endif
 
-static inline auto ToNormalizeXMVECTOR(const Vector2<float>& vec)
+#if HAS_VECTOR2
+_NODISCARD static inline auto ToNormalizeXMVECTOR(const Vector2<float>& vec)
 {
 	return DirectX::XMVector2Normalize(ToXMVECTOR(vec));
 }
+#endif
 
 //. XMFLOAT変換-----------------------------------------------------------------------------------------------
 
-static inline auto ToXMFLOAT4(const DirectX::XMVECTOR& vec)
+_NODISCARD static inline auto ToXMFLOAT4(const DirectX::XMVECTOR& vec)
 {
 	DirectX::XMFLOAT4 rv;
 
@@ -813,7 +1301,7 @@ static inline auto ToXMFLOAT4(const DirectX::XMVECTOR& vec)
 	return rv;
 }
 
-static inline auto ToXMFLOAT3(const DirectX::XMVECTOR& vec)
+_NODISCARD static inline auto ToXMFLOAT3(const DirectX::XMVECTOR& vec)
 {
 	DirectX::XMFLOAT3 rv;
 
@@ -822,7 +1310,7 @@ static inline auto ToXMFLOAT3(const DirectX::XMVECTOR& vec)
 	return rv;
 }
 
-static inline auto ToXMFLOAT2(const DirectX::XMVECTOR& vec)
+_NODISCARD static inline auto ToXMFLOAT2(const DirectX::XMVECTOR& vec)
 {
 	DirectX::XMFLOAT2 rv;
 
@@ -831,7 +1319,7 @@ static inline auto ToXMFLOAT2(const DirectX::XMVECTOR& vec)
 	return rv;
 }
 
-static inline auto ToXMFLOAT1(const DirectX::XMVECTOR& vec)
+_NODISCARD static inline auto ToXMFLOAT1(const DirectX::XMVECTOR& vec)
 {
 	float rv;
 
@@ -840,7 +1328,92 @@ static inline auto ToXMFLOAT1(const DirectX::XMVECTOR& vec)
 	return rv;
 }
 
-static inline auto ToVector3(const DirectX::XMVECTOR& vec)
+_NODISCARD static inline auto ToXMFLOAT4(const DirectX::XMINT4& vec)
+{
+	DirectX::XMFLOAT4 rv{ (float)vec.x, (float)vec.y, (float)vec.z, (float)vec.w };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT3(const DirectX::XMINT3& vec)
+{
+	DirectX::XMFLOAT3 rv{ (float)vec.x, (float)vec.y, (float)vec.z };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT2(const DirectX::XMINT2& vec)
+{
+	DirectX::XMFLOAT2 rv{ (float)vec.x, (float)vec.y };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT4(const DirectX::XMUINT4& vec)
+{
+	DirectX::XMFLOAT4 rv{ (float)vec.x, (float)vec.y, (float)vec.z, (float)vec.w };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT3(const DirectX::XMUINT3& vec)
+{
+	DirectX::XMFLOAT3 rv{ (float)vec.x, (float)vec.y, (float)vec.z };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT2(const DirectX::XMUINT2& vec)
+{
+	DirectX::XMFLOAT2 rv{ (float)vec.x, (float)vec.y };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT4(const std::array<float, 4>& vec)
+{
+	DirectX::XMFLOAT4 rv{ vec.front(), vec.at(1), vec.at(2), vec.back() };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT3(const std::array<float, 3>& vec)
+{
+	DirectX::XMFLOAT3 rv{ vec.front(), vec.at(1), vec.back() };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToXMFLOAT2(const std::array<float, 2>& vec)
+{
+	DirectX::XMFLOAT2 rv{ vec.front(), vec.back() };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToArray(const DirectX::XMFLOAT4& vec)
+{
+	std::array<float, 4> rv{ vec.x, vec.y, vec.z, vec.w };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToArray(const DirectX::XMFLOAT3& vec)
+{
+	std::array<float, 3> rv{ vec.x, vec.y, vec.z };
+
+	return rv;
+}
+
+_NODISCARD static inline auto ToArray(const DirectX::XMFLOAT2& vec)
+{
+	std::array<float, 2> rv{ vec.x, vec.y };
+
+	return rv;
+}
+
+#if HAS_VECTOR3
+_NODISCARD static inline auto ToVector3(const DirectX::XMVECTOR& vec)
 {
 	DirectX::XMFLOAT3 rv;
 
@@ -848,8 +1421,10 @@ static inline auto ToVector3(const DirectX::XMVECTOR& vec)
 
 	return Vec3sub::MakeVector3<float>(rv.x, rv.y, rv.z);
 }
+#endif
 
-static inline auto ToVector2(const DirectX::XMVECTOR& vec)
+#if HAS_VECTOR2
+_NODISCARD static inline auto ToVector2(const DirectX::XMVECTOR& vec)
 {
 	DirectX::XMFLOAT2 rv;
 
@@ -857,230 +1432,105 @@ static inline auto ToVector2(const DirectX::XMVECTOR& vec)
 
 	return Vec2sub::MakeVector2<float>(rv.x, rv.y);
 }
+#endif
 
-// 四捨五入---------------------------------------------------------------------------------------------------
+//. XMMATRIX変換
 
-static inline DirectX::XMFLOAT2 Round(const DirectX::XMFLOAT2& vf2)
+_NODISCARD static inline auto ToXMMATRIX(const DirectX::XMFLOAT4X4& vec)
 {
-	DirectX::XMFLOAT2 temp;
-
-	temp.x = roundf(vf2.x);
-	temp.y = roundf(vf2.y);
-
-	return temp;
+	return DirectX::XMLoadFloat4x4(&vec);
 }
 
-static inline DirectX::XMFLOAT3 Round(const DirectX::XMFLOAT3& vf3)
+_NODISCARD static inline auto ToXMMATRIX(const DirectX::XMFLOAT3X3& vec)
 {
-	DirectX::XMFLOAT3 temp;
-
-	temp.x = roundf(vf3.x);
-	temp.y = roundf(vf3.y);
-	temp.z = roundf(vf3.z);
-
-	return temp;
+	return DirectX::XMLoadFloat3x3(&vec);
 }
 
-static inline DirectX::XMFLOAT4 Round(const DirectX::XMFLOAT4& vf4)
+_NODISCARD static inline auto ToXMMATRIX(const DirectX::XMFLOAT3X4& vec)
 {
-	DirectX::XMFLOAT4 temp;
-
-	temp.x = roundf(vf4.x);
-	temp.y = roundf(vf4.y);
-	temp.z = roundf(vf4.z);
-	temp.w = roundf(vf4.w);
-
-	return temp;
+	return DirectX::XMLoadFloat3x4(&vec);
 }
 
-//. XMFFLOATの全ての変数に同じ値を代入-------------------------------------------------------------------------
-
-static inline DirectX::XMFLOAT2 Fill2(const float num)
+_NODISCARD static inline auto ToXMMATRIX(const DirectX::XMFLOAT4X3& vec)
 {
-	DirectX::XMFLOAT2 temp;
-
-	temp.x = num;
-	temp.y = num;
-
-	return temp;
+	return DirectX::XMLoadFloat4x3(&vec);
 }
 
-static inline DirectX::XMFLOAT3 Fill3(const float num)
+//. XMFLOAT変換-----------------------------------------------------------------------------------------------
+
+_NODISCARD static inline auto ToXMFLOAT4X4(const DirectX::XMMATRIX& mat)
 {
-	DirectX::XMFLOAT3 temp;
+	DirectX::XMFLOAT4X4 rv;
 
-	temp.x = num;
-	temp.y = num;
-	temp.z = num;
+	DirectX::XMStoreFloat4x4(&rv, mat);
 
-	return temp;
+	return rv;
 }
 
-static inline DirectX::XMFLOAT4 Fill4(const float num)
+_NODISCARD static inline auto ToXMFLOAT3X3(const DirectX::XMMATRIX& mat)
 {
-	DirectX::XMFLOAT4 temp;
+	DirectX::XMFLOAT3X3 rv;
 
-	temp.x = num;
-	temp.y = num;
-	temp.z = num;
-	temp.w = num;
+	DirectX::XMStoreFloat3x3(&rv, mat);
 
-	return temp;
+	return rv;
 }
 
-// 累乗---------------------------------------------------------------------------------------------------
-
-static inline DirectX::XMFLOAT2 Pow(const DirectX::XMFLOAT2& vf2, const float pow_num)
+_NODISCARD static inline auto ToXMFLOAT3X4(const DirectX::XMMATRIX& mat)
 {
-	DirectX::XMFLOAT2 temp;
+	DirectX::XMFLOAT3X4 rv;
 
-	temp.x = powf(vf2.x, pow_num);
-	temp.y = powf(vf2.y, pow_num);
+	DirectX::XMStoreFloat3x4(&rv, mat);
 
-	return temp;
+	return rv;
 }
 
-static inline DirectX::XMFLOAT3 Pow(const DirectX::XMFLOAT3& vf3, const float pow_num)
+_NODISCARD static inline auto ToXMFLOAT4X3(const DirectX::XMMATRIX& mat)
 {
-	DirectX::XMFLOAT3 temp;
+	DirectX::XMFLOAT4X3 rv;
 
-	temp.x = powf(vf3.x, pow_num);
-	temp.y = powf(vf3.y, pow_num);
-	temp.z = powf(vf3.z, pow_num);
+	DirectX::XMStoreFloat4x3(&rv, mat);
 
-	return temp;
+	return rv;
 }
 
-static inline DirectX::XMFLOAT4 Pow(const DirectX::XMFLOAT4& vf4, const float pow_num)
+//-------------------------------------------------------------------------------------------------------------
+// 特殊変換関数
+//-------------------------------------------------------------------------------------------------------------
+
+// 型上げ-----------------------------------------------------------------------------------------------
+
+_NODISCARD static inline auto RaiseToXMFLOAT4(const DirectX::XMFLOAT3& vec, const float w_component = 0.f)
 {
-	DirectX::XMFLOAT4 temp;
-
-	temp.x = powf(vf4.x, pow_num);
-	temp.y = powf(vf4.y, pow_num);
-	temp.z = powf(vf4.z, pow_num);
-	temp.w = powf(vf4.w, pow_num);
-
-	return temp;
+	return DirectX::XMFLOAT4{ vec.x, vec.y, vec.z, w_component };
 }
 
-// 平方根---------------------------------------------------------------------------------------------------
-
-static inline DirectX::XMFLOAT2 Sqrt(const DirectX::XMFLOAT2& vf2)
+_NODISCARD static inline auto RaiseToXMFLOAT4(const DirectX::XMFLOAT2& vec, const float z_component = 0.f, const float w_component = 0.f)
 {
-	DirectX::XMFLOAT2 temp;
-
-	temp.x = sqrtf(vf2.x);
-	temp.y = sqrtf(vf2.y);
-
-	return temp;
+	return DirectX::XMFLOAT4{ vec.x, vec.y, z_component, w_component };
 }
 
-static inline DirectX::XMFLOAT3 Sqrt(const DirectX::XMFLOAT3& vf3)
+_NODISCARD static inline auto RaiseToXMFLOAT3(const DirectX::XMFLOAT2& vec, const float z_component = 0.f)
 {
-	DirectX::XMFLOAT3 temp;
-
-	temp.x = sqrtf(vf3.x);
-	temp.y = sqrtf(vf3.y);
-	temp.z = sqrtf(vf3.z);
-
-	return temp;
+	return DirectX::XMFLOAT3{ vec.x, vec.y, z_component };
 }
 
-static inline DirectX::XMFLOAT4 Sqrt(const DirectX::XMFLOAT4& vf4)
+// 型下げ-----------------------------------------------------------------------------------------------
+
+// W, Z成分が切り捨てられる
+_NODISCARD static inline auto LowerToXMFLOAT2(const DirectX::XMFLOAT4& vec)
 {
-	DirectX::XMFLOAT4 temp;
-
-	temp.x = sqrtf(vf4.x);
-	temp.y = sqrtf(vf4.y);
-	temp.z = sqrtf(vf4.z);
-	temp.w = sqrtf(vf4.w);
-
-	return temp;
+	return DirectX::XMFLOAT2{ vec.x, vec.y };
 }
 
-// 立方根---------------------------------------------------------------------------------------------------
-
-static inline DirectX::XMFLOAT2 Cbrt(const DirectX::XMFLOAT2& vf2)
+// Z成分が切り捨てられる
+_NODISCARD static inline auto LowerToXMFLOAT2(const DirectX::XMFLOAT3& vec)
 {
-	DirectX::XMFLOAT2 temp;
-
-	temp.x = cbrtf(vf2.x);
-	temp.y = cbrtf(vf2.y);
-
-	return temp;
+	return DirectX::XMFLOAT2{ vec.x, vec.y };
 }
 
-static inline DirectX::XMFLOAT3 Cbrt(const DirectX::XMFLOAT3& vf3)
+// W成分が切り捨てられる
+_NODISCARD static inline auto LowerToXMFLOAT3(const DirectX::XMFLOAT4& vec)
 {
-	DirectX::XMFLOAT3 temp;
-
-	temp.x = cbrtf(vf3.x);
-	temp.y = cbrtf(vf3.y);
-	temp.z = cbrtf(vf3.z);
-
-	return temp;
-}
-
-static inline DirectX::XMFLOAT4 Cbrt(const DirectX::XMFLOAT4& vf4)
-{
-	DirectX::XMFLOAT4 temp;
-
-	temp.x = cbrtf(vf4.x);
-	temp.y = cbrtf(vf4.y);
-	temp.z = cbrtf(vf4.z);
-	temp.w = cbrtf(vf4.w);
-
-	return temp;
-}
-
-// 絶対値---------------------------------------------------------------------------------------------------
-
-static inline DirectX::XMFLOAT2 FAbs(const DirectX::XMFLOAT2& vf2)
-{
-	DirectX::XMFLOAT2 temp;
-
-	temp.x = fabs(vf2.x);
-	temp.y = fabs(vf2.y);
-
-	return temp;
-}
-
-static inline DirectX::XMFLOAT3 FAbs(const DirectX::XMFLOAT3& vf3)
-{
-	DirectX::XMFLOAT3 temp;
-
-	temp.x = fabs(vf3.x);
-	temp.y = fabs(vf3.y);
-	temp.z = fabs(vf3.z);
-
-	return temp;
-}
-
-static inline DirectX::XMFLOAT4 FAbs(const DirectX::XMFLOAT4& vf4)
-{
-	DirectX::XMFLOAT4 temp;
-
-	temp.x = fabs(vf4.x);
-	temp.y = fabs(vf4.y);
-	temp.z = fabs(vf4.z);
-	temp.w = fabs(vf4.w);
-
-	return temp;
-}
-
-// ０クリアー--------------------------------------------------------------------------------------------------
-
-static inline void Clear(DirectX::XMFLOAT2& vf2)
-{
-	vf2 = { 0.f, 0.f };
-}
-
-static inline void Clear(DirectX::XMFLOAT3& vf3)
-{
-	vf3 = { 0.f, 0.f, 0.f };
-}
-
-static inline void Clear(DirectX::XMFLOAT4& vf4)
-{
-	vf4 = { 0.f, 0.f, 0.f, 0.f };
+	return DirectX::XMFLOAT3{ vec.x, vec.y, vec.z };
 }

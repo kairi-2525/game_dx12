@@ -6,6 +6,7 @@
 
 #include "FileStreamHelpter.h"
 #include "XMFLOAT_Hlper.h"
+#include "XMFLOAT_Math.h"
 
 class NodeData final
 {

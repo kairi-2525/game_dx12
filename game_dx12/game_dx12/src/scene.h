@@ -11,6 +11,7 @@
 #include "Easing.h"
 #include "ColorDef.h"
 #include "XMFLOAT_Hlper.h"
+#include "XMFLOAT_Math.h"
 
 static constexpr float Volume{ 1.f };
 

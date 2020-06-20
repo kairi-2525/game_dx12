@@ -30,9 +30,6 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 	back_world_mode = false;
 	init_scene = false;
 
-	if (!pParticleManager->Init(p_app))
-		assert(!"パーティクルマネージャーの初期化失敗");
-
 	// 構築
 	{
 		// variantオブジェクト構築
@@ -69,6 +66,9 @@ void SceneGame::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL
 			);
 
 	camera->SetPosition(CreateRotationPos(camera_angle, 30.f));
+
+	if (!pParticleManager->Init(p_app, camera.get()))
+		assert(!"パーティクルマネージャーの初期化失敗");
 
 	Enemy::player = &object_manager->GetObjectData<Player>();
 	Enemy::walls = &object_manager->GetObjectData<Wall>();
