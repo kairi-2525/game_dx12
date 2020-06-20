@@ -2,6 +2,8 @@
 #include "SceneSelect.h"
 #include "MultipleObject.h"
 
+#define GROUND_Y (-0.5f)
+#define BLOCK_SCALE (KDL::FLOAT3{ 1.f, 1.f, 1.f } / 200)
 
 #ifndef REFACTED_TITLE
 void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -43,7 +45,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 			{
 				grounds[it.first].model = 
 					drop_grounds[it.first].model =
-						std::make_unique<KDL::DX12::Geometric_Board>(p_app, ("./data/images/Title/" + it.second + ".png"), 100);
+						std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
 				break;
 			}
 		}
@@ -108,9 +110,9 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	for (UINT i = 0u; i < BLOCK_NUM; i++)
 	{
 		auto& it = grounds[rand() % 2 == 0 ? GROUND_TYPE::Snow : GROUND_TYPE::SnowBroken].data.emplace_back();
-		it.position = KDL::FLOAT3{ set_pos, 0, 0};
+		it.position = KDL::FLOAT3{ set_pos, GROUND_Y, 0};
 		it.rotate = KDL::FLOAT3{ 0, 0, 0 };
-		it.scale = KDL::FLOAT3{ 1.f, 1.f, 1.f };
+		it.scale = BLOCK_SCALE;
 		set_pos += BLOCK_SIZE;
 	}
 	warp_hole.data.clear();
@@ -394,9 +396,9 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 						GROUND_TYPE::SandBroken : GROUND_TYPE::Air
 					).data;
 					auto& it = data.emplace_back();
-					it.position = KDL::FLOAT3{ top_x, 0, 0 };
+					it.position = KDL::FLOAT3{ top_x, GROUND_Y, 0 };
 					it.rotate = KDL::FLOAT3{ 0, 0, 0 };
-					it.scale = KDL::FLOAT3{ 1.f, 1.f, 1.f };
+					it.scale = BLOCK_SCALE;
 					break;
 				}
 			}
@@ -454,8 +456,8 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		for (auto& it : drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken].data)
 		{
 			auto color = white * Plane::DeathDropColorScale;
-			color.a = 1.f - (it.position.y / Plane::DeathDropLength);
-			HRESULT hr = it.Draw<KDL::DX12::Geometric_Board>(
+			color.a = 1.f - ((it.position.y - GROUND_Y) / Plane::DeathDropLength);
+			HRESULT hr = it.Draw<KDL::DX12::Mesh_FBX>(
 				p_app, camera.get(), light_dir, ground.model.get(), color);
 			if (FAILED(hr))
 			{

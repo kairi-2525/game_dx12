@@ -37,8 +37,8 @@ private:
 	KDL::FLOAT3 light_dir;
 	std::unique_ptr<KDL::TOOL::Camera> camera;
 	Model<KDL::DX12::Mesh_FBX> player;
-	std::unordered_map<GROUND_TYPE, MenyModels<KDL::DX12::Geometric_Board, Ground>> grounds;
-	std::unordered_map<GROUND_TYPE, MenyModels<KDL::DX12::Geometric_Board, Ground>> drop_grounds;
+	std::unordered_map<GROUND_TYPE, MenyModels<KDL::DX12::Mesh_FBX, Ground>> grounds;
+	std::unordered_map<GROUND_TYPE, MenyModels<KDL::DX12::Mesh_FBX, Ground>> drop_grounds;
 	MenyModels<KDL::DX12::Mesh_FBX, Ground> warp_hole;
 	MenyModels<KDL::DX12::Mesh_FBX> snows;
 	MenyModels<KDL::DX12::Mesh_FBX> sands;
