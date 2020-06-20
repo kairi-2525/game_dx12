@@ -90,6 +90,8 @@ bool ParticleManager::Init(KDL::DX12::App* p_app, const KDL::TOOL::Camera* camel
 
 	constexpr const char* const RemoveExtension{ ".png" };
 
+	particles.clear();
+
 	// ä˘Ç…ì«Ç›çûÇÒÇ≈Ç¢ÇÈ
 	if (!board.empty())	return true;
 

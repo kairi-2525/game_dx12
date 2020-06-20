@@ -270,7 +270,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	// îwåi
 	{
-		constexpr VF3 Scale{ 107.f, 1.f, 120.f };
+		constexpr VF3 Scale{ 107.f, 1.f, 130.f };
 		constexpr VF4 Color{ C_WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
 		constexpr VF2 TexScale{ 1.f, 1.f };
