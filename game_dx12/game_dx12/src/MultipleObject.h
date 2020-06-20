@@ -124,10 +124,10 @@ private:
 	static inline VF3 pl_pos;
 
 public:
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_board;
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> sand_broken_board;
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_board;
-	static inline std::unique_ptr<KDL::DX12::Geometric_Board> snow_broken_board;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> sand_model;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> sand_broken_model;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> snow_model;
+	static inline std::unique_ptr<KDL::DX12::Mesh_FBX> snow_broken_model;
 };
 
 //------------------------------------------------------------------------------------------------------

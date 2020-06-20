@@ -12,6 +12,8 @@ Plane::Plane()
 	//angle.x = 3.14f * 0.5f;
 
 	pl_pos = Fill3((std::numeric_limits<float>::max)());
+
+	scale = Fill3(0.005f);
 }
 
 Plane::Plane(const uint32_t hp)
@@ -105,7 +107,7 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 		DirectX::XMMATRIX W;
 		{
 			DirectX::XMMATRIX S, R, T;
-			S = DirectX::XMMatrixScaling(scale.x, scale.y, 1.f);
+			S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 			R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
 			const auto droped_pos = GetDropPos();
 			T = DirectX::XMMatrixTranslation(droped_pos.x, droped_pos.y - 0.5f, droped_pos.z);
@@ -132,16 +134,16 @@ void Plane::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 			if (hp == HpMax)
 			{
 				if (GS::back_world_mode)
-					Draw(sand_board);
+					Draw(sand_model);
 				else
-					Draw(snow_board);
+					Draw(snow_model);
 			}
 			else
 			{
 				if (GS::back_world_mode)
-					Draw(sand_broken_board);
+					Draw(sand_broken_model);
 				else
-					Draw(snow_broken_board);
+					Draw(snow_broken_model);
 			}
 		}
 	}
