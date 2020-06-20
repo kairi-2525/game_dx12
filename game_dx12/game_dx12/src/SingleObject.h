@@ -140,6 +140,7 @@ public:
 
 public:
 	static constexpr size_t IndexNumber{ 2u };
+	static constexpr float BackWorldAlpha{ 0.2f };
 
 public:
 	friend std::ofstream& operator<<(std::ofstream& ofs, const Goal& data)

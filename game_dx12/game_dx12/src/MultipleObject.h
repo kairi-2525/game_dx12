@@ -112,6 +112,7 @@ public:
 	bool GetIsDead() const noexcept { return is_dead; }
 	void InitHP() noexcept { pl_stand = false; }
 
+
 	// 戻り値 0　が落ちていない。 1 だと落ち切った。（消えた状態）
 	float GetDropScale() const noexcept { return is_dead ? std::min<float>(1.f, drop_scale) : 0.f; }
 	// Drop中の座標はObj3D::posからは取得できない。

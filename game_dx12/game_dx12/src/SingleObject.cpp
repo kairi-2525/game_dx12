@@ -234,28 +234,10 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
-	const VF4 color{ WHITE, 1.f };
+	VF4 color{ WHITE, 1.f };
 
 	// ƒ‚ƒfƒ‹
-	if (GS::back_world_mode == is_back_world)
-	{
-		DirectX::XMMATRIX W;
-		{
-			DirectX::XMMATRIX S, R, T;
-			S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
-			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
-			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
-			W = S * R * T;
-		}
-		DirectX::XMFLOAT4X4 wvp, w;
-		DirectX::XMStoreFloat4x4(&w, W);
-		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
-
-		auto Draw{ [&](auto& obj)
-		{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
-
-		Draw(model);
-	}
+	//if (GS::back_world_mode == is_back_world)
 
 	// ”Âƒ|ƒŠ
 	{
@@ -275,5 +257,26 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 		{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
 
 		Draw(board);
+	}
+
+	{
+		DirectX::XMMATRIX W;
+		{
+			DirectX::XMMATRIX S, R, T;
+			S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+			R = DirectX::XMMatrixRotationRollPitchYaw(0.f, angle.y, 0.f);
+			T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
+			W = S * R * T;
+		}
+		DirectX::XMFLOAT4X4 wvp, w;
+		DirectX::XMStoreFloat4x4(&w, W);
+		GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+
+		if (GS::back_world_mode != is_back_world)
+			color.w = BackWorldAlpha;
+		auto Draw{ [&](auto& obj)
+		{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, color); } };
+
+		Draw(model);
 	}
 }

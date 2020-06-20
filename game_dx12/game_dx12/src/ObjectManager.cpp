@@ -52,11 +52,32 @@ void ObjectManager::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 // 描画
 void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	// 単一オブジェクト
-	objects.SingleObjVisit([&](auto& object) { if (object) object->Draw(p_window, p_app); });
 
 	// 複数オブジェクト
-	objects.MultiObjVisit([&](auto& objects) { for (auto& obj : objects) obj.Draw(p_window, p_app); });
+	objects.MultiObjVisit([&](auto& objects) 
+	{
+		for (auto& obj : objects)
+		{
+			if (Plane* plane = dynamic_cast<Plane*>(&obj); plane)
+				if (plane->GetDropScale() > 0.f) continue;
+			obj.Draw(p_window, p_app);
+		}
+	});
+	// 複数オブジェクト (半透明のもの)
+	objects.MultiObjVisit([&](auto& objects)
+	{
+		for (auto& obj : objects)
+		{
+			if (Plane* plane = dynamic_cast<Plane*>(&obj); plane)
+			{
+				if (plane->GetDropScale() > 0.f)
+					plane->Draw(p_window, p_app);
+			}
+		}
+	});
+
+	// 単一オブジェクト
+	objects.SingleObjVisit([&](auto& object) { if (object) object->Draw(p_window, p_app); });
 
 	for (auto& effect : effects)
 	{
