@@ -2,7 +2,6 @@
 #include "LoadAllFileName.h"
 #include "AlgorithmHelper.h"
 #include "XMFLOAT_Hlper.h"
-#include "XMFLOAT_Math.h"
 #include "GameScene.h"
 
 namespace

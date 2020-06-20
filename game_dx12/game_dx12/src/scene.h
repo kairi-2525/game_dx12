@@ -118,7 +118,7 @@ protected:
 		static auto vp{ p_app->GetViewport() };
 		static VF2 s_size{ vp.Width, vp.Height };
 
-		KDL::DX12::COLOR4F color{ WHITE, static_cast<float>(change_time ? *change_time : fadein_timer) };
+		KDL::DX12::COLOR4F color{ C_WHITE, static_cast<float>(change_time ? *change_time : fadein_timer) };
 
 		color.w = 1.f - color.w;
 
@@ -136,7 +136,7 @@ protected:
 		static auto vp{ p_app->GetViewport() };
 		static VF2 s_size{ vp.Width, vp.Height };
 
-		const KDL::DX12::COLOR4F color{ WHITE, static_cast<float>(change_time ? *change_time : fadeout_timer)  };
+		const KDL::DX12::COLOR4F color{ C_WHITE, static_cast<float>(change_time ? *change_time : fadeout_timer)  };
 
 		fade_box->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), VF2{ vp.Width, vp.Width }, Fill2(0.f),
 			Fill2(1.f), 0.f, color, color, color, color, BM);

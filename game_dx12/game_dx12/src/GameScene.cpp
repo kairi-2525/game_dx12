@@ -91,6 +91,8 @@ void SceneGame::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, K
 {
 	namespace fs = std::filesystem;
 
+	pParticleManager->Uninit();
+
 	SingletonFinalizer::Finalize();
 
 	object_manager = std::nullopt;
@@ -229,6 +231,8 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	audio = p_window->GetAudio();
 	object_manager->Update(p_window, p_app);
 
+	pParticleManager->Update(p_window, p_app);
+
 #if false
 
 	if (edit_mode) file_flg.Update(p_scene_mgr, p_window, p_app);
@@ -263,13 +267,13 @@ void SceneGame::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 // 描画
 void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
-	const KDL::COLOR4F clear_color = { AQUA, 1.f };
+	const KDL::COLOR4F clear_color = { C_AQUA, 1.f };
 	p_app->ClearBackBuffer(clear_color);
 
 	// 背景
 	{
 		constexpr VF3 Scale{ 107.f, 1.f, 120.f };
-		constexpr VF4 Color{ WHITE, 1.f };
+		constexpr VF4 Color{ C_WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
 		constexpr VF2 TexScale{ 1.f, 1.f };
 
@@ -300,7 +304,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 	{
 		using Math::ToRadian;
 
-		constexpr VF4 Color{ WHITE, 1.f };
+		constexpr VF4 Color{ C_WHITE, 1.f };
 		constexpr VF2 TexPos{ 0.f, 0.f };
 		constexpr VF2 TexScale{ 1.f, 1.f };
 		constexpr VF3 Scale{ 5.f, 5.f, 5.f };
@@ -363,7 +367,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 	// エンターキーで決定、バックスペースキーでタイトルへ
 	{
-		constexpr DirectX::XMFLOAT4 Color{ BLACK, 1.f };
+		constexpr DirectX::XMFLOAT4 Color{ C_BLACK, 1.f };
 		constexpr int BM{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
 		constexpr float BaseY{ 25.f };
 
@@ -400,6 +404,8 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 		fadein_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
+
+	pParticleManager->Draw(p_window, p_app);
 
 	// 選択グリット
 #if false

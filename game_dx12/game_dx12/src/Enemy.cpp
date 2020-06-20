@@ -54,7 +54,7 @@ Enemy::Enemy()
 	: is_select(false), ai(std::nullopt)
 {
 	scale = Fill3(0.1f);
-	color = { PINK, 1.f };
+	color = { C_PINK, 1.f };
 	before_pos = pos;
 
 	ai.emplace(&way_points, &angle.y);
@@ -188,7 +188,7 @@ void Enemy::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	DirectX::XMFLOAT4X4 wvp, w;
 	DirectX::XMStoreFloat4x4(&w, W);
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
-	model->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f });
+	model->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f });
 
 #if false
 	if (is_select)

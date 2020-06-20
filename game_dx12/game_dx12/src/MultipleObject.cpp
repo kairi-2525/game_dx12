@@ -188,7 +188,7 @@ void Wall::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f },
 				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	if (GS::back_world_mode)
@@ -250,7 +250,7 @@ void WarpHole::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f },
 				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(*draw_obj);

@@ -150,14 +150,14 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 		constexpr double Alpha_Rate{ 0.5 };
 
 		{
-			const VF4 color{ WHITE, ((std::sinf(bg_timer * Alpha_Rate) + 1.f) / 2.f) };
+			const VF4 color{ C_WHITE, ((std::sinf(bg_timer * Alpha_Rate) + 1.f) / 2.f) };
 
 			bg_sprite.front()->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), s_size, Fill2(0.f),
 				Fill2(1.f), 0.f, color, color, color, color, BM);
 		}
 
 		{
-			const VF4 color{ WHITE, 1.f - ((std::sinf(bg_timer * Alpha_Rate) + 1.f) / 2.f) };
+			const VF4 color{ C_WHITE, 1.f - ((std::sinf(bg_timer * Alpha_Rate) + 1.f) / 2.f) };
 
 			bg_sprite.back()->AddCommand(p_app->GetCommandList(), p_app, Fill2(0.f), s_size, Fill2(0.f),
 				Fill2(1.f), 0.f, color, color, color, color, BM);
@@ -168,7 +168,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 	{
 		constexpr double AlphaRate{ 2.0 };
 		constexpr float MoveRate{ 20.f };
-		constexpr VF4 Color{ WHITE, 1.f };
+		constexpr VF4 Color{ C_WHITE, 1.f };
 
 #ifdef KDL_USE_IMGUI
 		//ImguiTool::BeginShowTempWindow({ 0.f, 0.f }, "test");
@@ -201,7 +201,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 
 	// エンターキーで決定、バックスペースキーでタイトルへ
 	{
-		constexpr VF4 Color{ BLACK, 1.f };
+		constexpr VF4 Color{ C_BLACK, 1.f };
 		static const VF2 Size{ 25.f, 50.f };
 
 		font_sprite->AddTextCommands(p_app->GetCommandList(), p_app, "Press Enter...",
@@ -276,7 +276,7 @@ void SceneSelect::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX
 #else
 	// フォント
 	{
-		constexpr VF4 Color{ BLACK, 1.f };
+		constexpr VF4 Color{ C_BLACK, 1.f };
 
 		auto f_size{ font_sprite->GetSize() };
 		VF2 f_div_size{ f_size.x + 400.f, f_size.y };

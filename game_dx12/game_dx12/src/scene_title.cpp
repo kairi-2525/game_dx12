@@ -505,7 +505,7 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	{
 		using VF2 = DirectX::XMFLOAT2;
 
-		constexpr DirectX::XMFLOAT4 Color{ BLACK, 1.f };
+		constexpr DirectX::XMFLOAT4 Color{ C_BLACK, 1.f };
 		constexpr int BM{ static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA) };
 
 		static const VF2 Size{ 25.f, 50.f };

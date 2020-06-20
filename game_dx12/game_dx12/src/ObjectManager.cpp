@@ -106,11 +106,11 @@ void ObjectManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 		if (SceneGame::back_world_mode)
 		{
-			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS, false, true, false);
+			sand_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f }, BS, false, true, false);
 		}
 		else
 		{
-			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { WHITE, 1.f }, BS, false, true, false);
+			crystal_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f }, BS, false, true, false);
 		}
 	}
 }

@@ -332,7 +332,7 @@ public:
 		auto vp{ p_app->GetViewport() };
 		VF2 s_size{ vp.Width, vp.Height };
 
-		static const KDL::DX12::COLOR4F color{ GRAY, 1.f };
+		static const KDL::DX12::COLOR4F color{ C_GRAY, 1.f };
 
 		constexpr float BoxSizeY{ 50.f };
 		constexpr float ObjectAndBGCountMax{ 23.f };

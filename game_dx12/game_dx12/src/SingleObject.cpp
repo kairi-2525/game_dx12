@@ -114,7 +114,7 @@ void Player::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f },
 				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(model);
@@ -160,7 +160,7 @@ Start::Start()
 {
 	scale = Fill3(0.166f);
 	angle.y = 3.1415f;
-	color = { WHITE, 1.f };
+	color = { C_WHITE, 1.f };
 }
 
 void Start::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -193,7 +193,7 @@ void Start::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	auto Draw{ [&](auto& obj)
-	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { WHITE, 1.f },
+	{ obj->AddCommand(p_app->GetCommandList(0), p_app, wvp, w, GS::LightDir, { C_WHITE, 1.f },
 				static_cast<int>(KDL::DX12::BLEND_STATE::ALPHA)); } };
 
 	Draw(model);
@@ -234,7 +234,7 @@ void Goal::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	using GS = SceneGame;
 
-	VF4 color{ WHITE, 1.f };
+	VF4 color{ C_WHITE, 1.f };
 
 	// ƒ‚ƒfƒ‹
 	//if (GS::back_world_mode == is_back_world)

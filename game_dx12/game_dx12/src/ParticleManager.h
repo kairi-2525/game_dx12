@@ -6,6 +6,8 @@
 #include "KDL_Dx12/Primitive.h"
 #include "Singleton.h"
 #include "KDL_Tool/Camera.h"
+#include "ColorDef.h"
+#include "XMFLOAT_Math.h"
 
 class Particle
 {
@@ -20,7 +22,7 @@ public:
 	static constexpr VF4 LightDir{ 0.f, 1.f, 0.f, 1.f };
 
 public:
-	Particle(const VF3& pos, const VF3& scale, const VF3& angle, const VF4& color);
+	Particle(const VF3& pos, const VF3& scale = Fill3(1.f), const VF3& angle = Fill3(0.f), const VF4& color = { C_WHITE, 1.f });
 	//Particle(const VF3& pos, const VF3& scale, const VF3& angle, const VF4& color);
 	~Particle() = default;
 	Particle(const Particle&) = delete;
@@ -32,8 +34,15 @@ public:
 		pos = move(_rt.pos);
 		scale = move(_rt.scale);
 		angle = move(_rt.angle);
+		move_vec = move(_rt.move_vec);
 		color = move(_rt.color);
 		timer = (_rt.timer);
+		gravity_scale = (_rt.gravity_scale);
+		speed = (_rt.speed);
+		exist = (_rt.exist);
+		is_gravity = (_rt.is_gravity);
+		type = (_rt.type);
+		world_mat = move(_rt.world_mat);
 	}
 	auto& operator=(Particle&& _rt) noexcept
 	{
@@ -44,8 +53,15 @@ public:
 			pos = move(_rt.pos);
 			scale = move(_rt.scale);
 			angle = move(_rt.angle);
+			move_vec = move(_rt.move_vec);
 			color = move(_rt.color);
 			timer = (_rt.timer);
+			gravity_scale = (_rt.gravity_scale);
+			speed = (_rt.speed);
+			exist = (_rt.exist);
+			is_gravity = (_rt.is_gravity);
+			type = (_rt.type);
+			world_mat = move(_rt.world_mat);
 		}
 		return (*this);
 	}
@@ -72,9 +88,9 @@ public:
 public:
 	VF3 pos, scale, angle;
 private:
-	VF3 speed, move_vec;
+	VF3 move_vec;
 	VF4 color;
-	float timer, gravity_scale;
+	float timer, gravity_scale, speed;
 	bool exist, is_gravity;
 	Type type;
 	VF4X4 world_mat;
