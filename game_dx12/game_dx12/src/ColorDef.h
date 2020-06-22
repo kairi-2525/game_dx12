@@ -15,6 +15,7 @@
 #define C_MAROON	0.50f , 0.00f , 0.00f
 #define C_GRAY		0.50f , 0.50f , 0.50f
 #define C_OLIVE		0.50f , 0.50f , 0.00f
+#define C_BROWN		0.64f , 0.16f , 0.16f
 
 // 参考サイト
 // https://note.cman.jp/color/base_color.cgi

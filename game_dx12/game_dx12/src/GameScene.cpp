@@ -295,6 +295,8 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			snow_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
 	}
 
+	pParticleManager->Draw(p_window, p_app);
+
 	object_manager->Draw(p_window, p_app);
 
 	// チュートリアルメッセージボックス
@@ -402,8 +404,6 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 
 		fadein_timer += static_cast<double>(p_window->GetElapsedTime());
 	}
-
-	pParticleManager->Draw(p_window, p_app);
 
 	// 選択グリット
 #if false

@@ -1,13 +1,15 @@
 #include "MultipleObject.h"
 #include "KDL.h"
 #include "GameScene.h"
+#include "ParticleManager.h"
+#include "ColorDef.h"
 
 //------------------------------------------------------------------------------------------------------
 // 地面
 //------------------------------------------------------------------------------------------------------
 
 Plane::Plane()
-	: hp(HpMax), pl_stand(false), is_dead(false), drop_scale(1.f)
+	: hp(HpMax), pl_stand(false), is_dead(false), drop_scale(1.f), is_drop(false)
 {
 	//angle.x = 3.14f * 0.5f;
 
@@ -67,11 +69,41 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	else
 	{
 		if (is_dead)
+		{
 			DropUpdate(p_window->GetElapsedTime());
+
+			if (is_drop && (drop_scale > 0.f && drop_scale <= 1.f))
+			{
+				static RndIntMaker increase_rand{ 3, 1 };
+				static RndDoubleMaker vec_rand{ 1.f, -1.f };
+
+				VF3 p_pos{ GetDropPos() };
+				p_pos.y -= 1.f;
+
+				// パーティクル
+				for (size_t i = 0, length = increase_rand.GetRnd<size_t>(); i < length; i++)
+				{
+					const VF3 move_vec
+					{ vec_rand.GetRnd<float>(), 0.f, vec_rand.GetRnd<float>() };
+
+					constexpr float MaxTimer{ 2.f };
+					constexpr float MoveSpeed{ 0.5f };
+					constexpr float AngularSpeed{ Math::PAI<float> };
+					constexpr float GravityScale{ 1.f };
+					constexpr VF3 Sclae{ Fill3(0.075f) };
+					constexpr VF3 Angle{ Fill3(0.f) };
+					constexpr VF4 Color{ C_WHITE, 1.f };
+
+					pParticleManager->Set(
+						p_pos, MaxTimer, Particle::Type::Circle, MoveSpeed, move_vec, Sclae, Angle, Color);
+				}
+			}
+		}
 		else if (hp == 0u && pl_pos != pos)
 		{
 			StartDrop();
 			is_dead = true;
+			is_drop = true;
 		}
 	}
 }

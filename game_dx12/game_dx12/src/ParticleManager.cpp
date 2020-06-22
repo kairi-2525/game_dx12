@@ -31,21 +31,23 @@ void Particle::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 {
 	const float dt{ p_window->GetElapsedTime() };
 
-	if (is_gravity) move_vec.y += (GravityAcceleration * gravity_scale);
-	if (is_angular_velocity)
-	{
-		assert(random_maker);
+	if (is_gravity) move_vec.y -= (GravityAcceleration * gravity_scale * dt);
 
-		angle.x += random_maker->GetRnd<float>() * dt;
-		angle.y += random_maker->GetRnd<float>() * dt;
-		angle.z += random_maker->GetRnd<float>() * dt;
-	}
+	//todo: ¡‚Í‚Æ‚è‚ ‚¦‚¸‚â‚ß‚Ä‚¨‚­
+	//if (is_angular_velocity)
+	//{
+	//	assert(random_maker);
+
+	//	angle.x += random_maker->GetRnd<float>() * dt;
+	//	angle.y += random_maker->GetRnd<float>() * dt;
+	//	angle.z += random_maker->GetRnd<float>() * dt;
+	//}
 
 	timer += dt;
-	move_vec = VectorNormalize(move_vec); // ³‹K‰»
+	//move_vec = VectorNormalize(move_vec); // ³‹K‰»
 	pos += (move_vec * speed * dt);
 
-	color.w = timer / max_timer; // ™X‚É“§–¾‚É
+	color.w = 1.f - (timer / max_timer); // ™X‚É“§–¾‚É
 
 	if (timer >= max_timer)	exist = false; // Å‘åŠÔ‚ğ’´‚¦‚½‚çíœ
 
@@ -112,7 +114,7 @@ bool ParticleManager::Init(KDL::DX12::App* p_app, const KDL::TOOL::Camera* camel
 	{
 		try
 		{
-			is_success &= board.try_emplace(static_cast<Particle::Type>(i), p_app, file_paths.at(i)).second;
+			is_success &= board.try_emplace(static_cast<Particle::Type>(i), p_app, file_paths.at(i), 10000u).second;
 		}
 		catch ([[maybe_unused]] const std::exception& exc)
 		{

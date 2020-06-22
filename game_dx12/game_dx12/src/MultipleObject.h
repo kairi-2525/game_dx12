@@ -22,7 +22,7 @@ public:
 		pl_stand = _rt.pl_stand;
 		is_dead = _rt.is_dead;
 		drop_scale = _rt.drop_scale;
-
+		is_drop = _rt.is_drop;
 	}
 	auto& operator=(const Plane& _rt)
 	{
@@ -32,12 +32,14 @@ public:
 		pl_stand = _rt.pl_stand;
 		is_dead = _rt.is_dead;
 		drop_scale = _rt.drop_scale;
+		is_drop = _rt.is_drop;
 
 		return (*this);
 	}
 
 	Plane(Plane&& _rt) noexcept
-		: Obj3D(std::move(_rt)), hp(_rt.hp), pl_stand(_rt.pl_stand), is_dead(_rt.is_dead), drop_scale(_rt.drop_scale)
+		: Obj3D(std::move(_rt)), hp(_rt.hp), pl_stand(_rt.pl_stand), is_dead(_rt.is_dead), drop_scale(_rt.drop_scale),
+		is_drop(_rt.is_drop)
 	{}
 	auto& operator=(Plane&& _rt) noexcept
 	{
@@ -51,6 +53,7 @@ public:
 			pl_stand = _rt.pl_stand;
 			is_dead = _rt.is_dead;
 			drop_scale = _rt.drop_scale;
+			is_drop = _rt.is_drop;
 		}
 
 		return (*this);
@@ -59,8 +62,8 @@ public:
 public:
 	static constexpr size_t IndexNumber{ 1u };
 	static constexpr float DeathDropColorScale{ 0.8f };	//å≥ÇÃêFÇÃ  80%Å@Ç≈èoóÕ
-	static constexpr float DeathDropTime{ 0.5f };		//0.5ïbÇ≈è¡Ç¶ÇÈ
-	static constexpr float DeathDropLength{ -0.5f };	//DeathDropTimeïbÇ≈ y Ç™ -0.5 óéâ∫Ç∑ÇÈ
+	static constexpr float DeathDropTime{ 1.5f };		//0.5ïbÇ≈è¡Ç¶ÇÈ
+	static constexpr float DeathDropLength{ -5.f };	//DeathDropTimeïbÇ≈ y Ç™ -0.5 óéâ∫Ç∑ÇÈ
 private:
 	static constexpr size_t HpMax{ 2u };
 
@@ -97,6 +100,7 @@ public:
 			hp = HpMax;
 			is_dead = false;
 			drop_scale = 1.f;
+			is_drop = false;
 		}
 		else if (hp == HpMax)
 		{
@@ -121,6 +125,7 @@ private:
 	uint16_t hp;
 	bool pl_stand;
 	bool is_dead;
+	bool is_drop;
 	float drop_scale;
 	static inline VF3 pl_pos;
 

@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include "SceneSelect.h"
 #include "MultipleObject.h"
+#include "ParticleManager.h"
 
 #define GROUND_Y (-0.5f)
 #define BLOCK_SCALE (KDL::FLOAT3{ 1.f, 1.f, 1.f } / 200)
@@ -43,7 +44,7 @@ void SceneTitle::Load(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 			}
 			default:
 			{
-				grounds[it.first].model = 
+				grounds[it.first].model =
 					drop_grounds[it.first].model =
 						std::make_unique<KDL::DX12::Mesh_FBX>(p_app, ("./data/models/Game/" + it.second + ".fbx"), 100);
 				break;
@@ -120,6 +121,9 @@ void SceneTitle::Initialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KD
 	it.position = KDL::FLOAT3{ set_pos, -0.25f, 0 };
 	it.rotate = KDL::FLOAT3{ 0, 0, 0 };
 	it.scale = KDL::FLOAT3{ WARP_HOLE_SCALE, WARP_HOLE_SCALE, WARP_HOLE_SCALE };
+
+	if (!pParticleManager->Init(p_app, camera.get()))
+		assert(!"パーティクルマネージャー初期化失敗");
 
 	auto* audio = p_window->GetAudio();
 	audio->Stop(sounds.bgm, sounds.bgm_p, 1.0f);
@@ -405,6 +409,8 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			top_x += BLOCK_SIZE;
 		}
 	}
+
+	pParticleManager->Update(p_window, p_app);
 }
 
 void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
@@ -450,7 +456,9 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		}
 	}
 	const auto white = KDL::COLOR4F{ 1.f, 1.f, 1.f, 1.f };
-	
+
+	pParticleManager->Draw(p_window, p_app);
+
 	{
 		const auto& ground = drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken];
 		for (auto& it : drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken].data)
@@ -542,6 +550,10 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 
 void SceneTitle::UnInitialize(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12::App* p_app)
 {
+	pParticleManager->Uninit();
+
+	SingletonFinalizer::Finalize();
+
 	auto* audio = p_window->GetAudio();
 	audio->Delete(sounds.bgm);
 	audio->Delete(sounds.se_break);
