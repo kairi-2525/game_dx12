@@ -22,7 +22,6 @@ private:
 public:
 	static constexpr float GravityAcceleration{ 9.80665f }; // èdóÕâ¡ë¨ìx
 	static constexpr VF4 LightDir{ 0.f, 1.f, 0.f, 1.f };
-
 public:
 	enum class Type : UINT8
 	{
@@ -90,7 +89,7 @@ public:
 
 public:
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app,
+	void Draw(class KDL::TOOL::Camera* camera, KDL::Window* p_window, KDL::DX12::App* p_app,
 		std::unordered_map<Particle::Type, KDL::DX12::Geometric_Board>& board);
 
 	auto GetType() const noexcept { return type; }
@@ -129,7 +128,7 @@ public:
 	auto& operator=(ParticleManager&&) = delete;
 
 public:
-	bool Init(KDL::DX12::App* p_app, const class KDL::TOOL::Camera* camela);
+	bool Init(KDL::DX12::App* p_app, class KDL::TOOL::Camera* camela);
 	bool Uninit();
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
 	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app);
@@ -162,7 +161,7 @@ public:
 private:
 	std::unordered_map<Particle::Type, KDL::DX12::Geometric_Board> board;
 	std::deque<Particle> particles;
-	const class KDL::TOOL::Camera* camela{ nullptr };
+	class KDL::TOOL::Camera* camera{ nullptr };
 };
 
 #define pParticleManager	(Singleton<ParticleManager>::GetInstancePtr())

@@ -64,14 +64,12 @@ void Particle::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	}
 }
 
-void Particle::Draw(KDL::Window* p_window, KDL::DX12::App* p_app,
+void Particle::Draw(KDL::TOOL::Camera* camera, KDL::Window* p_window, KDL::DX12::App* p_app,
 	std::unordered_map<Particle::Type, KDL::DX12::Geometric_Board>& board)
 {
-	using GS = SceneGame;
-
 	DirectX::XMFLOAT4X4 wvp;
 	auto&& W{ DirectX::XMLoadFloat4x4(&world_mat) };
-	GS::camera->CreateUpdateWorldViewProjection(&wvp, W);
+	camera->CreateUpdateWorldViewProjection(&wvp, W);
 
 	board.at(type).AddCommand(p_app->GetCommandList(), p_app, wvp, world_mat, LightDir, color);
 }
@@ -86,7 +84,7 @@ void Particle::AngularVelocityOn(const float angular_velocity)
 
 //------------------------------------------------------------------------------------------------------------------------
 
-bool ParticleManager::Init(KDL::DX12::App* p_app, const KDL::TOOL::Camera* camela)
+bool ParticleManager::Init(KDL::DX12::App* p_app, KDL::TOOL::Camera* camera)
 {
 	using std::make_unique;
 
@@ -97,7 +95,7 @@ bool ParticleManager::Init(KDL::DX12::App* p_app, const KDL::TOOL::Camera* camel
 	// Šù‚É“Ç‚Ýž‚ñ‚Å‚¢‚é
 	if (!board.empty())	return true;
 
-	this->camela = camela;
+	this->camera = camera;
 
 	auto&& file_paths{ GetAllFileName("./data/images/Particles") };
 
@@ -133,7 +131,7 @@ bool ParticleManager::Uninit()
 	{
 		board.clear();
 		particles.clear();
-		camela = nullptr;
+		camera = nullptr;
 	}
 	catch (const std::exception&)
 	{
@@ -170,7 +168,7 @@ void ParticleManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
 
 	for (auto& particle : particles)
 	{
-		particle.Draw(p_window, p_app, board);
+		particle.Draw(camera, p_window, p_app, board);
 	}
 }
 

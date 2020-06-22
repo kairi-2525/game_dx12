@@ -216,23 +216,26 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			else i++;
 		}
 	}
-	for (auto& g : drop_grounds)
 	{
-		auto& data = g.second.data;
-		for (size_t i = 0; i < data.size();)
+		for (auto& g : drop_grounds)
 		{
-			data[i].position.x -= speed * elpased_time;
-			data[i].position.y += (Plane::DeathDropTime / Plane::DeathDropLength) * elpased_time;
-			if (data[i].position.x < end_line)
+			auto& data = g.second.data;
+			for (size_t i = 0; i < data.size();)
 			{
-				data[i] = data.back();
-				data.pop_back();
-				deleted_type.emplace_back(g.first);
+				data[i].position.x -= speed * elpased_time;
+				data[i].position.y += (Plane::DeathDropTime / Plane::DeathDropLength) * elpased_time;
+				
+				if (data[i].position.x < end_line)
+				{
+					data[i] = data.back();
+					data.pop_back();
+					deleted_type.emplace_back(g.first);
+				}
+				else i++;
 			}
-			else i++;
 		}
 	}
-
+	bool friped = false;
 	//ワープホールのフリップ
 	{
 		auto& data = warp_hole.data;
@@ -255,6 +258,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 		}
 		if (snow != snow_log)
 		{
+			friped = true;
 			FlipGrounds(p_window);
 			auto& set_data = grounds.at(snow ? GROUND_TYPE::Snow : GROUND_TYPE::Sand).data;
 			auto& set_break_data = grounds.at(snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken).data;
@@ -320,7 +324,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			{
 				if (!data[i].changed && data[i].position.x < break_line)
 				{
-					drop_grounds[GROUND_TYPE::SandBroken].data.emplace_back(data[i]);
+					if (!friped) drop_grounds[GROUND_TYPE::SandBroken].data.emplace_back(data[i]);
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SandBroken);
@@ -335,7 +339,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			{
 				if (!data[i].changed && data[i].position.x < break_line)
 				{
-					drop_grounds[GROUND_TYPE::SnowBroken].data.emplace_back(data[i]);
+					if (!friped) drop_grounds[GROUND_TYPE::SnowBroken].data.emplace_back(data[i]);
 					data[i] = data.back();
 					data.pop_back();
 					deleted_type.emplace_back(GROUND_TYPE::SnowBroken);
@@ -457,8 +461,6 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	}
 	const auto white = KDL::COLOR4F{ 1.f, 1.f, 1.f, 1.f };
 
-	pParticleManager->Draw(p_window, p_app);
-
 	{
 		const auto& ground = drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken];
 		for (auto& it : drop_grounds[snow ? GROUND_TYPE::SnowBroken : GROUND_TYPE::SandBroken].data)
@@ -508,6 +510,8 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 		}
 	}
 	wall.Draw(p_app, camera.get(), light_dir);
+
+	pParticleManager->Draw(p_window, p_app);
 
 	// エンターキーで決定、バックスペースキーでタイトルへ
 	{
