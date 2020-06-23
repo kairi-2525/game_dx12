@@ -52,13 +52,13 @@ void Plane::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 				if (hp == 0)
 				{
 					int handle = SG::audio->CreatePlayHandle(SG::se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
-					SG::audio->Play(SG::se_break, handle, 0.01f, Volume, false);
+					SG::audio->Play(SG::se_break, handle, 0.01f, Volume * 2.f, false);
 				}
 				else
 				{
 
 					int handle = SG::audio->CreatePlayHandle(SG::se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
-					SG::audio->Play(SG::se_crack, handle, 0.01f, Volume, false);
+					SG::audio->Play(SG::se_crack, handle, 0.01f, Volume * 0.75f, false);
 				}
 			}
 
