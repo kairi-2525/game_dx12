@@ -572,14 +572,14 @@ void SceneTitle::BreakGrounds(KDL::Window* p_window)
 {
 	auto* audio = p_window->GetAudio();
 	int handle = audio->CreatePlayHandle(sounds.se_crack, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	audio->Play(sounds.se_crack, handle, 0.01f, Volume, false);
+	audio->Play(sounds.se_crack, handle, 0.01f, Volume * 0.75f, false);
 }
 //Á‚¦‚½‚Æ‚«
 void SceneTitle::RemoveGrounds(KDL::Window* p_window)
 {
 	auto* audio = p_window->GetAudio();
 	int handle = audio->CreatePlayHandle(sounds.se_break, 0.f, false, false, 0.f, 0.f, 0, false, false);
-	audio->Play(sounds.se_break, handle, 0.01f, Volume, false);
+	audio->Play(sounds.se_break, handle, 0.01f, Volume * 2.f, false);
 }
 //”½“]‚µ‚½‚Æ‚«
 void SceneTitle::FlipGrounds(KDL::Window* p_window)
