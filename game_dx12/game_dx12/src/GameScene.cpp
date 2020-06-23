@@ -295,7 +295,7 @@ void SceneGame::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX12
 			snow_board->AddCommand(p_app->GetCommandList(), p_app, wvp, w, LightDir, Color, TexPos, TexScale);
 	}
 
-	pParticleManager->Draw(p_window, p_app);
+	pParticleManager->Draw(p_window, p_app, camera.get());
 
 	object_manager->Draw(p_window, p_app);
 

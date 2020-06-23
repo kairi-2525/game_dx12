@@ -224,7 +224,7 @@ void SceneTitle::Update(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::D
 			{
 				data[i].position.x -= speed * elpased_time;
 				data[i].position.y += (Plane::DeathDropTime / Plane::DeathDropLength) * elpased_time;
-				
+
 				if (data[i].position.x < end_line)
 				{
 					data[i] = data.back();
@@ -511,7 +511,7 @@ void SceneTitle::Draw(SceneManager* p_scene_mgr, KDL::Window* p_window, KDL::DX1
 	}
 	wall.Draw(p_app, camera.get(), light_dir);
 
-	pParticleManager->Draw(p_window, p_app);
+	pParticleManager->Draw(p_window, p_app, camera.get());
 
 	// エンターキーで決定、バックスペースキーでタイトルへ
 	{

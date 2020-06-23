@@ -95,8 +95,6 @@ bool ParticleManager::Init(KDL::DX12::App* p_app, KDL::TOOL::Camera* camera)
 	// 既に読み込んでいる
 	if (!board.empty())	return true;
 
-	this->camera = camera;
-
 	auto&& file_paths{ GetAllFileName("./data/images/Particles") };
 
 	// png以外のファイル形式を削除
@@ -131,7 +129,6 @@ bool ParticleManager::Uninit()
 	{
 		board.clear();
 		particles.clear();
-		camera = nullptr;
 	}
 	catch (const std::exception&)
 	{
@@ -162,7 +159,7 @@ void ParticleManager::Update(KDL::Window* p_window, KDL::DX12::App* p_app)
 	}
 }
 
-void ParticleManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app)
+void ParticleManager::Draw(KDL::Window* p_window, KDL::DX12::App* p_app, KDL::TOOL::Camera* camera)
 {
 	using GS = SceneGame;
 

@@ -131,7 +131,7 @@ public:
 	bool Init(KDL::DX12::App* p_app, class KDL::TOOL::Camera* camela);
 	bool Uninit();
 	void Update(KDL::Window* p_window, KDL::DX12::App* p_app);
-	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app);
+	void Draw(KDL::Window* p_window, KDL::DX12::App* p_app, KDL::TOOL::Camera* camera);
 
 	// 重力・各速度無し版
 	const Particle& Set(
@@ -161,7 +161,6 @@ public:
 private:
 	std::unordered_map<Particle::Type, KDL::DX12::Geometric_Board> board;
 	std::deque<Particle> particles;
-	class KDL::TOOL::Camera* camera{ nullptr };
 };
 
 #define pParticleManager	(Singleton<ParticleManager>::GetInstancePtr())
